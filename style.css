@@ -1,131 +1,482 @@
-# 🔥 Forja de Cartas
+/* ============================================================
+   FORJA DE CARTAS — estilo "scriptorium" (oficina arcana)
+   Tema escuro, pergaminho, latão/ouro. Frame de carta original.
+   ============================================================ */
 
-App web para criar cartas de batalha em estilo fantasia, **cobrindo todos os layouts**. Você pode **preencher os campos manualmente** ou **descrever a ideia e deixar a IA montar a carta inteira** (ela escolhe o layout). A ilustração pode ser **gerada por IA** ou ser uma **imagem sua**. No fim, **exporta em PNG**.
+:root {
+  --ink:        #14110d;
+  --ink-2:      #1d1812;
+  --ink-3:      #2a2218;
+  --parch:      #efe4cc;
+  --parch-dim:  #d9c9a6;
+  --brass:      #c9a14a;
+  --brass-hi:   #f0d488;
+  --brass-deep: #7a5e25;
+  --ember:      #b6502a;
+  --line:       rgba(201,161,74,.28);
+  --shadow:     0 18px 50px rgba(0,0,0,.55);
+  --r:          14px;
+}
 
-### Tipos / layouts suportados
+* { box-sizing: border-box; }
 
-| Layout | O que muda |
-|---|---|
-| **Padrão** | Criatura, instantâneo, feitiço, artefato, encantamento (e supertipos como Lendário/Neve, ou Tribal/Kindred — basta digitar na linha de tipo) |
-| **Terreno** | Sem custo de mana |
-| **Planeswalker** | Lealdade inicial + lista de habilidades (+1 / −2 / −7…) |
-| **Saga** | Capítulos (I, II, III) com arte na lateral |
-| **Classe** | Níveis com custo de subida |
-| **Batalha (Siege)** | Carta em paisagem + valor de defesa |
-| **Aventura** | Criatura com uma mágica-aventura embutida |
-| **Ficha (Token)** | Sem custo, arte maior |
-| **Emblema** | Cartão escuro só com texto |
-| **Dupla face (transformar)** | Frente + verso, com botão para virar |
-| **Dividida (Split)** | Duas metades em paisagem |
+html, body { height: 100%; }
 
-> A maioria dos *tipos* do Magic (Criatura, Encantamento, Artefato, supertipos…) é apenas texto na **linha de tipo** — então o layout "Padrão" já cobre todos eles. Os layouts acima existem porque mudam a **estrutura** da carta.
+body {
+  margin: 0;
+  font-family: "EB Garamond", Georgia, serif;
+  color: var(--parch);
+  background:
+    radial-gradient(1200px 700px at 80% -10%, #241d14 0%, transparent 60%),
+    radial-gradient(900px 600px at -10% 110%, #20211c 0%, transparent 55%),
+    linear-gradient(160deg, #100e0a 0%, #16130d 50%, #0c0a07 100%);
+  background-attachment: fixed;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
 
-> ⚠️ **Aviso:** o frame, os "pips" de mana e o layout aqui são **originais**, apenas *inspirados* no formato. O projeto **não usa** as artes, fontes, símbolos ou marcas oficiais da Wizards of the Coast / Magic: The Gathering. Use para criações próprias (homebrew), não para reproduzir cartas existentes ou para fins comerciais com a marca.
+/* textura de grão sutil sobre tudo */
+.grain {
+  position: fixed; inset: 0; pointer-events: none; z-index: 0;
+  opacity: .045; mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
 
----
+/* ----------------------------- TOPBAR ----------------------------- */
+.topbar {
+  position: relative; z-index: 2;
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 16px; flex-wrap: wrap;
+  padding: 20px clamp(16px, 4vw, 48px);
+  border-bottom: 1px solid var(--line);
+  background: linear-gradient(180deg, rgba(0,0,0,.25), transparent);
+}
+.brand { display: flex; align-items: center; gap: 14px; }
+.sigil {
+  font-size: 30px; color: var(--brass);
+  text-shadow: 0 0 14px rgba(201,161,74,.5);
+}
+.brand h1 {
+  font-family: "Cinzel", serif; font-weight: 700;
+  font-size: clamp(20px, 3vw, 28px); margin: 0; letter-spacing: .06em;
+  color: var(--parch);
+}
+.brand p { margin: 2px 0 0; font-size: 13px; color: var(--parch-dim); font-style: italic; letter-spacing: .04em; }
+.topbar-actions { display: flex; gap: 10px; }
 
-## 📁 O que tem aqui
+/* ----------------------------- BOTÕES ----------------------------- */
+.btn {
+  font-family: "Cinzel", serif; font-weight: 600; letter-spacing: .04em;
+  font-size: 14px; cursor: pointer; border-radius: 10px;
+  padding: 11px 18px; border: 1px solid transparent; transition: .18s ease;
+  display: inline-flex; align-items: center; gap: 8px; line-height: 1;
+}
+.btn-gold {
+  background: linear-gradient(180deg, var(--brass-hi), var(--brass));
+  color: #2a1f08; border-color: var(--brass-deep);
+  box-shadow: 0 4px 0 var(--brass-deep), 0 10px 22px rgba(201,161,74,.25);
+}
+.btn-gold:hover { transform: translateY(-1px); box-shadow: 0 5px 0 var(--brass-deep), 0 14px 28px rgba(201,161,74,.32); }
+.btn-gold:active { transform: translateY(2px); box-shadow: 0 2px 0 var(--brass-deep); }
+.btn-ghost {
+  background: rgba(255,255,255,.03); color: var(--parch-dim);
+  border-color: var(--line);
+}
+.btn-ghost:hover { color: var(--parch); border-color: var(--brass); }
+.btn-rune {
+  background: linear-gradient(180deg, #3a2c50, #2a2038);
+  color: var(--brass-hi); border-color: #5b4780;
+  box-shadow: 0 4px 0 #1c1528, 0 10px 24px rgba(90,60,140,.25);
+}
+.btn-rune:hover { transform: translateY(-1px); filter: brightness(1.12); }
+.btn-rune:active { transform: translateY(2px); box-shadow: 0 2px 0 #1c1528; }
+.btn-block { width: 100%; justify-content: center; margin-top: 4px; }
+.btn[disabled] { opacity: .55; cursor: wait; }
 
-```
-card-forge/
-├── index.html              # interface
-├── style.css               # estilo + frame da carta
-├── app.js                  # lógica: prévia ao vivo, mana, IA, export PNG
-├── api/
-│   ├── generate-card.js    # backend: gera a carta (texto) via Claude
-│   └── generate-art.js     # backend: gera a ilustração (OpenAI)
-├── package.json
-├── .env.example            # modelo das variáveis de ambiente
-└── README.md
-```
+.btn-spin {
+  width: 15px; height: 15px; border-radius: 50%;
+  border: 2px solid rgba(255,255,255,.3); border-top-color: var(--brass-hi);
+  display: inline-block; animation: spin .7s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
 
-O frontend é estático (HTML/CSS/JS puro, sem build). As funções em `api/` são *serverless* e existem só para **guardar suas chaves de API em segredo** — elas nunca aparecem no navegador.
+/* ----------------------------- LAYOUT ----------------------------- */
+.layout {
+  position: relative; z-index: 2;
+  display: grid; grid-template-columns: minmax(380px, 460px) 1fr;
+  gap: clamp(20px, 3vw, 44px);
+  padding: clamp(20px, 3vw, 40px) clamp(16px, 4vw, 48px) 60px;
+  align-items: start;
+}
+@media (max-width: 940px) {
+  .layout { grid-template-columns: 1fr; }
+  .stage { order: -1; }
+}
 
----
+/* ----------------------------- PAINEL ----------------------------- */
+.panel {
+  background:
+    linear-gradient(180deg, rgba(239,228,204,.05), rgba(239,228,204,.02)),
+    var(--ink-2);
+  border: 1px solid var(--line);
+  border-radius: var(--r);
+  padding: 22px;
+  box-shadow: var(--shadow), inset 0 1px 0 rgba(255,255,255,.04);
+}
 
-## 🔑 Chaves de API que você vai precisar
+.mode-switch {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 6px;
+  background: var(--ink); border: 1px solid var(--line);
+  border-radius: 12px; padding: 5px; margin-bottom: 20px;
+}
+.mode-btn {
+  font-family: "Cinzel", serif; font-size: 13px; font-weight: 600;
+  letter-spacing: .03em; cursor: pointer;
+  padding: 10px; border-radius: 8px; border: none;
+  background: transparent; color: var(--parch-dim); transition: .18s;
+}
+.mode-btn.active {
+  background: linear-gradient(180deg, var(--brass), var(--brass-deep));
+  color: #241a06; box-shadow: 0 2px 8px rgba(0,0,0,.3);
+}
 
-| Recurso | Chave | Obrigatória? |
-|---|---|---|
-| IA monta a carta (texto) | `ANTHROPIC_API_KEY` | Sim, para o modo "Deixar a IA criar" |
-| IA gera a ilustração | `OPENAI_API_KEY` | Não — sem ela, é só subir sua imagem |
+.mode-pane { animation: fade .3s ease; }
+@keyframes fade { from { opacity: 0; transform: translateY(6px); } }
 
-- **Anthropic (Claude):** crie a chave em `console.anthropic.com` → *API Keys*.
-- **OpenAI (imagem):** crie a chave em `platform.openai.com` → *API keys*.
+/* campos */
+.field { display: block; margin-bottom: 14px; }
+.field-label {
+  display: block; font-family: "Cinzel", serif; font-size: 11px;
+  font-weight: 600; letter-spacing: .12em; text-transform: uppercase;
+  color: var(--brass); margin-bottom: 6px;
+}
+.field input, .field textarea, .field select {
+  width: 100%; font-family: "EB Garamond", serif; font-size: 16px;
+  color: var(--parch); background: var(--ink);
+  border: 1px solid var(--line); border-radius: 9px;
+  padding: 10px 12px; transition: .15s; resize: vertical;
+}
+.field textarea { line-height: 1.4; }
+.field input:focus, .field textarea:focus, .field select:focus {
+  outline: none; border-color: var(--brass);
+  box-shadow: 0 0 0 3px rgba(201,161,74,.15);
+}
+.field select { cursor: pointer; appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' fill='%23c9a14a'%3E%3Cpath d='M6 8 0 0h12z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat; background-position: right 12px center; padding-right: 32px;
+}
+.field-row { display: flex; gap: 12px; }
+.field-row .field { flex: 1; }
+.field-row .grow { flex: 2; }
 
-> Sem nenhuma chave, o app ainda funciona 100% no **modo manual + upload de imagem**. As chaves só ligam os recursos de IA. Ambas as APIs são pagas por uso (texto é bem barato; imagem custa mais por geração).
+.hint { font-size: 13px; color: var(--parch-dim); font-style: italic; margin: -6px 0 14px; }
+.hint code { font-style: normal; background: var(--ink); padding: 1px 6px; border-radius: 5px; color: var(--brass-hi); }
+.hint-mana { margin-top: 2px; }
 
----
+/* ----------------------------- BLOCO DE ARTE ----------------------------- */
+.art-block { margin-top: 22px; padding-top: 20px; border-top: 1px solid var(--line); }
+.block-title {
+  font-family: "Cinzel", serif; font-size: 13px; letter-spacing: .1em;
+  text-transform: uppercase; color: var(--brass); margin: 0 0 12px;
+}
+.art-tabs { display: flex; gap: 6px; margin-bottom: 14px; }
+.art-tab {
+  flex: 1; font-family: "Cinzel", serif; font-size: 12px; font-weight: 600;
+  padding: 8px; border-radius: 8px; cursor: pointer;
+  background: var(--ink); border: 1px solid var(--line); color: var(--parch-dim);
+  transition: .15s;
+}
+.art-tab.active { border-color: var(--brass); color: var(--brass-hi); }
 
-## 🚀 Hospedar de graça (passo a passo)
+.dropzone {
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 8px; padding: 28px; border: 2px dashed var(--line); border-radius: 12px;
+  cursor: pointer; color: var(--parch-dim); transition: .18s; text-align: center;
+}
+.dropzone:hover, .dropzone.drag { border-color: var(--brass); color: var(--parch); background: rgba(201,161,74,.04); }
+.dz-icon { font-size: 28px; color: var(--brass); }
+.dz-text { font-size: 14px; }
 
-A forma mais simples, porque suporta o site estático **e** as funções serverless do mesmo jeito que o código foi escrito:
+/* ============================================================
+   A CARTA (frame original, inspirado em cartas de batalha)
+   ============================================================ */
+.stage { position: sticky; top: 24px; display: flex; flex-direction: column; align-items: center; }
+.stage-inner { perspective: 1600px; }
+.stage-hint { margin-top: 18px; font-size: 14px; color: var(--parch-dim); font-style: italic; text-align: center; }
+.stage-hint b { color: var(--brass-hi); font-style: normal; }
 
-### Opção 1 — Vercel (recomendado)
+.card {
+  --frame:   #b9a980;
+  --frame-2: #8c7c54;
+  --txtbg:   #efe7d4;
+  --titlebg: #d8cdb0;
+  width: 480px; height: 672px; position: relative;
+  border-radius: 26px; padding: 18px;
+  background: linear-gradient(150deg, #161310 0%, #050505 100%);
+  box-shadow: var(--shadow);
+  font-family: "EB Garamond", serif;
+  transition: transform .4s ease;
+}
+.stage-inner:hover .card { transform: rotateY(-6deg) rotateX(3deg); }
 
-1. Suba esta pasta para um repositório no **GitHub** (ou GitLab/Bitbucket).
-2. Crie conta grátis em **vercel.com** e clique em **Add New → Project**.
-3. Selecione o repositório. A Vercel detecta tudo sozinha (não precisa configurar build).
-4. Em **Settings → Environment Variables**, adicione:
-   - `ANTHROPIC_API_KEY` = sua chave
-   - `OPENAI_API_KEY` = sua chave (opcional)
-5. **Deploy**. Pronto — você recebe uma URL pública `https://seu-app.vercel.app`.
+.card-frame {
+  position: relative; z-index: 2; height: 100%;
+  display: flex; flex-direction: column;
+  background:
+    linear-gradient(180deg, var(--frame) 0%, var(--frame-2) 100%);
+  border-radius: 12px; padding: 12px;
+  box-shadow: inset 0 0 0 1px rgba(0,0,0,.35), inset 0 0 18px rgba(0,0,0,.25);
+}
 
-Para rodar local antes: `npm i -g vercel` → `vercel dev` (ele lê um arquivo `.env` na raiz; copie o `.env.example` para `.env` e preencha).
+.title-bar, .type-bar {
+  display: flex; align-items: center; justify-content: space-between; gap: 8px;
+  background: var(--titlebg); border-radius: 7px; padding: 7px 12px;
+  box-shadow: inset 0 0 0 1px rgba(0,0,0,.18), 0 1px 2px rgba(0,0,0,.2);
+}
+.c-name { font-family: "Cinzel", serif; font-weight: 600; font-size: 19px; color: #1c160c; letter-spacing: .01em; }
+.c-mana { display: flex; gap: 3px; }
 
-### Opção 2 — Netlify
+/* pips de mana — círculos coloridos originais */
+.pip {
+  width: 21px; height: 21px; border-radius: 50%; display: inline-flex;
+  align-items: center; justify-content: center; font-family: "Cinzel", serif;
+  font-weight: 700; font-size: 12px; color: #fff;
+  box-shadow: inset 0 -2px 3px rgba(0,0,0,.35), inset 0 2px 2px rgba(255,255,255,.35), 0 1px 1px rgba(0,0,0,.3);
+}
+.pip-W { background: radial-gradient(circle at 35% 30%, #fffdf3, #e8e0c8); color: #3a3320; }
+.pip-U { background: radial-gradient(circle at 35% 30%, #6fb6e8, #2a72b8); }
+.pip-B { background: radial-gradient(circle at 35% 30%, #6a6258, #2a2520); }
+.pip-R { background: radial-gradient(circle at 35% 30%, #e87a55, #b6361c); }
+.pip-G { background: radial-gradient(circle at 35% 30%, #6fc081, #2f7d40); }
+.pip-C, .pip-N { background: radial-gradient(circle at 35% 30%, #d8d2c4, #a89f8c); color: #2a2520; }
+.pip-X { background: radial-gradient(circle at 35% 30%, #d8d2c4, #a89f8c); color: #2a2520; }
 
-Funciona, mas as funções têm assinatura um pouco diferente. Mova os arquivos de `api/` para `netlify/functions/` e troque o cabeçalho de cada função de
-`export default async function handler(req, res)` para o formato Netlify
-`export default async (req, context) => { ... return new Response(JSON.stringify(...)) }`.
-Depois configure as variáveis em **Site settings → Environment variables**. (A Vercel evita esse retrabalho.)
+/* janela de arte: contém a ilustração diretamente */
+.art-window {
+  height: 256px; margin: 8px 0; border-radius: 4px; overflow: hidden;
+  background: #0c0a08; box-shadow: inset 0 0 0 1px rgba(0,0,0,.35);
+  display: flex; align-items: center; justify-content: center; flex: none;
+}
+.art-window img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.art-window.art-short { height: 180px; }
+.art-window.art-tall  { height: 300px; }
+.art-window.art-wide  { height: 150px; }
+.art-ph { color: #5b5345; font-size: 46px; }
 
-### Opção 3 — Cloudflare Pages
+.type-bar { margin-top: 0; }
+.c-type { font-family: "Cinzel", serif; font-weight: 500; font-size: 14px; color: #1c160c; letter-spacing: .01em; }
+.c-set { font-size: 16px; }
+.c-set.r-comum   { color: #2a2520; }
+.c-set.r-incomum { color: #7d8794; }
+.c-set.r-rara    { color: #b8973f; }
+.c-set.r-mítica  { color: #c2501f; }
 
-Hospeda o estático de graça e tem *Functions* (Workers). Mesma ideia da Netlify: as funções precisam ser adaptadas para o formato Workers (`export async function onRequestPost(context)`).
+.text-box {
+  flex: 1; margin-top: 8px; background: var(--txtbg);
+  border-radius: 7px; padding: 12px 14px; overflow: hidden;
+  box-shadow: inset 0 0 0 1px rgba(0,0,0,.18);
+  display: flex; flex-direction: column;
+}
+.c-rules { font-size: 15px; line-height: 1.32; color: #1a150d; white-space: pre-wrap; }
+.c-rules .reminder { font-style: italic; color: #4a4234; }
+.c-flavor {
+  margin-top: auto; padding-top: 8px; font-style: italic; font-size: 14px;
+  color: #463c2a; line-height: 1.3; border-top: 1px solid rgba(0,0,0,.12);
+}
+.c-flavor:empty { display: none; border: none; padding: 0; }
+.c-rules:empty { min-height: 0; }
 
-### Opção 4 — Render
+.bottom-bar {
+  display: flex; align-items: flex-end; justify-content: space-between;
+  margin-top: 8px; padding: 0 4px;
+}
+.c-credit { font-size: 11px; color: #ece3cf; opacity: .8; letter-spacing: .02em; }
+.c-pt {
+  font-family: "Cinzel", serif; font-weight: 700; font-size: 18px; color: #1c160c;
+  background: var(--titlebg); border-radius: 7px; padding: 4px 14px;
+  box-shadow: inset 0 0 0 1px rgba(0,0,0,.25), 0 1px 2px rgba(0,0,0,.25);
+}
+.c-pt:empty { display: none; }
 
-`render.com` tem plano grátis para *Web Services* Node. Dá pra servir o estático e as rotas `api/` com um pequeno servidor Express, se preferir um único serviço.
+/* ----- temas de cor do frame ----- */
+.card[data-color="W"]     { --frame:#e9e2cb; --frame-2:#cabf9d; --titlebg:#f3eedd; --txtbg:#f6f1e2; }
+.card[data-color="U"]     { --frame:#7fa8cf; --frame-2:#3f6f9e; --titlebg:#bcd3e6; --txtbg:#e6eef4; }
+.card[data-color="B"]     { --frame:#4f4a44; --frame-2:#2c2823; --titlebg:#8a8479; --txtbg:#dcd6c9; }
+.card[data-color="R"]     { --frame:#d68863; --frame-2:#a8482c; --titlebg:#e8b196; --txtbg:#f3e3d6; }
+.card[data-color="G"]     { --frame:#83b078; --frame-2:#467a3e; --titlebg:#b3cda6; --txtbg:#e7efde; }
+.card[data-color="multi"] { --frame:#d8c067; --frame-2:#a8862f; --titlebg:#ecdb9c; --txtbg:#f4ecd2; }
+.card[data-color="C"]     { --frame:#b9b1a0; --frame-2:#857d6c; --titlebg:#d4cdba; --txtbg:#efe9da; }
 
-> **Atenção ao GitHub Pages:** ele só serve arquivos estáticos e **não roda funções serverless**. Lá o app funciona apenas no modo **manual + upload** — os botões de IA não vão responder.
+/* ----------------------------- TOAST ----------------------------- */
+.toast {
+  position: fixed; bottom: 28px; left: 50%; transform: translateX(-50%) translateY(20px);
+  background: var(--ink-3); color: var(--parch); border: 1px solid var(--brass);
+  padding: 12px 22px; border-radius: 10px; font-size: 15px; z-index: 50;
+  box-shadow: var(--shadow); opacity: 0; pointer-events: none; transition: .3s;
+  max-width: 90vw; text-align: center;
+}
+.toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+.toast.err { border-color: var(--ember); color: #f4c9b8; }
 
----
+/* ============================================================
+   LAYOUTS ESPECIAIS
+   ============================================================ */
 
-## 🧪 Rodando localmente
+/* orientação paisagem (batalha e dividida) */
+.card[data-layout="battle"], .card[data-layout="split"] { width: 672px; height: 480px; }
 
-```bash
-# 1. copie o modelo de variáveis
-cp .env.example .env
-# 2. edite o .env e cole suas chaves
-# 3. rode (precisa do Vercel CLI):
-npm i -g vercel
-vercel dev
-```
+/* ---- PLANESWALKER ---- */
+.card-frame.pw .pw-abilities {
+  flex: 1; margin-top: 8px; background: var(--txtbg); border-radius: 7px;
+  padding: 6px 12px 6px 0; box-shadow: inset 0 0 0 1px rgba(0,0,0,.18); overflow: hidden;
+}
+.pw-row { display: flex; align-items: flex-start; gap: 10px; padding: 7px 0; border-bottom: 1px solid rgba(0,0,0,.1); }
+.pw-row:last-child { border-bottom: none; }
+.pw-cost {
+  flex: none; min-width: 40px; margin-left: -8px; text-align: center;
+  font-family: "Cinzel", serif; font-weight: 700; font-size: 15px; color: #fff;
+  background: linear-gradient(180deg, #4a4036, #221c14); border-radius: 0 14px 14px 0;
+  padding: 4px 10px; box-shadow: 0 1px 2px rgba(0,0,0,.4);
+}
+.pw-text { font-size: 14px; line-height: 1.28; color: #1a150d; padding-top: 2px; }
+.pw-loyalty {
+  font-family: "Cinzel", serif; font-weight: 700; font-size: 20px; color: #fff;
+  background: radial-gradient(circle at 40% 30%, #5a4e40, #221c14);
+  width: 52px; height: 40px; display: flex; align-items: center; justify-content: center;
+  clip-path: polygon(0 0,100% 0,100% 60%,50% 100%,0 60%); box-shadow: 0 2px 4px rgba(0,0,0,.4);
+}
 
-Abra `http://localhost:3000`.
+/* ---- SAGA ---- */
+.card-frame.saga .saga-body { flex: 1; display: flex; gap: 8px; margin: 8px 0; min-height: 0; }
+.saga-chapters {
+  flex: 1.1; background: var(--txtbg); border-radius: 7px; padding: 8px 10px;
+  box-shadow: inset 0 0 0 1px rgba(0,0,0,.18); display: flex; flex-direction: column; gap: 6px; overflow: hidden;
+}
+.saga-chapter { display: flex; gap: 9px; align-items: flex-start; padding-bottom: 5px; border-bottom: 1px solid rgba(0,0,0,.1); }
+.saga-chapter:last-child { border-bottom: none; }
+.saga-num {
+  flex: none; width: 30px; height: 30px; border-radius: 50%;
+  background: linear-gradient(180deg, #e9dcb8, #b69c63); color: #2a2110;
+  font-family: "Cinzel", serif; font-weight: 700; font-size: 13px;
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: inset 0 0 0 2px rgba(0,0,0,.25), 0 1px 2px rgba(0,0,0,.3);
+}
+.saga-text { font-size: 13.5px; line-height: 1.25; color: #1a150d; }
+.saga-art {
+  flex: .8; border-radius: 6px; overflow: hidden; background: #0c0a08;
+  display: flex; align-items: center; justify-content: center; box-shadow: inset 0 0 0 1px rgba(0,0,0,.35);
+}
+.saga-art img { width: 100%; height: 100%; object-fit: cover; }
+.saga-art .art-ph { color: #5b5345; font-size: 40px; }
 
-> Só quer testar o visual sem IA? Pode abrir o `index.html` direto no navegador — a prévia, o upload de imagem e o export PNG funcionam offline. Os botões de IA precisam do servidor (`vercel dev`).
+/* ---- CLASSE ---- */
+.card-frame.class .class-levels {
+  flex: 1; margin-top: 8px; background: var(--txtbg); border-radius: 7px;
+  padding: 10px 12px; box-shadow: inset 0 0 0 1px rgba(0,0,0,.18); overflow: hidden;
+}
+.class-base { font-family: "Cinzel", serif; font-weight: 600; font-size: 12px; color: #6a5c3e; text-transform: uppercase; letter-spacing: .08em; margin-bottom: 2px; }
+.class-levelbar {
+  display: flex; justify-content: space-between; align-items: center; gap: 8px;
+  background: linear-gradient(180deg, #d8c79c, #b9a472); border-radius: 5px;
+  padding: 4px 10px; margin: 8px 0 4px; font-family: "Cinzel", serif; font-weight: 600;
+  font-size: 13px; color: #2a2110; box-shadow: inset 0 0 0 1px rgba(0,0,0,.2);
+}
+.class-cost { display: flex; gap: 2px; }
+.class-cost .pip { width: 18px; height: 18px; font-size: 10px; }
+.class-text { font-size: 14px; line-height: 1.28; color: #1a150d; }
 
----
+/* ---- BATALHA ---- */
+.card-frame.battle .battle-def {
+  font-family: "Cinzel", serif; font-weight: 700; font-size: 22px; color: #fff;
+  background: radial-gradient(circle at 40% 30%, #8a5a3a, #4a2414);
+  width: 54px; height: 46px; display: flex; align-items: center; justify-content: center;
+  clip-path: polygon(50% 0,100% 25%,100% 75%,50% 100%,0 75%,0 25%); box-shadow: 0 2px 4px rgba(0,0,0,.4);
+}
 
-## ✍️ Como usar
+/* ---- AVENTURA ---- */
+.adv-box { background: rgba(0,0,0,.06); border-left: 3px solid rgba(0,0,0,.3); border-radius: 4px; padding: 7px 10px; margin-bottom: 8px; }
+.adv-title { display: flex; justify-content: space-between; align-items: center; }
+.adv-name { font-family: "Cinzel", serif; font-weight: 600; font-size: 15px; color: #1c160c; }
+.adv-type { font-family: "Cinzel", serif; font-size: 11px; color: #4a4234; margin: 1px 0 4px; }
+.adv-rules { font-size: 13.5px; line-height: 1.25; color: #1a150d; }
 
-- **Layout:** escolha o tipo de carta no topo do painel — os campos se adaptam (planeswalker mostra habilidades de lealdade, saga mostra capítulos, etc.).
-- **Custo de mana:** números = mana genérica; letras = mana colorida. `W` branco, `U` azul, `B` preto, `R` vermelho, `G` verde, `C` incolor, `X` variável. Ex.: `2WU`.
-- **Texto de regras:** o que estiver entre `(parênteses)` vira *texto de lembrete* em itálico automaticamente.
-- **Listas (planeswalker/saga/classe):** use **+ habilidade / + capítulo / + nível** para adicionar linhas e o **✕** para remover.
-- **Dupla face:** preencha a frente nos campos principais e o verso no bloco "Verso"; o botão **⟲ Virar carta** alterna a prévia. O export gera um PNG por face.
-- **Cor do frame:** "automático" deduz pelo custo de mana, ou force uma cor.
-- Botão **⟳ Exemplo** carrega cartas de teste de vários layouts.
+/* ---- EMBLEMA ---- */
+.card-frame.emblem {
+  background: radial-gradient(circle at 50% 30%, #2a2336 0%, #14101c 70%);
+  align-items: center; justify-content: center; text-align: center; gap: 8px; color: #e7dcc4;
+}
+.emblem-glyph { font-size: 64px; color: #c9a14a; text-shadow: 0 0 24px rgba(201,161,74,.6); }
+.emblem-title { font-family: "Cinzel", serif; font-size: 13px; letter-spacing: .3em; text-transform: uppercase; color: #b6a06a; }
+.emblem-sub { font-family: "Cinzel", serif; font-size: 18px; color: #f0e6cc; }
+.emblem-text { max-width: 80%; font-size: 16px; line-height: 1.35; color: #ddd0b4; margin-top: 8px; }
+.emblem-text .reminder { color: #b9a06a; }
+.emblem-credit { position: absolute; bottom: 16px; font-size: 11px; color: #8a7d60; }
 
----
+/* ---- DUPLA FACE ---- */
+.dfc-ind {
+  position: absolute; top: 64px; left: 24px; z-index: 3; width: 26px; height: 26px;
+  border-radius: 50%; background: rgba(0,0,0,.55); color: #f0e6cc; font-size: 16px;
+  display: flex; align-items: center; justify-content: center; box-shadow: 0 1px 3px rgba(0,0,0,.5);
+}
 
-## 🔧 Personalizar
+/* ---- DIVIDIDA ---- */
+.card-frame.split { flex-direction: row; gap: 0; padding: 10px; }
+.split-half { flex: 1; display: flex; flex-direction: column; padding: 4px; }
+.split-half .title-bar, .split-half .type-bar { padding: 5px 9px; }
+.split-half .c-name { font-size: 15px; }
+.split-half .type-bar { margin-top: 6px; }
+.split-half .text-box { margin-top: 6px; }
+.split-half .c-rules { font-size: 13px; }
+.split-div { width: 2px; background: rgba(0,0,0,.4); margin: 4px 2px; border-radius: 2px; }
 
-- **Trocar o modelo da Anthropic:** variável `ANTHROPIC_MODEL` (padrão `claude-sonnet-4-6`; para mais barato/rápido, um modelo Haiku).
-- **Trocar o modelo de imagem:** variável `OPENAI_IMAGE_MODEL` (padrão `gpt-image-1`).
-- **Cores do frame:** edite os blocos `.card[data-color="..."]` no `style.css`.
-- **Layout do frame:** tudo está em `style.css`, na seção "A CARTA".
+/* token */
+.card-frame.token .text-box.mini { flex: 0 0 auto; min-height: 30px; }
 
-Divirta-se forjando. 🗡️
+/* ============================================================
+   CONTROLES DO FORMULÁRIO (novos)
+   ============================================================ */
+.face-switch { display: flex; align-items: center; gap: 8px; margin-bottom: 14px; }
+.face-btn {
+  font-family: "Cinzel", serif; font-size: 12px; font-weight: 600; cursor: pointer;
+  padding: 6px 14px; border-radius: 7px; background: var(--ink);
+  border: 1px solid var(--line); color: var(--parch-dim); transition: .15s;
+}
+.face-btn.active { border-color: var(--brass); color: var(--brass-hi); }
+.face-tag { font-size: 11px; color: var(--parch-dim); font-style: italic; font-weight: 400; letter-spacing: 0; text-transform: none; }
+
+.sub-block {
+  background: rgba(0,0,0,.18); border: 1px solid var(--line); border-radius: 10px;
+  padding: 14px; margin-bottom: 14px;
+}
+.sub-block > .field-label:first-child { color: var(--brass-hi); margin-bottom: 10px; }
+
+.rows-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
+.rows-head .field-label { margin: 0; }
+.mini-add {
+  font-family: "Cinzel", serif; font-size: 11px; font-weight: 600; cursor: pointer;
+  background: rgba(201,161,74,.12); color: var(--brass-hi); border: 1px solid var(--line);
+  border-radius: 7px; padding: 5px 10px; transition: .15s;
+}
+.mini-add:hover { border-color: var(--brass); }
+.rows { display: flex; flex-direction: column; gap: 8px; }
+.row { display: grid; grid-template-columns: 56px 1fr auto; gap: 8px; align-items: start; }
+.row-cls { grid-template-columns: 1fr 70px 1fr auto; }
+.row input, .row textarea {
+  font-family: "EB Garamond", serif; font-size: 14px; color: var(--parch);
+  background: var(--ink); border: 1px solid var(--line); border-radius: 7px; padding: 7px 9px;
+}
+.row input:focus, .row textarea:focus { outline: none; border-color: var(--brass); }
+.row .r-cost { text-align: center; font-family: "Cinzel", serif; font-weight: 700; }
+.row .r-text { resize: vertical; }
+.r-del {
+  cursor: pointer; background: transparent; border: 1px solid var(--line); color: var(--parch-dim);
+  border-radius: 7px; width: 30px; height: 30px; transition: .15s; font-size: 13px;
+}
+.r-del:hover { border-color: var(--ember); color: #f4c9b8; }
+.r-spacer { display: block; }
+
+.dz-sm { padding: 14px; margin-top: 4px; }
+.dz-sm .dz-icon { font-size: 20px; }
+.dz-sm .dz-text { font-size: 13px; }
+
+.stage-controls { display: flex; justify-content: center; margin-top: 14px; }
