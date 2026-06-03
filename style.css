@@ -576,15 +576,6 @@ body {
   border-radius: 50%; background: linear-gradient(rgba(255,255,255,.55), rgba(255,255,255,0));
   pointer-events: none;
 }
-.cf-frame { 
-  position: absolute; 
-  inset: 0; 
-  width: 100%; 
-  height: 100%; 
-  z-index: 2; 
-  pointer-events: none; 
-  object-fit: cover; /* Garante que preencha as bordas certinho */
-}
 
 /* ============================================================
    REALISMO v3 — cores mais ricas, emboss forte, verniz de superfície

@@ -253,57 +253,31 @@ function cfTextContent(){
   if(state.flavor.trim()) t+=`<div class="cf-flavor">${escapeHTML(state.flavor)}</div>`;
   return t;
 }
-function renderCustomFrame(def, resolvedColor){
-  const Z=def.zones||{}; let h=`<div class="cf-root">`;
-  
-  // 1. Renderiza a Ilustração (fundo)
+function renderCustomFrame(def,zonesArg){
+  const Z=zonesArg||def.zones||{}; let h=`<div class="cf-root">`;
   if(Z.art) h+=`<div class="cf-art" style="${zoneBox(Z.art)}">${state.art?`<img src="${state.art}" alt="">`:`<div class="art-ph"><span>⛰</span></div>`}</div>`;
-  
-  // Dicionário para traduzir o padrão do seu app para o padrão do CardConjurer
-  // Se o seu app retornar 'multi', ele converte para 'm' (padrão de pastas do CardConjurer)
-  const ccColorMap = {
-    w: "w", u: "u", b: "b", r: "r", g: "g", c: "c",
-    multi: "m" 
-  };
-  
-  const colorKey = ccColorMap[(resolvedColor || "c").toLowerCase()] || "c";
-
-  // 2. Renderiza as camadas do frame substituindo o placeholder {COLOR}
-  if (def.layers && def.layers.length > 0) {
-    def.layers.forEach(layerSrc => {
-      // Substitui globalmente qualquer {COLOR} ou {color} pela cor correspondente
-      const actualSrc = layerSrc.replace(/{COLOR}/gi, colorKey);
-      h+=`<img class="cf-frame" src="${actualSrc}" alt="" crossorigin="anonymous">`;
-    });
-  } else if (def.src) {
-    // Mantém compatibilidade caso você use um frame local de arquivo único
-    const actualSrc = def.src.replace(/{COLOR}/gi, colorKey);
-    h+=`<img class="cf-frame" src="${actualSrc}" alt="">`;
-  }
-
-  // 3. Renderiza os textos e pips por cima das molduras
+  h+=`<img class="cf-frame" src="${def.src}" alt="">`;
   if(Z.name) h+=zone(Z.name,escapeHTML(state.name||""));
   if(Z.mana) h+=zone(Z.mana,`<div class="c-mana">${pips(state.mana)}</div>`);
   if(Z.type) h+=zone(Z.type,escapeHTML(state.type||""));
-  if(Z.text){ let t=`<div class="cf-rules">${rulesHTML(state.rules)}</div>`;
-    if(state.flavor.trim()) t+=`<div class="cf-flavor">${escapeHTML(state.flavor)}</div>`;
-    h+=zone(Z.text,t,true); }
+  if(Z.text) h+=zone(Z.text,cfTextContent(),true);
   if(Z.pt && state.pt.trim()) h+=zone(Z.pt,escapeHTML(state.pt));
+  if(Z.loyalty && state.layout==="planeswalker") h+=zone(Z.loyalty,escapeHTML(state.loyalty));
+  if(Z.defense && state.layout==="battle") h+=zone(Z.defense,escapeHTML(state.defense));
   if(Z.credit) h+=zone(Z.credit,credit());
-  
   return h+`</div>`;
 }
 
 function render(){
   let col=state.color; if(col==="auto") col=autoColor(state.layout==="dfc"&&state.showBack?state.back.mana:state.mana);
   card.dataset.color=col; card.dataset.layout=state.layout;
-  
-  // ALTERAÇÃO AQUI: Passamos 'col' para dentro do renderCustomFrame
+  card.dataset.style=state.style; card.dataset.foil=state.foil?"true":"false";
   if(state.frame && FRAMES[state.frame]){
-    card.dataset.frame="custom"; card.innerHTML=renderCustomFrame(FRAMES[state.frame], col);
+    const def=FRAMES[state.frame];
+    const zones=(state.frameEdit&&state.frameEdit.id===state.frame)?state.frameEdit.zones:def.zones;
+    card.dataset.frame="custom"; card.innerHTML=renderCustomFrame(def,zones);
     $("btnFlip").hidden=true; return;
   }
-  
   card.dataset.frame="";
   card.innerHTML=(RENDERERS[state.layout]||RENDERERS.normal)();
   $("btnFlip").hidden = state.layout!=="dfc";
