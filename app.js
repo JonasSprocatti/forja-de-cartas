@@ -15,8 +15,9 @@ const state = {
   adv: { name:"", mana:"", type:"", rules:"" },
   split: { name:"", mana:"", type:"", rules:"" },
   back: { name:"", mana:"", type:"", rules:"", flavor:"", pt:"" },
-  showBack: false,
+  showBack: false, frame: "",
 };
+const FRAMES={};
 
 /* ---------- utilidades de render ---------- */
 function escapeHTML(s){return (s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");}
@@ -213,9 +214,38 @@ const RENDERERS={normal:()=>renderNormal({name:state.name,mana:state.mana,type:s
   land:renderLand,token:renderToken,planeswalker:renderPlaneswalker,saga:renderSaga,
   class:renderClass,battle:renderBattle,adventure:renderAdventure,emblem:renderEmblem,dfc:renderDFC,split:renderSplit};
 
+/* ---------- FRAME PERSONALIZADO (pasta /assets/frames) ---------- */
+function cfFont(f){return f==="body"?'"Spectral",Georgia,serif':f==="pt"?'"Bitter",serif':'"Cinzel",serif';}
+function zoneBox(z){return `left:${z.x}%;top:${z.y}%;width:${z.w}%;height:${z.h}%;`;}
+function zone(z,inner,top){
+  const al=z.align||"left";
+  const items=al==="center"?"center":al==="right"?"flex-end":"flex-start";
+  const just=top?"flex-start":"center";
+  return `<div class="cf-zone" style="${zoneBox(z)}align-items:${items};justify-content:${just};text-align:${al};color:${z.color||"#1c160c"};font-family:${cfFont(z.font)};font-size:${z.size||18}px;">${inner}</div>`;
+}
+function renderCustomFrame(def){
+  const Z=def.zones||{}; let h=`<div class="cf-root">`;
+  if(Z.art) h+=`<div class="cf-art" style="${zoneBox(Z.art)}">${state.art?`<img src="${state.art}" alt="">`:`<div class="art-ph"><span>⛰</span></div>`}</div>`;
+  h+=`<img class="cf-frame" src="${def.src}" alt="">`;
+  if(Z.name) h+=zone(Z.name,escapeHTML(state.name||""));
+  if(Z.mana) h+=zone(Z.mana,`<div class="c-mana">${pips(state.mana)}</div>`);
+  if(Z.type) h+=zone(Z.type,escapeHTML(state.type||""));
+  if(Z.text){ let t=`<div class="cf-rules">${rulesHTML(state.rules)}</div>`;
+    if(state.flavor.trim()) t+=`<div class="cf-flavor">${escapeHTML(state.flavor)}</div>`;
+    h+=zone(Z.text,t,true); }
+  if(Z.pt && state.pt.trim()) h+=zone(Z.pt,escapeHTML(state.pt));
+  if(Z.credit) h+=zone(Z.credit,credit());
+  return h+`</div>`;
+}
+
 function render(){
   let col=state.color; if(col==="auto") col=autoColor(state.layout==="dfc"&&state.showBack?state.back.mana:state.mana);
   card.dataset.color=col; card.dataset.layout=state.layout;
+  if(state.frame && FRAMES[state.frame]){
+    card.dataset.frame="custom"; card.innerHTML=renderCustomFrame(FRAMES[state.frame]);
+    $("btnFlip").hidden=true; return;
+  }
+  card.dataset.frame="";
   card.innerHTML=(RENDERERS[state.layout]||RENDERERS.normal)();
   $("btnFlip").hidden = state.layout!=="dfc";
 }
@@ -542,5 +572,21 @@ $("btnRandom").addEventListener("click",()=>{
    ============================================================ */
 let tt; function toast(msg,err=false){const t=$("toast");t.textContent=msg;t.classList.toggle("err",err);t.classList.add("show");clearTimeout(tt);tt=setTimeout(()=>t.classList.remove("show"),2600);}
 
+/* seletor de frame personalizado */
+$("fFrame").addEventListener("change",()=>{ state.frame=$("fFrame").value; render(); });
+
+async function loadFrames(){
+  try{
+    const r=await fetch("assets/frames/frames.json",{cache:"no-store"});
+    if(!r.ok) throw new Error("manifest "+r.status);
+    const list=await r.json(); const sel=$("fFrame");
+    list.forEach(def=>{ if(!def.id||!def.src) return; FRAMES[def.id]=def;
+      const o=document.createElement("option"); o.value=def.id; o.textContent=def.name||def.id; sel.appendChild(o); });
+  }catch(e){
+    // file:// ou pasta ausente: mantém só "Padrão" e mostra a dica
+    $("frameHint").style.display="block";
+  }
+}
+
 /* estado inicial = o que está nos campos */
-collect(); applyLayoutVisibility(); renderRows(); render();
+collect(); applyLayoutVisibility(); renderRows(); render(); loadFrames();

@@ -120,6 +120,12 @@ Abra `http://localhost:3000`.
 - **Cor do frame:** "automático" deduz pelo custo, ou force uma cor.
 - Botão **⟳ Exemplo** carrega cartas de teste de vários layouts.
 
+### Frames personalizados (seus próprios)
+
+Dá pra usar **frames que você mesmo fizer**, sem mexer no código: jogue o PNG em `assets/frames/`, registre no `assets/frames/frames.json` dizendo onde ficam a arte, o nome, o texto etc., e ele aparece no seletor **"Frame"** do app. Já vem um frame de exemplo (`classic-bronze`, original) para você usar de molde. O passo a passo completo está em **`assets/frames/README.md`**.
+
+Regras rápidas: PNG na proporção da carta (960×1344 recomendado), com a **janela de arte transparente** (a ilustração fica atrás e aparece por ela); coordenadas em **%** no JSON. Os frames da pasta só carregam com o site **servido** (Vercel/servidor local), não por `file://`. Layouts com listas (planeswalker, saga, classe) seguem usando os frames embutidos.
+
 ### Sobre frames, fontes e símbolos "oficiais"
 
 Este app usa **frame, pips e tipografia originais** (fontes livres Cinzel + EB Garamond), apenas *inspirados* no formato. Ele **não embute** os frames de alta resolução (Card Conjurer/MSE/mpcproxies), os escudos de coleção, nem as fontes licenciadas (Beleren, MPlantin, Matrix). Isso é intencional: esses são assets protegidos da Wizards, e sites que os hospedam costumam sofrer takedown (foi o que tirou o Card Conjurer do ar). Servir esses arquivos num site público te expõe ao mesmo risco — então a Forja fica do lado seguro.
