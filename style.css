@@ -20,6 +20,9 @@
 
 * { box-sizing: border-box; }
 
+/* o atributo hidden deve sempre esconder, mesmo com display explícito no CSS */
+[hidden] { display: none !important; }
+
 html, body { height: 100%; }
 
 body {
@@ -169,7 +172,7 @@ body {
 .field-row .field { flex: 1; }
 .field-row .grow { flex: 2; }
 
-.hint { font-size: 13px; color: var(--parch-dim); font-style: italic; margin: -6px 0 14px; }
+.hint { font-size: 13px; color: var(--parch-dim); font-style: italic; margin: 2px 0 14px; }
 .hint code { font-style: normal; background: var(--ink); padding: 1px 6px; border-radius: 5px; color: var(--brass-hi); }
 .hint-mana { margin-top: 2px; }
 
