@@ -693,5 +693,33 @@ async function loadFrames(){
   }
 }
 
+// Variável global para armazenar os frames carregados
+let FRAMES = {};
+
+async function loadFramesConfig() {
+  try {
+    // 1. Busca o arquivo JSON
+    const res = await fetch('assets/frames/frames.json');
+    const data = await res.json();
+    
+    // 2. Pega o elemento <select> pelo ID (verifique no seu index.html qual é o ID correto desse select)
+    const frameSelect = document.getElementById('frame'); // Exemplo: id="frame"
+    
+    // 3. Popula as opções dinamicamente
+    data.forEach(def => {
+      FRAMES[def.id] = def;
+      const opt = document.createElement('option');
+      opt.value = def.id;
+      opt.textContent = def.name;
+      frameSelect.appendChild(opt);
+    });
+  } catch (err) {
+    console.error("Erro ao carregar o frames.json:", err);
+  }
+}
+
+// Certifique-se de chamar a função quando o script iniciar!
+loadFramesConfig();
+
 /* estado inicial = o que está nos campos */
 collect(); applyLayoutVisibility(); renderRows(); render(); loadFrames();
