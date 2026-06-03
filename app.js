@@ -20,22 +20,48 @@ const state = {
 
 /* ---------- utilidades de render ---------- */
 function escapeHTML(s){return (s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");}
-function pips(str){
-  const out=[]; const raw=(str||"").toUpperCase().trim();
-  const tokens=raw.match(/\d+|[WUBRGCXS]/g)||[];
-  for(const t of tokens){
-    if(/^\d+$/.test(t)) out.push(`<span class="pip pip-N">${t}</span>`);
-    else out.push(`<span class="pip pip-${t}">${t}</span>`);
+const PIP_COLORS={W:"#ece3c8",U:"#3f8fd0",B:"#4a443c",R:"#c8543a",G:"#3f9a55",C:"#b8b0a0",N:"#b8b0a0"};
+function halfCls(x){return /^\d+$/.test(x)?"N":(["W","U","B","R","G","C"].includes(x)?x:"N");}
+/* gera UM pip a partir de um código (W, 2, T, X, W/U, 2/W, W/P, S, E…) */
+function pipSpan(raw){
+  const code=(raw||"").trim().toUpperCase();
+  if(code==="") return "";
+  if(/^\d+$/.test(code)) return `<span class="pip pip-N">${code}</span>`;
+  if(["X","Y","Z"].includes(code)) return `<span class="pip pip-N">${code}</span>`;
+  if(code==="T") return `<span class="pip pip-tap" title="vire">↻</span>`;
+  if(code==="Q") return `<span class="pip pip-tap" title="desvire">↺</span>`;
+  if(code==="E") return `<span class="pip pip-E" title="energia">⚡</span>`;
+  if(code==="S") return `<span class="pip pip-C">❄</span>`;
+  if(code==="C") return `<span class="pip pip-C">C</span>`;
+  if(code==="P") return `<span class="pip pip-phy" title="phyrexiano">Φ</span>`;
+  if(["W","U","B","R","G"].includes(code)) return `<span class="pip pip-${code}">${code}</span>`;
+  if(code.includes("/")){
+    const [a,b]=code.split("/");
+    if(b==="P") return `<span class="pip pip-phy" title="phyrexiano">${escapeHTML(a)}</span>`;
+    const ca=PIP_COLORS[halfCls(a)],cb=PIP_COLORS[halfCls(b)];
+    return `<span class="pip pip-hybrid" style="background:linear-gradient(135deg,${ca} 0 48%,${cb} 52% 100%)" title="híbrido">${escapeHTML(a+b)}</span>`;
   }
-  return out.join("");
+  return `<span class="pip pip-N">${escapeHTML(code)}</span>`;
+}
+/* custo de mana: aceita "2WU" OU "{2}{W}{U}" */
+function pips(str){
+  const raw=(str||"").trim(); if(!raw) return "";
+  if(raw.includes("{")){
+    const toks=raw.match(/\{([^}]+)\}/g)||[];
+    return toks.map(t=>pipSpan(t.slice(1,-1))).join("");
+  }
+  const toks=raw.toUpperCase().match(/\d+|[WUBRGCXST]/g)||[];
+  return toks.map(t=>pipSpan(t)).join("");
 }
 function autoColor(mana){
   const c=[...new Set((mana.toUpperCase().match(/[WUBRG]/g))||[])];
   if(c.length===0) return "C"; if(c.length===1) return c[0]; return "multi";
 }
+/* texto de regras: parênteses viram lembrete (primeiro!), depois {…} viram pips */
 function rulesHTML(text){
   let h=escapeHTML(text);
   h=h.replace(/\(([^)]+)\)/g,'<span class="reminder">($1)</span>');
+  h=h.replace(/\{([^}]+)\}/g,(_,code)=>pipSpan(code));
   return h;
 }
 const SYM={comum:"●",incomum:"◆",rara:"★","mítica":"✦"};
@@ -389,6 +415,90 @@ $("btnAiArt").addEventListener("click",async()=>{
     toast("Arte gerada!");
   }catch(err){toast(err.message,true);} finally{spin(btn,false);}
 });
+
+/* ============================================================
+   IMPORTAR CARTA REAL — Scryfall (somente dados; sem a arte)
+   ============================================================ */
+const RAR={common:"comum",uncommon:"incomum",rare:"rara",mythic:"mítica"};
+function normMinus(s){return (s||"").replace(/\u2212/g,"−");}
+
+function parsePWAbilities(text){
+  const out=[];
+  (text||"").split("\n").forEach(line=>{
+    const m=line.match(/^\s*([+\u2212\-]?\d+|0)\s*:\s*(.+)$/);
+    if(m) out.push({cost:normMinus(m[1].replace(/^-/,"−")),text:m[2].trim()});
+  });
+  return out;
+}
+function parseSagaChapters(text){
+  const out=[];
+  (text||"").split("\n").forEach(line=>{
+    const m=line.match(/^\s*([IVXLCDM]+(?:\s*,\s*[IVXLCDM]+)*)\s*[—\-–]\s*(.+)$/i);
+    if(m) out.push({num:m[1].replace(/\s+/g,"").replace(/,/g,", "),text:m[2].trim()});
+  });
+  return out;
+}
+function parseClassLevels(text){
+  const lines=(text||"").split("\n").filter(l=>l.trim() && !/^\(/.test(l.trim()));
+  const out=[]; let base=[];
+  lines.forEach(line=>{
+    const m=line.match(/^Level\s+(\d+)\s*(\{[^:]*\})?\s*:?\s*(.*)$/i);
+    if(m){ out.push({label:"Nível "+m[1],cost:(m[2]||"").replace(/[{}]/g,""),text:m[3].trim()}); }
+    else if(out.length===0){ base.push(line.trim()); }
+    else { out[out.length-1].text+="\n"+line.trim(); }
+  });
+  out.unshift({label:"Base",cost:"",text:base.join("\n")});
+  return out;
+}
+
+function mapScryfall(c){
+  // reset de listas
+  Object.assign(state,{pw:[],saga:[],cls:[],adv:{name:"",mana:"",type:"",rules:""},
+    split:{name:"",mana:"",type:"",rules:""},back:{name:"",mana:"",type:"",rules:"",flavor:"",pt:""},showBack:false});
+  state.rarity=RAR[c.rarity]||"incomum"; state.color="auto"; state.artist=c.artist||"—";
+  state.collector=(c.collector_number?c.collector_number:"")+(c.set?(" · "+c.set.toUpperCase()):"");
+
+  const faces=c.card_faces;
+  const sl=(c.layout||"").toLowerCase();
+  const typeLine=c.type_line||"";
+
+  const fill=(src)=>{ state.name=src.name||""; state.mana=src.mana_cost||""; state.type=src.type_line||"";
+    state.rules=src.oracle_text||""; state.flavor=src.flavor_text||"";
+    state.pt=(src.power!=null&&src.toughness!=null)?`${src.power}/${src.toughness}`:""; };
+
+  if(sl==="saga"){ state.layout="saga"; fill(c); state.saga=parseSagaChapters(c.oracle_text); state.rules=""; }
+  else if(sl==="class"){ state.layout="class"; fill(c); state.cls=parseClassLevels(c.oracle_text); state.rules=""; }
+  else if(sl==="planeswalker" || /Planeswalker/i.test(typeLine)){ state.layout="planeswalker"; fill(c);
+    state.loyalty=(c.loyalty!=null?String(c.loyalty):"4"); state.pw=parsePWAbilities(c.oracle_text); state.rules=""; }
+  else if(sl==="battle"){ state.layout="battle"; fill(c); state.defense=(c.defense!=null?String(c.defense):"5"); }
+  else if(sl==="adventure" && faces){ state.layout="adventure"; fill(faces[0]);
+    state.adv={name:faces[1].name||"",mana:faces[1].mana_cost||"",type:faces[1].type_line||"Instantâneo — Aventura",rules:faces[1].oracle_text||""}; }
+  else if(sl==="split" && faces){ state.layout="split"; fill(faces[0]);
+    state.split={name:faces[1].name||"",mana:faces[1].mana_cost||"",type:faces[1].type_line||"",rules:faces[1].oracle_text||""}; }
+  else if((sl==="transform"||sl==="modal_dfc"||sl==="double_faced_token") && faces){ state.layout="dfc"; fill(faces[0]);
+    const b=faces[1]; state.back={name:b.name||"",mana:b.mana_cost||"",type:b.type_line||"",rules:b.oracle_text||"",
+      flavor:b.flavor_text||"",pt:(b.power!=null&&b.toughness!=null)?`${b.power}/${b.toughness}`:""}; }
+  else if(sl==="token" || /\bToken\b/.test(typeLine)){ state.layout="token"; fill(c); }
+  else { state.layout="normal"; fill(c); }
+
+  $("fLayout").value=state.layout;
+  populate(); applyLayoutVisibility(); renderRows(); render();
+}
+
+async function importScryfall(name){
+  const r=await fetch(`https://api.scryfall.com/cards/named?fuzzy=${encodeURIComponent(name)}`,{headers:{Accept:"application/json"}});
+  if(r.status===404){ const j=await r.json().catch(()=>({})); throw new Error(j.details||"Carta não encontrada."); }
+  if(!r.ok) throw new Error("Scryfall retornou "+r.status);
+  return r.json();
+}
+$("btnScry").addEventListener("click",async()=>{
+  const name=$("scryName").value.trim(); if(!name) return toast("Digite o nome de uma carta.",true);
+  const btn=$("btnScry"); spin(btn,true);
+  try{ const c=await importScryfall(name); mapScryfall(c);
+    toast("Importado: "+(c.name||name)+" — dados em inglês, edite à vontade.");
+  }catch(err){ toast(err.message,true); } finally{ spin(btn,false); }
+});
+$("scryName").addEventListener("keydown",e=>{ if(e.key==="Enter"){e.preventDefault();$("btnScry").click();} });
 
 /* ============================================================
    EXPORTAR PNG

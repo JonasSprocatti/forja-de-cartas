@@ -112,12 +112,22 @@ Abra `http://localhost:3000`.
 ## ✍️ Como usar
 
 - **Layout:** escolha o tipo de carta no topo do painel — os campos se adaptam (planeswalker mostra habilidades de lealdade, saga mostra capítulos, etc.).
-- **Custo de mana:** números = mana genérica; letras = mana colorida. `W` branco, `U` azul, `B` preto, `R` vermelho, `G` verde, `C` incolor, `X` variável. Ex.: `2WU`.
-- **Texto de regras:** o que estiver entre `(parênteses)` vira *texto de lembrete* em itálico automaticamente.
-- **Listas (planeswalker/saga/classe):** use **+ habilidade / + capítulo / + nível** para adicionar linhas e o **✕** para remover.
-- **Dupla face:** preencha a frente nos campos principais e o verso no bloco "Verso"; o botão **⟲ Virar carta** alterna a prévia. O export gera um PNG por face.
-- **Cor do frame:** "automático" deduz pelo custo de mana, ou force uma cor.
+- **Importar carta real (Scryfall):** digite o nome e clique em *Buscar*. Puxa nome, custo, tipo, regras, P/R, raridade e detecta o layout (saga, planeswalker, batalha, dupla face, dividida). Os dados vêm **em inglês** e a **arte não é importada** (a ilustração é do artista) — use a sua imagem.
+- **Símbolos no texto:** use a notação entre chaves e eles viram pips: `{T}` virar, `{W} {U} {B} {R} {G}` cores, `{2}` genérico, `{X}`, `{C}` incolor, `{S}` neve, `{E}` energia, `{W/U}` híbrido, `{W/P}` phyrexiano.
+- **Custo de mana:** números = mana genérica; letras = colorida. Aceita `2WU` ou `{2}{W}{U}`.
+- **Listas (planeswalker/saga/classe):** use **+ habilidade / + capítulo / + nível** e o **✕** para remover.
+- **Dupla face:** frente nos campos principais, verso no bloco "Verso"; **⟲ Virar carta** alterna a prévia. O export gera um PNG por face.
+- **Cor do frame:** "automático" deduz pelo custo, ou force uma cor.
 - Botão **⟳ Exemplo** carrega cartas de teste de vários layouts.
+
+### Sobre frames, fontes e símbolos "oficiais"
+
+Este app usa **frame, pips e tipografia originais** (fontes livres Cinzel + EB Garamond), apenas *inspirados* no formato. Ele **não embute** os frames de alta resolução (Card Conjurer/MSE/mpcproxies), os escudos de coleção, nem as fontes licenciadas (Beleren, MPlantin, Matrix). Isso é intencional: esses são assets protegidos da Wizards, e sites que os hospedam costumam sofrer takedown (foi o que tirou o Card Conjurer do ar). Servir esses arquivos num site público te expõe ao mesmo risco — então a Forja fica do lado seguro.
+
+O que dá pra usar com tranquilidade:
+- **Dados** via Scryfall (`/cards/named`, `/symbology`, `/sets`) e **MTGJSON** — são fontes de informação, não de arte.
+- **Fontes livres** que evocam o visual (já incluídas). Se quiser aproximar mais: *Cinzel* (display) ≈ Beleren; *Libre Baskerville* ou *PT Serif* ≈ MPlantin para a caixa de regras.
+- Sua **própria arte** (upload) ou arte gerada por IA.
 
 ---
 

@@ -34,6 +34,15 @@
         <button class="mode-btn" data-mode="ai" role="tab">✨ Deixar a IA criar</button>
       </div>
 
+      <div class="scry-bar">
+        <span class="field-label">ↆ Importar carta real (Scryfall)</span>
+        <div class="scry-row">
+          <input type="text" id="scryName" placeholder="nome da carta (ex.: Lightning Bolt, Teferi)" />
+          <button id="btnScry" class="btn btn-ghost"><span class="btn-txt">Buscar</span><span class="btn-spin" hidden></span></button>
+        </div>
+        <p class="hint">Puxa nome, custo, tipo, regras, P/R, raridade e layout (em inglês). A ilustração não é importada — use a sua.</p>
+      </div>
+
       <!-- ---------- MODO IA ---------- -->
       <div class="mode-pane" id="pane-ai" hidden>
         <label class="field">

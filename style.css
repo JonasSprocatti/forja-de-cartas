@@ -480,3 +480,30 @@ body {
 .dz-sm .dz-text { font-size: 13px; }
 
 .stage-controls { display: flex; justify-content: center; margin-top: 14px; }
+
+/* ============================================================
+   SÍMBOLOS EXTRA (tap, energia, phyrexiano, híbrido) + barra Scryfall
+   ============================================================ */
+.pip-tap { background: radial-gradient(circle at 35% 30%, #d8d2c4, #8a8275); color: #1c160c; font-size: 13px; }
+.pip-E   { background: radial-gradient(circle at 35% 30%, #d8e8a0, #7a9a35); color: #1c2406; font-size: 12px; }
+.pip-phy { background: radial-gradient(circle at 35% 30%, #c8b8c8, #6a5a6a); color: #f0e6f0; }
+.pip-hybrid { color: #fff; font-size: 9px; font-weight: 700; letter-spacing: -.5px; text-shadow: 0 1px 1px rgba(0,0,0,.5); }
+/* pips dentro do texto de regras ficam levemente menores e alinhados */
+.c-rules .pip, .pw-text .pip, .saga-text .pip, .class-text .pip, .adv-rules .pip, .emblem-text .pip {
+  width: 17px; height: 17px; font-size: 11px; vertical-align: -3px; margin: 0 1px;
+}
+
+/* barra de importação Scryfall */
+.scry-bar {
+  background: rgba(0,0,0,.18); border: 1px solid var(--line); border-radius: 10px;
+  padding: 12px 14px; margin-bottom: 18px;
+}
+.scry-bar .field-label { color: var(--brass-hi); margin-bottom: 8px; }
+.scry-row { display: flex; gap: 8px; }
+.scry-row input {
+  flex: 1; font-family: "EB Garamond", serif; font-size: 15px; color: var(--parch);
+  background: var(--ink); border: 1px solid var(--line); border-radius: 9px; padding: 9px 11px;
+}
+.scry-row input:focus { outline: none; border-color: var(--brass); box-shadow: 0 0 0 3px rgba(201,161,74,.15); }
+.scry-row .btn { white-space: nowrap; }
+.scry-bar .hint { margin: 8px 0 0; }
