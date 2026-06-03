@@ -634,3 +634,88 @@ body {
 .cf-rules { white-space: pre-wrap; width: 100%; }
 .cf-rules .reminder { font-style: italic; opacity: .82; }
 .cf-flavor { font-style: italic; margin-top: 6px; opacity: .9; width: 100%; }
+
+/* ============================================================
+   ESTILOS DE FRAME (full-art, retrô) + FOIL + EDITOR DE ZONAS
+   ============================================================ */
+
+/* ---- FOIL (holográfico animado) ---- */
+.card[data-foil="true"]::before {
+  content: ""; position: absolute; inset: 0; border-radius: 26px; z-index: 7; pointer-events: none;
+  background: linear-gradient(115deg, transparent 18%, rgba(255,70,160,.45), rgba(90,220,255,.4), rgba(150,90,255,.45), rgba(120,255,180,.4), transparent 82%);
+  background-size: 280% 280%; mix-blend-mode: overlay; opacity: .55;
+  animation: foilshift 7s ease-in-out infinite;
+}
+@keyframes foilshift { 0%{background-position:0% 50%} 50%{background-position:100% 50%} 100%{background-position:0% 50%} }
+
+/* ---- FULL-ART / BORDERLESS ---- */
+.card-frame.fa {
+  padding: 0; background: none; box-shadow: none; filter: none; border-radius: 14px; overflow: hidden; position: relative;
+}
+.fa-art { position: absolute; inset: 0; background: radial-gradient(circle at 50% 32%, #2c271f, #0f0d0a 82%); }
+.fa-art img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.fa-art .art-ph { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; color: #6a6151; font-size: 46px; }
+.fa-top {
+  position: absolute; top: 0; left: 0; right: 0; z-index: 2;
+  display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 14px 16px 26px;
+  background: linear-gradient(180deg, rgba(0,0,0,.72), transparent);
+}
+.fa-top .c-name { color: #fff; font-size: 21px; text-shadow: 0 2px 4px rgba(0,0,0,.9); }
+.fa-bottom {
+  position: absolute; bottom: 0; left: 0; right: 0; z-index: 2; padding: 30px 16px 14px;
+  background: linear-gradient(0deg, rgba(0,0,0,.82) 60%, transparent);
+  display: flex; flex-direction: column; gap: 6px;
+}
+.fa-type { display: flex; align-items: center; justify-content: space-between; }
+.fa-type .c-type { color: #f0e6cc; font-size: 15px; text-shadow: 0 1px 3px rgba(0,0,0,.9); }
+.fa-text .c-rules { color: #ece3cf; font-size: 15px; line-height: 1.3; text-shadow: 0 1px 2px rgba(0,0,0,.9); white-space: pre-wrap; }
+.fa-text .c-rules .reminder { color: #c7bfa8; }
+.fa-text .c-flavor { color: #c7bca0; font-style: italic; font-size: 14px; margin-top: 4px; text-shadow: 0 1px 2px rgba(0,0,0,.9); }
+.fa-bottom .bottom-bar { margin-top: 2px; }
+.fa-bottom .c-credit { color: #d8ccb0; }
+.fa-bottom .c-pt { background: rgba(0,0,0,.55); color: #fff; box-shadow: inset 0 0 0 1px rgba(255,255,255,.3); }
+
+/* ---- RETRÔ (anos 90) ---- */
+.card[data-style="retro"] .card-frame { border-radius: 6px; padding: 16px; filter: saturate(1.05); }
+.card[data-style="retro"] .title-bar,
+.card[data-style="retro"] .type-bar { border-radius: 3px; background-image: linear-gradient(180deg, rgba(255,255,255,.35), rgba(0,0,0,.08)); box-shadow: inset 0 0 0 1px rgba(0,0,0,.4); }
+.card[data-style="retro"] .c-name,
+.card[data-style="retro"] .c-type { font-family: "Spectral", serif; font-weight: 600; }
+.card[data-style="retro"] .art-window { border-radius: 3px; box-shadow: inset 0 0 0 2px rgba(0,0,0,.6), inset 0 0 0 4px rgba(255,255,255,.12); }
+.card[data-style="retro"] .text-box { border-radius: 4px; }
+.card[data-style="retro"] .c-pt { border-radius: 3px; }
+.card[data-style="retro"].card { border-radius: 18px; }
+
+/* ---- conteúdo de pw/saga/classe dentro de frame da pasta ---- */
+.cf-pwrow { display: flex; gap: 8px; align-items: flex-start; padding: 3px 0; }
+.cf-pwcost { flex: none; min-width: 30px; text-align: center; font-family: "Cinzel", serif; font-weight: 700;
+  background: linear-gradient(180deg,#4a4036,#221c14); color: #fff; border-radius: 4px; padding: 1px 6px; }
+.cf-num { flex: none; width: 24px; height: 24px; border-radius: 50%; background: linear-gradient(180deg,#e9dcb8,#b69c63);
+  color: #2a2110; font-family: "Cinzel", serif; font-weight: 700; font-size: 12px; display: flex; align-items: center; justify-content: center; }
+.cf-lvl { margin-bottom: 5px; }
+.cf-lvl b { font-family: "Cinzel", serif; }
+
+/* ---- BOTÃO TOGGLE (foil) ---- */
+.toggle {
+  width: 100%; font-family: "Cinzel", serif; font-size: 13px; font-weight: 600; cursor: pointer;
+  padding: 10px 12px; border-radius: 9px; background: var(--ink); color: var(--parch-dim);
+  border: 1px solid var(--line); transition: .15s;
+}
+.toggle.on { background: linear-gradient(115deg,#b6504f,#5a4f9a,#3f9a8a); color: #fff; border-color: transparent; box-shadow: 0 0 14px rgba(150,90,200,.4); }
+
+/* ---- EDITOR DE ZONAS ---- */
+.zone-editor {
+  background: rgba(0,0,0,.18); border: 1px solid var(--line); border-radius: 10px; padding: 4px 12px 12px; margin-bottom: 18px;
+}
+.zone-editor summary {
+  cursor: pointer; font-family: "Cinzel", serif; font-size: 12px; font-weight: 600; letter-spacing: .08em;
+  text-transform: uppercase; color: var(--brass); padding: 10px 0;
+}
+.zrow { border-top: 1px solid var(--line); padding: 8px 0; }
+.zhead { font-family: "Cinzel", serif; font-size: 12px; color: var(--brass-hi); margin-bottom: 4px; }
+.zsl { display: grid; grid-template-columns: 24px 1fr 44px; align-items: center; gap: 8px; margin: 2px 0; }
+.zsl span { font-size: 11px; color: var(--parch-dim); }
+.zsl input[type="range"] { width: 100%; accent-color: var(--brass); }
+.zsl output { font-size: 12px; color: var(--parch); text-align: right; font-variant-numeric: tabular-nums; }
+.zone-actions { display: flex; gap: 8px; margin-top: 10px; }
+.zone-actions .btn { flex: 1; font-size: 12px; padding: 8px; }

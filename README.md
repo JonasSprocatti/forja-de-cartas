@@ -111,6 +111,8 @@ Abra `http://localhost:3000`.
 
 ## ✍️ Como usar
 
+- **Estilo do frame** (para os frames embutidos): **Moderno**, **Full-art** (borderless — arte de borda a borda com o texto sobre faixas translúcidas) e **Retrô** (anos 90).
+- **Foil:** botão de acabamento holográfico animado (funciona em qualquer frame, embutido ou da pasta).
 - **Layout:** escolha o tipo de carta no topo do painel — os campos se adaptam (planeswalker mostra habilidades de lealdade, saga mostra capítulos, etc.).
 - **Importar carta real (Scryfall):** digite o nome e clique em *Buscar*. Puxa nome, custo, tipo, regras, P/R, raridade e detecta o layout (saga, planeswalker, batalha, dupla face, dividida). Os dados vêm **em inglês** e a **arte não é importada** (a ilustração é do artista) — use a sua imagem.
 - **Símbolos no texto:** use a notação entre chaves e eles viram pips: `{T}` virar, `{W} {U} {B} {R} {G}` cores, `{2}` genérico, `{X}`, `{C}` incolor, `{S}` neve, `{E}` energia, `{W/U}` híbrido, `{W/P}` phyrexiano.
@@ -124,7 +126,9 @@ Abra `http://localhost:3000`.
 
 Dá pra usar **frames que você mesmo fizer**, sem mexer no código: jogue o PNG em `assets/frames/`, registre no `assets/frames/frames.json` dizendo onde ficam a arte, o nome, o texto etc., e ele aparece no seletor **"Frame"** do app. Já vem um frame de exemplo (`classic-bronze`, original) para você usar de molde. O passo a passo completo está em **`assets/frames/README.md`**.
 
-Regras rápidas: PNG na proporção da carta (960×1344 recomendado), com a **janela de arte transparente** (a ilustração fica atrás e aparece por ela); coordenadas em **%** no JSON. Os frames da pasta só carregam com o site **servido** (Vercel/servidor local), não por `file://`. Layouts com listas (planeswalker, saga, classe) seguem usando os frames embutidos.
+Regras rápidas: PNG na proporção da carta (960×1344 recomendado), com a **janela de arte transparente** (a ilustração fica atrás e aparece por ela); coordenadas em **%** no JSON. Os frames da pasta só carregam com o site **servido** (Vercel/servidor local), não por `file://`.
+
+Quando um frame da pasta está selecionado, aparece o **⚙ Ajustar zonas do frame**: sliders para mover/redimensionar cada zona ao vivo, com **⎘ Copiar JSON** (gera o bloco pronto pra colar no `frames.json`) e **↺ Restaurar**. Os frames da pasta também já renderizam o conteúdo de **planeswalker, saga e classe** na zona de texto (adicione uma zona `loyalty` ou `defense` no JSON quando precisar).
 
 ### Sobre frames, fontes e símbolos "oficiais"
 

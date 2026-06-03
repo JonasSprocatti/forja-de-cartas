@@ -15,9 +15,10 @@ const state = {
   adv: { name:"", mana:"", type:"", rules:"" },
   split: { name:"", mana:"", type:"", rules:"" },
   back: { name:"", mana:"", type:"", rules:"", flavor:"", pt:"" },
-  showBack: false, frame: "",
+  showBack: false, frame: "", style: "modern", foil: false, frameEdit: null,
 };
 const FRAMES={};
+const clone=o=>JSON.parse(JSON.stringify(o));
 
 /* ---------- utilidades de render ---------- */
 function escapeHTML(s){return (s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");}
@@ -91,7 +92,23 @@ function bottomBar(pt){
 /* ============================================================
    RENDERIZADORES POR LAYOUT
    ============================================================ */
+function renderFullArt(d){
+  const f=(d.flavor||"").trim();
+  return `<div class="card-frame fa">
+    <div class="fa-art">${d.art?`<img src="${d.art}" alt="">`:`<div class="art-ph"><span>⛰</span></div>`}</div>
+    <div class="fa-top">
+      <span class="c-name">${escapeHTML(d.name||"Sem nome")}</span>
+      <span class="c-mana">${pips(d.mana)}</span>
+    </div>
+    <div class="fa-bottom">
+      <div class="fa-type"><span class="c-type">${escapeHTML(d.type||"—")}</span>${setSym(d.rarity)}</div>
+      <div class="fa-text"><div class="c-rules">${rulesHTML(d.rules)}</div>${f?`<div class="c-flavor">${escapeHTML(f)}</div>`:""}</div>
+      <div class="bottom-bar"><span class="c-credit">${credit()}</span>${d.pt&&d.pt.trim()?`<span class="c-pt">${escapeHTML(d.pt.trim())}</span>`:""}</div>
+    </div>
+  </div>`;
+}
 function renderNormal(d){ // criatura/mágica/artefato/encantamento/token/dfc-face
+  if(state.style==="fullart") return renderFullArt(d);
   return `<div class="card-frame">
     ${titleBar(d.name,d.mana)}
     ${elArt(d.art)}
@@ -110,6 +127,7 @@ function renderLand(){
   </div>`;
 }
 function renderToken(){
+  if(state.style==="fullart") return renderFullArt({name:state.name,mana:state.mana,type:state.type||"Ficha",rules:state.rules,flavor:state.flavor,pt:state.pt,art:state.art,rarity:state.rarity});
   return `<div class="card-frame token">
     <div class="title-bar"><span class="c-name">${escapeHTML(state.name||"Sem nome")}</span><span class="c-mana">${pips(state.mana)}</span></div>
     ${elArt(state.art,"art-tall")}
@@ -223,17 +241,29 @@ function zone(z,inner,top){
   const just=top?"flex-start":"center";
   return `<div class="cf-zone" style="${zoneBox(z)}align-items:${items};justify-content:${just};text-align:${al};color:${z.color||"#1c160c"};font-family:${cfFont(z.font)};font-size:${z.size||18}px;">${inner}</div>`;
 }
-function renderCustomFrame(def){
-  const Z=def.zones||{}; let h=`<div class="cf-root">`;
+/* conteúdo da zona de texto conforme o layout */
+function cfTextContent(){
+  if(state.layout==="planeswalker")
+    return state.pw.map(a=>`<div class="cf-pwrow"><span class="cf-pwcost">${escapeHTML(a.cost||"")}</span><span>${rulesHTML(a.text)}</span></div>`).join("");
+  if(state.layout==="saga")
+    return state.saga.map(c=>`<div class="cf-pwrow"><span class="cf-num">${escapeHTML(c.num||"")}</span><span>${rulesHTML(c.text)}</span></div>`).join("");
+  if(state.layout==="class")
+    return state.cls.map((l,i)=>`<div class="cf-lvl"><b>${escapeHTML(l.label||"")}</b>${l.cost?" "+pips(l.cost):""}<div>${rulesHTML(l.text)}</div></div>`).join("");
+  let t=`<div class="cf-rules">${rulesHTML(state.rules)}</div>`;
+  if(state.flavor.trim()) t+=`<div class="cf-flavor">${escapeHTML(state.flavor)}</div>`;
+  return t;
+}
+function renderCustomFrame(def,zonesArg){
+  const Z=zonesArg||def.zones||{}; let h=`<div class="cf-root">`;
   if(Z.art) h+=`<div class="cf-art" style="${zoneBox(Z.art)}">${state.art?`<img src="${state.art}" alt="">`:`<div class="art-ph"><span>⛰</span></div>`}</div>`;
   h+=`<img class="cf-frame" src="${def.src}" alt="">`;
   if(Z.name) h+=zone(Z.name,escapeHTML(state.name||""));
   if(Z.mana) h+=zone(Z.mana,`<div class="c-mana">${pips(state.mana)}</div>`);
   if(Z.type) h+=zone(Z.type,escapeHTML(state.type||""));
-  if(Z.text){ let t=`<div class="cf-rules">${rulesHTML(state.rules)}</div>`;
-    if(state.flavor.trim()) t+=`<div class="cf-flavor">${escapeHTML(state.flavor)}</div>`;
-    h+=zone(Z.text,t,true); }
+  if(Z.text) h+=zone(Z.text,cfTextContent(),true);
   if(Z.pt && state.pt.trim()) h+=zone(Z.pt,escapeHTML(state.pt));
+  if(Z.loyalty && state.layout==="planeswalker") h+=zone(Z.loyalty,escapeHTML(state.loyalty));
+  if(Z.defense && state.layout==="battle") h+=zone(Z.defense,escapeHTML(state.defense));
   if(Z.credit) h+=zone(Z.credit,credit());
   return h+`</div>`;
 }
@@ -241,8 +271,11 @@ function renderCustomFrame(def){
 function render(){
   let col=state.color; if(col==="auto") col=autoColor(state.layout==="dfc"&&state.showBack?state.back.mana:state.mana);
   card.dataset.color=col; card.dataset.layout=state.layout;
+  card.dataset.style=state.style; card.dataset.foil=state.foil?"true":"false";
   if(state.frame && FRAMES[state.frame]){
-    card.dataset.frame="custom"; card.innerHTML=renderCustomFrame(FRAMES[state.frame]);
+    const def=FRAMES[state.frame];
+    const zones=(state.frameEdit&&state.frameEdit.id===state.frame)?state.frameEdit.zones:def.zones;
+    card.dataset.frame="custom"; card.innerHTML=renderCustomFrame(def,zones);
     $("btnFlip").hidden=true; return;
   }
   card.dataset.frame="";
@@ -572,8 +605,54 @@ $("btnRandom").addEventListener("click",()=>{
    ============================================================ */
 let tt; function toast(msg,err=false){const t=$("toast");t.textContent=msg;t.classList.toggle("err",err);t.classList.add("show");clearTimeout(tt);tt=setTimeout(()=>t.classList.remove("show"),2600);}
 
+/* estilo do frame embutido */
+$("fStyle").addEventListener("change",()=>{ state.style=$("fStyle").value; render(); });
+/* foil */
+$("fFoil").addEventListener("click",()=>{ state.foil=!state.foil;
+  $("fFoil").setAttribute("aria-pressed",state.foil?"true":"false");
+  $("fFoil").classList.toggle("on",state.foil); render(); });
+
 /* seletor de frame personalizado */
-$("fFrame").addEventListener("change",()=>{ state.frame=$("fFrame").value; render(); });
+$("fFrame").addEventListener("change",()=>{
+  state.frame=$("fFrame").value;
+  const custom=!!(state.frame&&FRAMES[state.frame]);
+  state.frameEdit = custom ? {id:state.frame,zones:clone(FRAMES[state.frame].zones||{})} : null;
+  $("styleField").style.display = custom ? "none" : "";
+  $("zoneEditor").hidden = !custom;
+  if(custom) buildZoneEditor();
+  render();
+});
+
+/* ---- editor de zonas (sliders) ---- */
+const ZONE_LABELS={art:"Arte",name:"Nome",mana:"Custo",type:"Tipo",text:"Texto",pt:"P/R",loyalty:"Lealdade",defense:"Defesa",credit:"Crédito"};
+function buildZoneEditor(){
+  const z=state.frameEdit.zones; const box=$("zoneControls"); box.innerHTML="";
+  Object.keys(z).forEach(key=>{
+    const Z=z[key]; const wrap=document.createElement("div"); wrap.className="zrow";
+    wrap.innerHTML=`<div class="zhead">${ZONE_LABELS[key]||key}</div>`+
+      ["x","y","w","h"].map(dim=>`<label class="zsl"><span>${dim.toUpperCase()}</span>
+        <input type="range" min="0" max="100" step="0.5" value="${Z[dim]!=null?Z[dim]:0}" data-k="${key}" data-d="${dim}">
+        <output>${Z[dim]!=null?Z[dim]:0}</output></label>`).join("");
+    box.appendChild(wrap);
+  });
+  box.querySelectorAll('input[type="range"]').forEach(inp=>{
+    inp.addEventListener("input",e=>{
+      const k=e.target.dataset.k,d=e.target.dataset.d,v=parseFloat(e.target.value);
+      state.frameEdit.zones[k][d]=v; e.target.nextElementSibling.textContent=v; render();
+    });
+  });
+}
+$("btnZoneReset").addEventListener("click",()=>{
+  if(!state.frameEdit) return;
+  state.frameEdit.zones=clone(FRAMES[state.frame].zones||{}); buildZoneEditor(); render(); toast("Zonas restauradas.");
+});
+$("btnZoneCopy").addEventListener("click",async()=>{
+  if(!state.frameEdit) return;
+  const def=FRAMES[state.frame];
+  const out=JSON.stringify({id:def.id,name:def.name,src:def.src,zones:state.frameEdit.zones},null,2);
+  try{ await navigator.clipboard.writeText(out); toast("JSON copiado — cole no frames.json."); }
+  catch{ toast("Copie manualmente:\n"+out.slice(0,60)+"…",false); console.log(out); }
+});
 
 async function loadFrames(){
   try{

@@ -112,6 +112,30 @@
           <span class="hint" id="frameHint" style="display:none">Frames da pasta só carregam com o site servido (Vercel ou servidor local), não por file://.</span>
         </label>
 
+        <div class="field-row" id="styleRow">
+          <label class="field grow" id="styleField">
+            <span class="field-label">Estilo do frame</span>
+            <select id="fStyle">
+              <option value="modern">Moderno</option>
+              <option value="fullart">Full-art (borderless)</option>
+              <option value="retro">Retrô (anos 90)</option>
+            </select>
+          </label>
+          <label class="field">
+            <span class="field-label">Acabamento</span>
+            <button type="button" id="fFoil" class="toggle" aria-pressed="false">✦ Foil</button>
+          </label>
+        </div>
+
+        <details class="zone-editor" id="zoneEditor" hidden>
+          <summary>⚙ Ajustar zonas do frame (visual)</summary>
+          <div id="zoneControls"></div>
+          <div class="zone-actions">
+            <button type="button" id="btnZoneCopy" class="btn btn-ghost">⎘ Copiar JSON</button>
+            <button type="button" id="btnZoneReset" class="btn btn-ghost">↺ Restaurar</button>
+          </div>
+        </details>
+
         <!-- DFC: alternar face em edição/prévia -->
         <div class="face-switch" data-show="dfc" hidden>
           <span class="field-label" style="margin:0">Prévia da face:</span>
