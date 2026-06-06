@@ -147,6 +147,8 @@ Defina **todas** no painel do host (Vercel: *Settings → Environment Variables*
 
 > `SUPABASE_URL` e `SUPABASE_ANON_KEY` são usadas tanto pelo frontend (via `/api/config`) quanto pelo servidor (gate de VIP) — defina uma vez só. O gate da IA/VIP no servidor usa também a `SUPABASE_SERVICE_ROLE_KEY`.
 
+> 📋 Há um **`.env.example`** na raiz com **todas** as variáveis comentadas. Para dev local: `cp .env.example .env` e preencha (o `.env` está no `.gitignore`). Em produção, cadastre as mesmas no painel do host.
+
 ---
 
 ## 8. Deploy
