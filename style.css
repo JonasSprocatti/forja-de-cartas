@@ -979,3 +979,23 @@ body {
 #profUser, #profBioInput { width: 100%; font-family: "EB Garamond", serif; font-size: 16px; color: var(--parch); background: var(--ink); border: 1px solid var(--line); border-radius: 9px; padding: 10px 12px; margin-bottom: 10px; }
 #profUser:focus, #profBioInput:focus { outline: none; border-color: var(--brass); }
 #profBioInput { resize: vertical; }
+
+/* ============================================================
+   DESTAQUES DA GALERIA (página inicial)
+   ============================================================ */
+.gal-featured { margin-bottom: 18px; }
+.feat-block { margin-bottom: 16px; }
+.feat-title { font-family: "Cinzel", serif; color: var(--brass-hi); font-size: 15px; margin: 0 0 8px; }
+.feat-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 8px; flex-wrap: wrap; }
+.feat-head .feat-title { margin: 0; }
+.seg { display: inline-flex; border: 1px solid var(--line); border-radius: 999px; overflow: hidden; }
+.seg button { background: none; border: none; color: var(--parch-dim); font-family: "Cinzel", serif; font-size: 12px; padding: 6px 14px; cursor: pointer; }
+.seg button.on { background: linear-gradient(180deg, var(--brass-hi), var(--brass)); color: #2a1f08; }
+.feat-row { display: flex; gap: 12px; overflow-x: auto; padding-bottom: 8px; scroll-snap-type: x proximity; }
+.feat-row > .feat-card { scroll-snap-align: start; }
+.feat-card { flex: 0 0 auto; width: 120px; cursor: pointer; }
+.fthumb { width: 120px; height: 168px; overflow: hidden; border-radius: 7px; background: #0f0d0a; }
+.fthumb .card { transform: scale(0.25); transform-origin: top left; pointer-events: none; }
+.feat-meta { margin-top: 6px; font-size: 12px; line-height: 1.25; }
+.feat-meta b { display: block; color: var(--parch); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.feat-meta span { color: var(--parch-dim); }

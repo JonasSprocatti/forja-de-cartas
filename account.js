@@ -47,6 +47,22 @@ if (!cfg || !cfg.SUPABASE_URL || cfg.SUPABASE_URL.includes("SEU-PROJETO")) {
             <button class="fmodal-x" data-closeg>✕</button>
           </div>
         </div>
+        <div id="galFeatured" class="gal-featured">
+          <div class="feat-block">
+            <h3 class="feat-title">✨ Últimas cartas</h3>
+            <div id="featLatest" class="feat-row"></div>
+          </div>
+          <div class="feat-block">
+            <div class="feat-head"><h3 class="feat-title">🏆 Mais votadas</h3>
+              <div class="seg" id="featPeriod">
+                <button type="button" data-p="week" class="on">Semana</button>
+                <button type="button" data-p="month">Mês</button>
+                <button type="button" data-p="year">Ano</button>
+              </div>
+            </div>
+            <div id="featTop" class="feat-row"></div>
+          </div>
+        </div>
         <div class="gal-filters">
           <input id="galSearch" placeholder="Buscar por nome…">
           <select id="galLayout">
@@ -235,10 +251,16 @@ if (!cfg || !cfg.SUPABASE_URL || cfg.SUPABASE_URL.includes("SEU-PROJETO")) {
       return map;
     }
     let gallerySortBound = false;
+    let featPeriodBound = false;
     function bindGalleryControls(){
       if (gallerySortBound) return; gallerySortBound = true;
       ["gallerySort","galLayout","galRarity","galColor"].forEach(id => gallery.querySelector("#"+id).addEventListener("change", loadGallery));
       let t; gallery.querySelector("#galSearch").addEventListener("input", () => { clearTimeout(t); t = setTimeout(loadGallery, 350); });
+      gallery.querySelector("#featPeriod").addEventListener("click", (e) => {
+        const b = e.target.closest("button[data-p]"); if (!b) return;
+        gallery.querySelectorAll("#featPeriod button").forEach((x) => x.classList.toggle("on", x === b));
+        loadTopVoted(b.dataset.p);
+      });
     }
     async function loadGallery() {
       const grid = gallery.querySelector("#galGrid"); grid.innerHTML = `<p class="muted">carregando…</p>`;
@@ -248,6 +270,10 @@ if (!cfg || !cfg.SUPABASE_URL || cfg.SUPABASE_URL.includes("SEU-PROJETO")) {
       const layout = gallery.querySelector("#galLayout").value;
       const rarity = gallery.querySelector("#galRarity").value;
       const color = gallery.querySelector("#galColor").value;
+      const filtersActive = !!(search || layout || rarity || color);
+      const feat = gallery.querySelector("#galFeatured");
+      feat.hidden = filtersActive;
+      if (!filtersActive) loadFeatured();
       let q = sb.from("cards").select("id,name,data,user_id,layout").eq("is_public", true);
       if (search) q = q.ilike("name", "%" + search + "%");
       if (layout) q = q.eq("layout", layout);
@@ -256,7 +282,7 @@ if (!cfg || !cfg.SUPABASE_URL || cfg.SUPABASE_URL.includes("SEU-PROJETO")) {
       if (error) return (grid.innerHTML = `<p class="muted">erro: ${error.message}</p>`);
       let rows = data || [];
       if (color) rows = rows.filter((c) => window.Forge.colorOf(c.data) === color);
-      if (!rows.length) return (grid.innerHTML = `<p class="muted">Nenhuma carta encontrada com esses filtros.</p>`);
+      if (!rows.length) return (grid.innerHTML = `<p class="muted">${filtersActive ? "Nenhuma carta encontrada com esses filtros." : 'Ainda não há cartas públicas. Publique uma em "Minhas cartas"!'}</p>`);
       const ids = rows.map((c) => c.id);
       const authors = await namesFor([...new Set(rows.map((c) => c.user_id))]);
       const stats = await statsFor(ids);
@@ -276,6 +302,45 @@ if (!cfg || !cfg.SUPABASE_URL || cfg.SUPABASE_URL.includes("SEU-PROJETO")) {
         item.querySelector(".author-link").onclick = (e) => { e.stopPropagation(); openProfile(c.user_id); };
         grid.appendChild(item);
       });
+    }
+
+    // ---------- DESTAQUES (página inicial da galeria) ----------
+    function featCardEl(c, author, likeCount) {
+      const item = el(`<div class="feat-card"><div class="fthumb"><div class="card"></div></div>
+        <div class="feat-meta"><b>${esc(c.name || "Sem nome")}</b>
+        <span>por <a class="author-link">${esc(author || "anônimo")}</a>${likeCount != null ? ` · <span class="gal-like">♥ ${likeCount}</span>` : ""}</span></div></div>`);
+      window.Forge.previewInto(item.querySelector(".card"), c.data);
+      item.querySelector(".fthumb").onclick = () => openDetail(c, author);
+      item.querySelector(".author-link").onclick = (e) => { e.stopPropagation(); openProfile(c.user_id); };
+      return item;
+    }
+    async function loadFeatured() {
+      const latestBox = gallery.querySelector("#featLatest");
+      latestBox.innerHTML = `<p class="muted">carregando…</p>`;
+      const { data: latest } = await sb.from("cards").select("id,name,data,user_id").eq("is_public", true).order("created_at", { ascending: false }).limit(10);
+      const list = latest || [];
+      const authors = await namesFor([...new Set(list.map((c) => c.user_id))]);
+      latestBox.innerHTML = "";
+      if (!list.length) latestBox.innerHTML = `<p class="muted">Nenhuma carta pública ainda.</p>`;
+      else list.forEach((c) => latestBox.appendChild(featCardEl(c, authors[c.user_id])));
+      const activePeriod = gallery.querySelector("#featPeriod button.on")?.dataset.p || "week";
+      loadTopVoted(activePeriod);
+    }
+    async function loadTopVoted(period) {
+      const box = gallery.querySelector("#featTop");
+      box.innerHTML = `<p class="muted">carregando…</p>`;
+      const days = period === "year" ? 365 : period === "month" ? 30 : 7;
+      const cutoff = new Date(Date.now() - days * 864e5).toISOString();
+      const { data: ls } = await sb.from("likes").select("card_id,created_at").gte("created_at", cutoff).limit(3000);
+      const counts = {}; (ls || []).forEach((l) => (counts[l.card_id] = (counts[l.card_id] || 0) + 1));
+      const topIds = Object.entries(counts).sort((a, b) => b[1] - a[1]).slice(0, 10).map((e) => e[0]);
+      if (!topIds.length) { box.innerHTML = `<p class="muted">Sem votos nesse período ainda.</p>`; return; }
+      const { data: cards } = await sb.from("cards").select("id,name,data,user_id").in("id", topIds).eq("is_public", true);
+      const list = (cards || []).sort((a, b) => (counts[b.id] || 0) - (counts[a.id] || 0));
+      const authors = await namesFor([...new Set(list.map((c) => c.user_id))]);
+      box.innerHTML = "";
+      if (!list.length) box.innerHTML = `<p class="muted">Sem votos nesse período ainda.</p>`;
+      else list.forEach((c) => box.appendChild(featCardEl(c, authors[c.user_id], counts[c.id])));
     }
 
     // ====================== DETALHE: estrelas + comentários ======================

@@ -277,3 +277,6 @@ Rode **`supabase-profiles.sql`** (adiciona a coluna `bio` ao perfil).
 
 ### Atalho: adicionar à coleção de "Minhas cartas"
 Cada carta em **Minhas cartas** tem agora **❖ Coleção** — escolha uma coleção existente ou crie uma nova ali mesmo, sem precisar abrir a coleção primeiro. Veja o **TUTORIAL.md** para o passo a passo completo de configuração.
+
+### Galeria com destaques (página inicial da comunidade)
+Ao abrir a **✦ Galeria** (sem busca/filtro ativo), aparece uma seção de **Destaques**: **✨ Últimas cartas** (10 mais recentes) e **🏆 Mais votadas** com alternância **Semana / Mês / Ano** (conta as curtidas recebidas no período). Ao buscar/filtrar, os destaques somem e aparece só o resultado. Os botões de comunidade (Galeria, Entrar, etc.) só aparecem quando o Supabase está configurado no `config.js` — sem isso, o topo mostra "conta off".
