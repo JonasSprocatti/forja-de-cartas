@@ -15,7 +15,7 @@ const state = {
   adv: { name:"", mana:"", type:"", rules:"" },
   split: { name:"", mana:"", type:"", rules:"" },
   back: { name:"", mana:"", type:"", rules:"", flavor:"", pt:"" },
-  showBack: false, frame: "", style: "modern", foil: false, frameEdit: null,
+  showBack: false, frame: "", style: "modern", foil: false, frameEdit: null, overlays: [],
 };
 const FRAMES={};
 const clone=o=>JSON.parse(JSON.stringify(o));
@@ -268,19 +268,52 @@ function renderCustomFrame(def,zonesArg){
   return h+`</div>`;
 }
 
+function overlaysHTML(which){
+  const list=(state.overlays||[]).filter(o=>(o.layer||"front")===which);
+  if(!list.length) return "";
+  return `<div class="ov-layer ov-${which}">`+list.map(o=>
+    `<img class="ov-img" src="${o.src}" alt="" style="left:${o.x}%;top:${o.y}%;width:${o.w}%;height:${o.h}%;opacity:${(o.opacity==null?100:o.opacity)/100}">`
+  ).join("")+`</div>`;
+}
+function applyOverlays(host){
+  const root=host.querySelector(".card-frame, .cf-root");
+  const back=overlaysHTML("back");
+  if(back){ (root||host).insertAdjacentHTML("beforeend", back); }
+  const front=overlaysHTML("front");
+  if(front){ host.insertAdjacentHTML("beforeend", front); }
+}
 function render(){
   let col=state.color; if(col==="auto") col=autoColor(state.layout==="dfc"&&state.showBack?state.back.mana:state.mana);
   card.dataset.color=col; card.dataset.layout=state.layout;
   card.dataset.style=state.style; card.dataset.foil=state.foil?"true":"false";
+  let inner;
   if(state.frame && FRAMES[state.frame]){
     const def=FRAMES[state.frame];
     const zones=(state.frameEdit&&state.frameEdit.id===state.frame)?state.frameEdit.zones:def.zones;
-    card.dataset.frame="custom"; card.innerHTML=renderCustomFrame(def,zones);
-    $("btnFlip").hidden=true; return;
+    card.dataset.frame="custom"; inner=renderCustomFrame(def,zones);
+    $("btnFlip").hidden=true;
+  } else {
+    card.dataset.frame="";
+    inner=(RENDERERS[state.layout]||RENDERERS.normal)();
+    $("btnFlip").hidden = state.layout!=="dfc";
   }
-  card.dataset.frame="";
-  card.innerHTML=(RENDERERS[state.layout]||RENDERERS.normal)();
-  $("btnFlip").hidden = state.layout!=="dfc";
+  card.innerHTML = inner;
+  applyOverlays(card);
+  fitCard();
+}
+/* escala o card para caber na largura disponível (mobile) */
+function fitCard(){
+  const inner=document.querySelector(".stage-inner"); if(!inner||!card) return;
+  const vw=document.documentElement.clientWidth||window.innerWidth||9999;
+  const parentW=(inner.parentElement?inner.parentElement.clientWidth:inner.clientWidth)||vw;
+  const stageW=Math.min(parentW, vw-16);
+  const w0=card.offsetWidth||480, h0=card.offsetHeight||672;
+  if(!stageW||!w0) return;
+  const scale=Math.min(1, stageW/w0);
+  card.style.transformOrigin = scale<1 ? "top left" : "";
+  card.style.transform = scale<1 ? `scale(${scale})` : "";
+  inner.style.width  = scale<1 ? (w0*scale)+"px" : "";
+  inner.style.height = scale<1 ? (h0*scale)+"px" : "";
 }
 
 /* ============================================================
@@ -440,9 +473,10 @@ function spin(btn,on){btn.disabled=on;btn.querySelector(".btn-txt").hidden=on;bt
 
 $("btnAiCard").addEventListener("click",async()=>{
   const prompt=$("aiPrompt").value.trim(); if(!prompt) return toast("Descreva a ideia primeiro.",true);
+  if(!aiAllowed()) return;
   const btn=$("btnAiCard"); spin(btn,true);
   try{
-    const res=await fetch("/api/generate-card",{method:"POST",headers:{"Content-Type":"application/json"},
+    const res=await fetch("/api/generate-card",{method:"POST",headers:aiHeaders(),
       body:JSON.stringify({prompt,layout:$("aiLayout").value,color:$("aiColor").value})});
     if(!res.ok) throw new Error((await res.json().catch(()=>({}))).error||`Erro ${res.status}`);
     const c=await res.json(); applyAICard(c); toast("Carta gerada! Edite o que quiser.");
@@ -470,9 +504,10 @@ function applyAICard(c){
 
 $("btnAiArt").addEventListener("click",async()=>{
   const prompt=$("artPrompt").value.trim(); if(!prompt) return toast("Descreva a arte primeiro.",true);
+  if(!aiAllowed()) return;
   const btn=$("btnAiArt"); spin(btn,true);
   try{
-    const res=await fetch("/api/generate-art",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({prompt})});
+    const res=await fetch("/api/generate-art",{method:"POST",headers:aiHeaders(),body:JSON.stringify({prompt})});
     if(!res.ok) throw new Error((await res.json().catch(()=>({}))).error||`Erro ${res.status}`);
     const d=await res.json(); if(d.image) setArt(d.image, state.layout==="dfc"&&state.showBack); else throw new Error("Resposta sem imagem.");
     toast("Arte gerada!");
@@ -567,13 +602,16 @@ $("scryName").addEventListener("keydown",e=>{ if(e.key==="Enter"){e.preventDefau
    EXPORTAR PNG
    ============================================================ */
 $("btnExport").addEventListener("click",async()=>{
+  const pT=card.style.transform, pO=card.style.transformOrigin, pIW=document.querySelector(".stage-inner")?.style.width, pIH=document.querySelector(".stage-inner")?.style.height;
   try{ toast("Renderizando…");
+    card.style.transform=""; card.style.transformOrigin="";   // captura em tamanho cheio
     const url=await htmlToImage.toPng(card,{pixelRatio:2,cacheBust:true,backgroundColor:null});
     const a=document.createElement("a");
     const safe=(state.name||"carta").replace(/[^\w\-]+/g,"_").toLowerCase();
     a.download=`${safe}${state.layout==="dfc"?(state.showBack?"_verso":"_frente"):""}.png`; a.href=url; a.click();
     toast("PNG exportado!");
   }catch(err){toast("Falha ao exportar: "+err.message,true);}
+  finally{ card.style.transform=pT; card.style.transformOrigin=pO; fitCard(); }
 });
 
 /* ============================================================
@@ -668,4 +706,224 @@ async function loadFrames(){
 }
 
 /* estado inicial = o que está nos campos */
-collect(); applyLayoutVisibility(); renderRows(); render(); loadFrames();
+/* ---------- SOBREPOSIÇÕES (PNG por cima) ---------- */
+function renderOvList(){
+  const box=$("ovList"); if(!box) return;
+  if(!state.overlays.length){ box.innerHTML=`<p class="hint" style="margin:0">Nenhuma sobreposição. Adicione um PNG (de preferência com fundo transparente).</p>`; return; }
+  box.innerHTML=state.overlays.map((o,i)=>`<div class="ov-row">
+    <div class="ov-rowhead">
+      <img class="ov-thumb" src="${o.src}" alt="">
+      <span>PNG ${i+1}</span>
+      <select class="ov-layer-sel" data-i="${i}" title="camada">
+        <option value="front"${(o.layer||"front")==="front"?" selected":""}>Frente</option>
+        <option value="back"${o.layer==="back"?" selected":""}>Atrás do texto</option>
+      </select>
+      <button type="button" class="ov-mv" data-i="${i}" data-mv="-1" title="subir"${i===0?" disabled":""}>↑</button>
+      <button type="button" class="ov-mv" data-i="${i}" data-mv="1" title="descer"${i===state.overlays.length-1?" disabled":""}>↓</button>
+      <button type="button" class="ov-del" data-i="${i}" title="remover">✕</button>
+    </div>
+    ${[["x","X"],["y","Y"],["w","L"],["h","A"],["opacity","α"]].map(([d,lab])=>`<label class="zsl"><span>${lab}</span><input type="range" min="0" max="100" step="0.5" value="${o[d]}" data-i="${i}" data-d="${d}"><output>${o[d]}</output></label>`).join("")}
+  </div>`).join("");
+  box.querySelectorAll('input[type="range"]').forEach(inp=>inp.addEventListener("input",e=>{
+    const i=+e.target.dataset.i, d=e.target.dataset.d;
+    state.overlays[i][d]=parseFloat(e.target.value); e.target.nextElementSibling.textContent=e.target.value; render();
+  }));
+  box.querySelectorAll(".ov-layer-sel").forEach(sel=>sel.addEventListener("change",e=>{
+    state.overlays[+e.target.dataset.i].layer=e.target.value; render();
+  }));
+  box.querySelectorAll(".ov-mv").forEach(b=>b.onclick=()=>{
+    const i=+b.dataset.i, j=i+(+b.dataset.mv);
+    if(j<0||j>=state.overlays.length) return;
+    const a=state.overlays; [a[i],a[j]]=[a[j],a[i]]; renderOvList(); render();
+  });
+  box.querySelectorAll(".ov-del").forEach(b=>b.onclick=()=>{ state.overlays.splice(+b.dataset.i,1); renderOvList(); render(); });
+}
+$("ovInput").addEventListener("change",e=>{
+  const f=e.target.files[0]; if(!f||!f.type.startsWith("image/")) return;
+  const r=new FileReader();
+  r.onload=ev=>{ state.overlays.push({src:ev.target.result,x:8,y:8,w:84,h:84,opacity:100,layer:"front"}); renderOvList(); render(); };
+  r.readAsDataURL(f); e.target.value="";
+});
+
+collect(); applyLayoutVisibility(); renderRows(); renderOvList(); render(); loadFrames();
+window.addEventListener("resize", fitCard);
+window.addEventListener("orientationchange", ()=>setTimeout(fitCard, 250));
+window.addEventListener("load", fitCard);
+
+/* ============================================================
+   INTEGRAÇÃO COM CONTA (account.js) + BLOQUEIO VIP DA IA
+   ============================================================ */
+function aiHeaders(){
+  const h={"Content-Type":"application/json"};
+  const t=window.ForgeAuth&&window.ForgeAuth.token; if(t) h["Authorization"]="Bearer "+t;
+  return h;
+}
+function aiAllowed(){
+  // se o login não estiver configurado, a IA fica aberta (comportamento atual)
+  if(!(window.FORGE_CONFIG&&window.FORGE_CONFIG.SUPABASE_URL&&!window.FORGE_CONFIG.SUPABASE_URL.includes("SEU-PROJETO"))) return true;
+  if(!window.ForgeAuth||!window.ForgeAuth.user){ toast("Entre na sua conta para usar a IA.",true); return false; }
+  if(!window.ForgeAuth.isVip){ toast("A geração por IA é um recurso VIP.",true); return false; }
+  return true;
+}
+
+/* expõe toast e (de)serialização da carta para o account.js */
+window.toastForge = (m,e)=>toast(m,e);
+window.Forge = {
+  serialize(){
+    return {layout:state.layout,color:state.color,style:state.style,foil:state.foil,frame:state.frame,
+      name:state.name,mana:state.mana,type:state.type,rules:state.rules,flavor:state.flavor,pt:state.pt,
+      rarity:state.rarity,artist:state.artist,collector:state.collector,art:state.art,backArt:state.backArt,
+      loyalty:state.loyalty,defense:state.defense,pw:state.pw,saga:state.saga,cls:state.cls,
+      adv:state.adv,split:state.split,back:state.back,overlays:state.overlays};
+  },
+  load(o){
+    if(!o) return;
+    Object.assign(state,{pw:[],saga:[],cls:[],overlays:[]});
+    ["layout","color","style","foil","frame","name","mana","type","rules","flavor","pt","rarity",
+     "artist","collector","art","backArt","loyalty","defense","pw","saga","cls","adv","split","back","overlays"]
+      .forEach(k=>{ if(o[k]!==undefined) state[k]=o[k]; });
+    state.showBack=false; state.frameEdit=null;
+    $("fLayout").value=state.layout; $("fStyle").value=state.style||"modern"; $("fFrame").value=state.frame||"";
+    $("fFoil").setAttribute("aria-pressed",state.foil?"true":"false"); $("fFoil").classList.toggle("on",!!state.foil);
+    const custom=!!(state.frame&&FRAMES[state.frame]); $("styleField").style.display=custom?"none":""; $("zoneEditor").hidden=!custom;
+    populate(); applyLayoutVisibility(); renderRows(); renderOvList(); render();
+  }
+};
+/* renderiza a prévia de uma carta (objeto data) dentro de um elemento, sem afetar o editor */
+window.Forge.previewInto = function(el, data){
+  if(!el || !data) return;
+  const snap = JSON.parse(JSON.stringify(state));
+  try{
+    Object.assign(state,{pw:[],saga:[],cls:[],overlays:[]});
+    ["layout","color","style","foil","frame","name","mana","type","rules","flavor","pt","rarity",
+     "artist","collector","art","backArt","loyalty","defense","pw","saga","cls","adv","split","back","overlays"]
+      .forEach(k=>{ if(data[k]!==undefined) state[k]=data[k]; });
+    state.showBack=false;
+    let col=state.color; if(col==="auto") col=autoColor(state.mana||"");
+    el.className="card"; el.dataset.color=col; el.dataset.layout=state.layout;
+    el.dataset.style=state.style||"modern"; el.dataset.foil=state.foil?"true":"false";
+    if(state.frame && FRAMES[state.frame]){ el.dataset.frame="custom"; el.innerHTML=renderCustomFrame(FRAMES[state.frame]); }
+    else { el.dataset.frame=""; el.innerHTML=(RENDERERS[state.layout]||RENDERERS.normal)(); }
+    applyOverlays(el);
+  } finally {
+    Object.keys(snap).forEach(k=>{ state[k]=snap[k]; });
+  }
+};
+
+/* botão flutuante "ver prévia" no mobile */
+(function(){
+  const tp=document.getElementById("toPreview"); if(!tp) return;
+  tp.addEventListener("click",()=>{ const s=document.querySelector(".stage"); if(s) s.scrollIntoView({behavior:"smooth",block:"start"}); });
+  const onScroll=()=>tp.classList.toggle("show", window.scrollY>440);
+  window.addEventListener("scroll",onScroll,{passive:true}); onScroll();
+})();
+
+/* ============================================================
+   FOLHA DE IMPRESSÃO (proxies — 3×3, 63×88 mm, PDF via navegador)
+   ============================================================ */
+const printQueue = [];
+const printModal = $("printModal");
+
+$("btnPrint").addEventListener("click", ()=>{ printModal.hidden=false; renderPrintList(); });
+$("printClose").addEventListener("click", ()=>{ printModal.hidden=true; });
+printModal.addEventListener("click", e=>{ if(e.target===printModal) printModal.hidden=true; });
+$("printAddCurrent").addEventListener("click", ()=>{
+  const qty=Math.max(1, Math.min(99, parseInt($("printQty").value)||1));
+  printQueue.push({ data: window.Forge.serialize(), qty, png:null });
+  renderPrintList();
+  toast("Carta adicionada à fila.");
+});
+$("printClear").addEventListener("click", ()=>{ printQueue.length=0; renderPrintList(); });
+$("printGo").addEventListener("click", generateSheet);
+
+function printTotals(){ const cards=printQueue.reduce((s,it)=>s+it.qty,0); return { cards, pages: Math.ceil(cards/9) }; }
+function updatePrintSummary(){ const t=printTotals(); $("printSummary").textContent = t.cards ? `${t.cards} carta(s) · ${t.pages} página(s)` : ""; }
+
+function renderPrintList(){
+  const box=$("printList"); if(!box) return;
+  if(!printQueue.length){ box.innerHTML=`<p class="hint" style="margin:0">Fila vazia. Adicione cartas para montar a folha.</p>`; updatePrintSummary(); return; }
+  box.innerHTML="";
+  printQueue.forEach((it,i)=>{
+    const row=document.createElement("div"); row.className="print-row";
+    row.innerHTML=`<div class="pthumb"><div class="card"></div></div>
+      <div class="print-row-info"><b>${escapeHTML(it.data.name||"Sem nome")}</b><span>${escapeHTML(it.data.layout||"")}</span></div>
+      <div class="qty"><button type="button" data-d="-1">−</button><span>${it.qty}</span><button type="button" data-d="1">+</button></div>
+      <button type="button" class="print-del" title="remover">✕</button>`;
+    window.Forge.previewInto(row.querySelector(".pthumb .card"), it.data);
+    row.querySelector('[data-d="-1"]').onclick=()=>{ it.qty=Math.max(1,it.qty-1); renderPrintList(); };
+    row.querySelector('[data-d="1"]').onclick=()=>{ it.qty=Math.min(99,it.qty+1); renderPrintList(); };
+    row.querySelector(".print-del").onclick=()=>{ printQueue.splice(i,1); renderPrintList(); };
+    box.appendChild(row);
+  });
+  updatePrintSummary();
+}
+
+async function cardToPng(data){
+  const host=document.createElement("div");
+  host.style.cssText="position:absolute;left:-10000px;top:0;";
+  const el=document.createElement("div"); host.appendChild(el);
+  document.body.appendChild(host);
+  window.Forge.previewInto(el, data);
+  await new Promise(r=>setTimeout(r,80)); // deixa fontes/imagens assentarem
+  let url="";
+  try{ url=await htmlToImage.toPng(el,{pixelRatio:2,cacheBust:true,backgroundColor:null}); }
+  finally{ document.body.removeChild(host); }
+  return url;
+}
+async function ensurePng(it){ if(!it.png) it.png=await cardToPng(it.data); return it.png; }
+
+function buildSheetHTML(images, paper, guides){
+  const pageSize = paper==="letter" ? "Letter" : "A4";
+  const border = guides ? "outline:0.25mm solid #888;outline-offset:-0.125mm;" : "";
+  let pages="";
+  for(let i=0;i<images.length;i+=9){
+    const cells=images.slice(i,i+9).map(src=>`<div class="pc"><img src="${src}"></div>`).join("");
+    pages+=`<section class="page"><div class="grid">${cells}</div></section>`;
+  }
+  return `<!doctype html><html lang="pt-br"><head><meta charset="utf-8">
+  <title>Folha de impressão — Forja de Cartas</title>
+  <style>
+    @page { size: ${pageSize}; margin: 8mm; }
+    * { box-sizing: border-box; }
+    html,body { margin:0; padding:0; background:#fff; }
+    .page { display:flex; align-items:center; justify-content:center; page-break-after:always; break-after:page; }
+    .page:last-child { page-break-after:auto; break-after:auto; }
+    .grid { display:grid; grid-template-columns: repeat(3,63mm); grid-template-rows: repeat(3,88mm); }
+    .pc { width:63mm; height:88mm; overflow:hidden; ${border} }
+    .pc img { width:63mm; height:88mm; object-fit:cover; display:block; }
+    @media screen { body{ background:#3a3a3a; padding:18px; } .page{ background:#fff; margin:0 auto 18px; box-shadow:0 6px 24px rgba(0,0,0,.45);} }
+  </style></head>
+  <body onload="setTimeout(function(){window.focus();window.print();},350)">${pages}</body></html>`;
+}
+
+function generateSheet(){
+  if(!printQueue.length) return toast("Adicione cartas à fila primeiro.",true);
+  const paper=$("printPaper").value, guides=$("printGuides").checked;
+  const w=window.open("","_blank");
+  if(!w) return toast("Permita pop-ups para gerar a folha.",true);
+  w.document.write("<!doctype html><meta charset=utf-8><body style='font-family:sans-serif;padding:24px;color:#333'>Gerando folha…</body>");
+  toast("Renderizando cartas…");
+  (async()=>{
+    try{
+      const imgs=[];
+      for(const it of printQueue){ const png=await ensurePng(it); for(let k=0;k<it.qty;k++) imgs.push(png); }
+      w.document.open(); w.document.write(buildSheetHTML(imgs,paper,guides)); w.document.close();
+      toast("Folha pronta — escolha Salvar como PDF.");
+    }catch(e){ try{ w.document.body.innerHTML="Erro ao gerar: "+e.message; }catch(_){} toast("Falha ao gerar folha.",true); }
+  })();
+}
+
+/* ponte para outras partes (ex.: imprimir uma coleção inteira) */
+window.ForgePrint = {
+  add(data, qty){ if(data) printQueue.push({ data, qty: Math.max(1, Math.min(99, qty||1)), png:null }); },
+  clear(){ printQueue.length=0; },
+  open(){ printModal.hidden=false; renderPrintList(); }
+};
+
+/* cor efetiva da carta (resolve "auto" a partir do custo) — usado nos filtros da galeria */
+window.Forge.colorOf = function(data){
+  if(!data) return "multi";
+  const c = data.color;
+  if(c && c !== "auto") return c;
+  try { return autoColor(data.mana || ""); } catch(e){ return "multi"; }
+};

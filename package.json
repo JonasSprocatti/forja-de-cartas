@@ -1,14 +1,17 @@
 {
   "name": "forja-de-cartas",
   "version": "1.0.0",
-  "description": "App web para criar cartas de batalha em estilo fantasia (manual ou via IA), com geração de arte e export em PNG.",
+  "description": "App web para criar cartas de batalha em estilo fantasia, com contas, galeria, VIP e anúncios.",
   "type": "module",
   "private": true,
   "scripts": {
-    "dev": "vercel dev",
-    "start": "vercel dev"
+    "start": "node server.js",
+    "dev": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.19.2"
   },
   "engines": {
-    "node": ">=18"
+    "node": ">=18.17"
   }
 }

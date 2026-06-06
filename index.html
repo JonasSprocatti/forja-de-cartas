@@ -22,9 +22,13 @@
     </div>
     <div class="topbar-actions">
       <button id="btnExport" class="btn btn-gold">⤓ Exportar PNG</button>
+      <button id="btnPrint" class="btn btn-ghost">🖨 Folha</button>
       <button id="btnRandom" class="btn btn-ghost">⟳ Exemplo</button>
+      <div id="acctArea" class="acct"></div>
     </div>
   </header>
+
+  <div id="adTop" class="ad-slot" hidden></div>
 
   <main class="layout">
     <!-- ===================== PAINEL DE CONTROLE ===================== -->
@@ -317,6 +321,16 @@ Quando a Guardiã das Brumas entrar no campo de batalha, exile uma criatura alvo
           <p class="hint">Requer chave de imagem no servidor (veja o README).</p>
         </div>
       </div>
+
+      <div class="ov-block">
+        <h2 class="block-title">▦ Sobreposições <span class="ov-sub">(PNG por cima, p/ profundidade)</span></h2>
+        <label class="dropzone dz-sm" id="ovDrop">
+          <input type="file" id="ovInput" accept="image/*" hidden />
+          <span class="dz-icon">＋</span>
+          <span class="dz-text">Adicionar PNG por cima da carta</span>
+        </label>
+        <div id="ovList" class="ov-rows"></div>
+      </div>
     </section>
 
     <!-- ===================== PRÉVIA ===================== -->
@@ -333,9 +347,41 @@ Quando a Guardiã das Brumas entrar no campo de batalha, exile uma criatura alvo
     </section>
   </main>
 
+  <div id="adBottom" class="ad-slot" hidden></div>
+
   <div class="toast" id="toast"></div>
 
+  <div class="fmodal" id="printModal" hidden>
+    <div class="fmodal-box print-box">
+      <button class="fmodal-x" id="printClose">✕</button>
+      <h2 class="fmodal-title">Folha de impressão</h2>
+      <div class="print-add">
+        <button class="btn btn-gold" id="printAddCurrent">+ Adicionar carta atual</button>
+        <label class="qty-inline">qtd <input type="number" id="printQty" min="1" max="99" value="1"></label>
+      </div>
+      <div id="printList" class="print-list"></div>
+      <div class="print-opts">
+        <label class="field" style="margin:0">
+          <span class="field-label">Papel</span>
+          <select id="printPaper"><option value="a4">A4</option><option value="letter">Carta (Letter)</option></select>
+        </label>
+        <label class="chk"><input type="checkbox" id="printGuides" checked> Linhas de corte</label>
+      </div>
+      <p class="hint" id="printSummary" style="margin:6px 0 0"></p>
+      <div class="print-actions">
+        <button class="btn btn-ghost" id="printClear">Limpar fila</button>
+        <button class="btn btn-gold" id="printGo">🖨 Gerar folha (PDF)</button>
+      </div>
+      <p class="hint">Cartas a 63×88 mm, 9 por página. No diálogo, escolha <b>Salvar como PDF</b>, margens <b>Padrão</b> e escala <b>100%</b>.</p>
+    </div>
+  </div>
+
+  <button id="toPreview" class="to-preview" aria-label="Ver a prévia da carta">▲ Prévia</button>
+
   <script src="https://cdn.jsdelivr.net/npm/html-to-image@1.11.11/dist/html-to-image.js"></script>
+  <script src="config.js"></script>
+  <script src="ads.js"></script>
   <script src="app.js"></script>
+  <script type="module" src="account.js"></script>
 </body>
 </html>
