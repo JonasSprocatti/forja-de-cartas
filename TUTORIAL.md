@@ -81,19 +81,12 @@ Em **SQL Editor → New query**, cole e rode um de cada vez:
 - **Google**: ligue o provider, crie um **OAuth Client** no Google Cloud Console, e em **Authorized redirect URIs** use a URL que o Supabase mostra (algo como `https://SEU-PROJETO.supabase.co/auth/v1/callback`). Cole Client ID/Secret no Supabase.
 - Em **Authentication → URL Configuration**, coloque a URL do seu site em **Site URL** e **Redirect URLs** (ex.: `https://seuapp.vercel.app`).
 
-### 4.4 Criar o `config.js` (frontend)
-Copie `config.example.js` para `config.js` e preencha:
+### 4.4 Configuração pública (via variáveis de ambiente)
+**Não é preciso criar `config.js`.** Defina as variáveis públicas no painel do host (seção 7) e o frontend lê tudo automaticamente pelo endpoint `/api/config`. As públicas são `SUPABASE_URL` e `SUPABASE_ANON_KEY` (e, opcionalmente, `ADSENSE_CLIENT` / `ADSENSE_SLOTS`).
 
-```js
-window.FORGE_CONFIG = {
-  SUPABASE_URL: "https://SEU-PROJETO.supabase.co",
-  SUPABASE_ANON_KEY: "SUA_ANON_KEY",
-  ADSENSE_CLIENT: "",   // opcional
-  ADSENSE_SLOTS: {}     // opcional
-};
-```
+> **"Isso não é inseguro?"** Não. A *anon key* do Supabase é **pública por design** — ela vai para o navegador de qualquer forma (o cliente precisa dela para falar com o Supabase). Quem protege os dados é o **RLS** (as policies dos SQLs), não o sigilo da chave. Colocá-la em variável de ambiente **não a torna secreta**; só centraliza a configuração. As chaves realmente secretas (service role, Stripe, Gemini) ficam **somente no servidor** e nunca são expostas.
 
-> `config.js` só contém chaves **públicas** (URL e anon do Supabase, client do AdSense). Pode ser servido junto com o site. Está no `.gitignore` por padrão — para o deploy, garanta que ele exista na build (você pode commitá-lo sem problema, ou criá-lo no processo de deploy).
+> **Dev local 100% estático** (sem rodar o backend): aí não há `/api/config`. Para testar login localmente, copie `config.example.js` para `config.js` e preencha — ou rode com `vercel dev` / `npm start` para ter o `/api/config`.
 
 ---
 
@@ -128,18 +121,31 @@ window.FORGE_CONFIG = {
 
 Defina-as no painel do seu host (Vercel/Render) — **nunca** no `config.js`.
 
+Defina **todas** no painel do host (Vercel: *Settings → Environment Variables*; Render: *Environment*). As "públicas" são entregues ao navegador pelo `/api/config` (e são públicas por natureza); as "secretas" ficam só no servidor.
+
+**Públicas** (frontend, via `/api/config`):
+
+| Variável | Para quê | Obrigatória |
+|---|---|---|
+| `SUPABASE_URL` | conectar ao Supabase | para login/comunidade |
+| `SUPABASE_ANON_KEY` | conectar ao Supabase (protegida por RLS) | para login/comunidade |
+| `ADSENSE_CLIENT` | id do AdSense (ex.: `ca-pub-...`) | não |
+| `ADSENSE_SLOTS` | JSON dos slots, ex.: `{"adTop":"123","adBottom":"456"}` | não |
+
+**Secretas** (somente servidor, nunca expostas):
+
 | Variável | Para quê | Obrigatória |
 |---|---|---|
 | `GEMINI_API_KEY` | IA (texto e arte) | para IA |
 | `GEMINI_MODEL` | modelo de texto | não (tem padrão) |
 | `GEMINI_IMAGE_MODEL` | modelo de imagem | não (tem padrão) |
-| `SUPABASE_URL` | gate de VIP + webhook | para VIP |
-| `SUPABASE_ANON_KEY` | validar usuário no servidor | para VIP |
 | `SUPABASE_SERVICE_ROLE_KEY` | gravar `is_vip` (webhook) | para VIP |
 | `STRIPE_SECRET_KEY` | criar checkout | para VIP |
 | `STRIPE_PRICE_ID` | preço do VIP | para VIP |
 | `STRIPE_MODE` | `subscription` ou `payment` | para VIP |
 | `STRIPE_WEBHOOK_SECRET` | validar webhook | para VIP |
+
+> `SUPABASE_URL` e `SUPABASE_ANON_KEY` são usadas tanto pelo frontend (via `/api/config`) quanto pelo servidor (gate de VIP) — defina uma vez só. O gate da IA/VIP no servidor usa também a `SUPABASE_SERVICE_ROLE_KEY`.
 
 ---
 
@@ -148,8 +154,8 @@ Defina-as no painel do seu host (Vercel/Render) — **nunca** no `config.js`.
 ### Opção A — Vercel (recomendada, zero-config)
 1. Suba o projeto para um repositório (GitHub) **ou** use `vercel` (CLI).
 2. Importe na Vercel. Ela detecta a pasta `api/` como funções automaticamente; o resto é estático.
-3. Em **Settings → Environment Variables**, adicione as variáveis da seção 7.
-4. Garanta que o **`config.js`** exista na build (seção 4.4).
+3. Em **Settings → Environment Variables**, adicione **todas** as variáveis da seção 7 (públicas + secretas).
+4. Não precisa de `config.js` — o frontend lê as públicas via `/api/config`.
 5. Deploy. Pegue a URL e coloque-a no Supabase (seção 4.3) e no webhook da Stripe (seção 6).
 
 ### Opção B — Render (com Express)
@@ -182,7 +188,7 @@ Defina-as no painel do seu host (Vercel/Render) — **nunca** no `config.js`.
 
 ## 11. Problemas comuns
 
-- **"conta off":** falta o `config.js` ou as chaves do Supabase estão erradas.
+- **"conta off":** faltam as variáveis `SUPABASE_URL`/`SUPABASE_ANON_KEY` no ambiente (ou estão erradas). Em dev estático sem backend, use `config.js`.
 - **Login Google falha:** confira a *redirect URI* no Google Cloud e as *Redirect URLs* no Supabase.
 - **IA não responde:** falta `GEMINI_API_KEY` no servidor (ou você está abrindo o `index.html` por `file://` em vez de servir as funções `api/`).
 - **VIP não ativa após pagar:** webhook não chegou — verifique a URL do endpoint, o `STRIPE_WEBHOOK_SECRET` e a `SUPABASE_SERVICE_ROLE_KEY`.

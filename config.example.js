@@ -1,11 +1,11 @@
-// Copie este arquivo para "config.js" e preencha. Sem ele, o app funciona sem login/anúncios.
-// (URL/anon key do Supabase e o client do AdSense são públicos — podem ir no front-end.)
+// OPCIONAL — só para desenvolvimento 100% estático (sem backend).
+// Em produção (Vercel/Render) NÃO use este arquivo: defina as variáveis de
+// ambiente e o app lê tudo automaticamente via /api/config.
+//
+// Para dev local sem backend, copie para "config.js" e preencha (só valores PÚBLICOS):
 window.FORGE_CONFIG = {
-  // ----- Supabase (login + cartas + galeria) -----
   SUPABASE_URL: "https://SEU-PROJETO.supabase.co",
   SUPABASE_ANON_KEY: "SUA_ANON_KEY",
-
-  // ----- Google AdSense (opcional) — anúncios para não-VIP -----
-  ADSENSE_CLIENT: "",            // ex.: "ca-pub-1234567890123456"
-  ADSENSE_SLOTS: {}              // ex.: { "adTop": "1234567890", "adBottom": "0987654321" }
+  ADSENSE_CLIENT: "",   // opcional, ex.: "ca-pub-123..."
+  ADSENSE_SLOTS: {}     // opcional, ex.: { "adTop": "123", "adBottom": "456" }
 };

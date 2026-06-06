@@ -379,7 +379,20 @@ Quando a Guardiã das Brumas entrar no campo de batalha, exile uma criatura alvo
   <button id="toPreview" class="to-preview" aria-label="Ver a prévia da carta">▲ Prévia</button>
 
   <script src="https://cdn.jsdelivr.net/npm/html-to-image@1.11.11/dist/html-to-image.js"></script>
-  <script src="config.js"></script>
+  <script>
+    // Configuração PÚBLICA vem das variáveis de ambiente, via /api/config.
+    // (Não precisa de config.js. Para dev 100% estático sem backend, você pode
+    //  definir window.FORGE_CONFIG manualmente antes desta linha.)
+    window.__forgeConfigReady = (async () => {
+      let cfg = {};
+      try {
+        const r = await fetch("/api/config", { cache: "no-store" });
+        if (r.ok) cfg = await r.json();
+      } catch (e) {}
+      window.FORGE_CONFIG = Object.assign({}, window.FORGE_CONFIG || {}, cfg);
+      return window.FORGE_CONFIG;
+    })();
+  </script>
   <script src="ads.js"></script>
   <script src="app.js"></script>
   <script type="module" src="account.js"></script>

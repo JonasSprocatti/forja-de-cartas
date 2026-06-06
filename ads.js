@@ -1,10 +1,9 @@
 // ads.js — Google AdSense para usuários não-VIP (VIP não vê anúncios).
-// Configure ADSENSE_CLIENT e ADSENSE_SLOTS em config.js. Sem isso, nada é carregado.
+// A config pública (ADSENSE_CLIENT, ADSENSE_SLOTS) vem das variáveis de ambiente
+// via /api/config. Sem isso, nada é carregado.
 (function () {
-  const cfg = window.FORGE_CONFIG || {};
-  const client = cfg.ADSENSE_CLIENT;
-  const slots = cfg.ADSENSE_SLOTS || {};
-  const CONTAINERS = ["adTop", "adBottom", "adPanel"]; // ids possíveis no HTML
+  let client = null, slots = {}, ready = false, pendingVip = null, supaOn = false;
+  const CONTAINERS = ["adTop", "adBottom", "adPanel"];
   let scriptInjected = false, adsShown = false;
 
   function loadScript() {
@@ -16,7 +15,6 @@
     s.src = "https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=" + encodeURIComponent(client);
     document.head.appendChild(s);
   }
-
   function showAds() {
     if (adsShown || !client) return;
     adsShown = true;
@@ -38,17 +36,28 @@
       try { (window.adsbygoogle = window.adsbygoogle || []).push({}); } catch (e) {}
     });
   }
-
   function hideAds() {
     CONTAINERS.forEach((id) => { const h = document.getElementById(id); if (h) h.hidden = true; });
   }
 
+  // Disponível de imediato; aplica assim que a config chegar.
   window.ForgeAds = {
-    update(isVip) { if (!client) return; isVip ? hideAds() : showAds(); },
+    update(isVip) {
+      if (!ready) { pendingVip = isVip; return; }
+      if (!client) return;
+      isVip ? hideAds() : showAds();
+    },
   };
 
-  // Sem login configurado → todo mundo é não-VIP → mostra já (se AdSense configurado).
-  const supaOn = cfg.SUPABASE_URL && !String(cfg.SUPABASE_URL).includes("SEU-PROJETO");
-  if (client && !supaOn) window.ForgeAds.update(false);
-  // Com login, o account.js chama ForgeAds.update(isVip) assim que souber.
+  (async () => {
+    const cfg = await (window.__forgeConfigReady || Promise.resolve(window.FORGE_CONFIG || {}));
+    client = cfg.ADSENSE_CLIENT || null;
+    slots = cfg.ADSENSE_SLOTS || {};
+    supaOn = !!(cfg.SUPABASE_URL && !String(cfg.SUPABASE_URL).includes("SEU-PROJETO"));
+    ready = true;
+    if (!client) return;
+    if (pendingVip !== null) { pendingVip ? hideAds() : showAds(); }
+    else if (!supaOn) showAds(); // sem login configurado → todos são não-VIP
+    // com login, o account.js chama ForgeAds.update(isVip) quando souber.
+  })();
 })();

@@ -1,15 +1,16 @@
 // account.js — login (e-mail + Google), salvar/carregar cartas, galeria pública,
 // avaliações (estrelas) e comentários (Supabase). Etapas 1 e 2.
 
-const cfg = window.FORGE_CONFIG;
 const acct = document.getElementById("acctArea");
 
-if (!cfg || !cfg.SUPABASE_URL || cfg.SUPABASE_URL.includes("SEU-PROJETO")) {
-  if (acct) acct.innerHTML = `<span class="acct-off" title="Crie config.js a partir de config.example.js para ativar login">conta off</span>`;
-} else {
-  (async () => {
-    const { createClient } = await import("https://esm.sh/@supabase/supabase-js@2");
-    const sb = createClient(cfg.SUPABASE_URL, cfg.SUPABASE_ANON_KEY);
+(async () => {
+  const cfg = await (window.__forgeConfigReady || Promise.resolve(window.FORGE_CONFIG || {}));
+  if (!cfg || !cfg.SUPABASE_URL || String(cfg.SUPABASE_URL).includes("SEU-PROJETO")) {
+    if (acct) acct.innerHTML = `<span class="acct-off" title="Defina SUPABASE_URL e SUPABASE_ANON_KEY nas variáveis de ambiente para ativar o login">conta off</span>`;
+    return;
+  }
+  const { createClient } = await import("https://esm.sh/@supabase/supabase-js@2");
+  const sb = createClient(cfg.SUPABASE_URL, cfg.SUPABASE_ANON_KEY);
     window.ForgeAuth = { user: null, token: null, isVip: false };
     const T = (m, e) => (window.toastForge ? window.toastForge(m, e) : console.log(m));
     const esc = (s) => (s || "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
@@ -681,4 +682,3 @@ if (!cfg || !cfg.SUPABASE_URL || cfg.SUPABASE_URL.includes("SEU-PROJETO")) {
     };
 
   })().catch((e) => { if (acct) acct.innerHTML = `<span class="acct-off">login indisponível</span>`; console.error(e); });
-}

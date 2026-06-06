@@ -9,9 +9,13 @@ import card from "./api/generate-card.js";
 import art from "./api/generate-art.js";
 import checkout from "./api/create-checkout.js";
 import webhook from "./api/stripe-webhook.js";
+import config from "./api/config.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const app = express();
+
+// Config pública do frontend (lida do ambiente)
+app.get("/api/config", (req, res) => config(req, res));
 
 // O webhook da Stripe PRECISA do corpo cru → sem parser nesta rota
 // (o handler lê o stream direto para validar a assinatura).
