@@ -9,7 +9,6 @@
 // Retorna { image: "data:image/png;base64,...." } pronto para usar no <img>.
 
 // Verifica VIP no servidor. Só atua se SUPABASE_URL estiver configurada.
-export const maxDuration = 60; // Permite até 60 segundos de execução
 async function ensureVip(req) {
   const base = process.env.SUPABASE_URL;
   if (!base) return { ok: true };
