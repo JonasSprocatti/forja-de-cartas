@@ -8,7 +8,6 @@
 //   GEMINI_MODEL   (opcional — padrão: gemini-2.5-flash)
 
 // Verifica VIP no servidor. Só atua se SUPABASE_URL estiver configurada (senão, IA aberta).
-export const maxDuration = 60; // Permite até 60 segundos de execução
 async function ensureVip(req) {
   const base = process.env.SUPABASE_URL;
   if (!base) return { ok: true };
