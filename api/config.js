@@ -8,7 +8,7 @@
 export default function handler(req, res) {
   let slots = {};
   try { if (process.env.ADSENSE_SLOTS) slots = JSON.parse(process.env.ADSENSE_SLOTS); } catch (e) { slots = {}; }
-  res.setHeader("Cache-Control", "no-store, max-age=0");
+  res.setHeader("Cache-Control", "public, s-maxage=86400, stale-while-revalidate");
   return res.status(200).json({
     SUPABASE_URL: process.env.SUPABASE_URL || "",
     SUPABASE_ANON_KEY: process.env.SUPABASE_ANON_KEY || "",
