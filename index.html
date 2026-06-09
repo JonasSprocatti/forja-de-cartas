@@ -384,14 +384,27 @@ Quando a Guardiã das Brumas entrar no campo de batalha, exile uma criatura alvo
   <script src="https://cdn.jsdelivr.net/npm/html-to-image@1.11.11/dist/html-to-image.js"></script>
   <script>
     // Configuração PÚBLICA vem das variáveis de ambiente, via /api/config.
-    // (Não precisa de config.js. Para dev 100% estático sem backend, você pode
-    //  definir window.FORGE_CONFIG manualmente antes desta linha.)
     window.__forgeConfigReady = (async () => {
       let cfg = {};
       try {
         const r = await fetch("/api/config", { cache: "no-store" });
-        if (r.ok) cfg = await r.json();
-      } catch (e) {}
+        if (r.ok) {
+          cfg = await r.json();
+          // Guarda um backup no navegador para contornar o "cold start" do Render
+          localStorage.setItem('forge_config_backup', JSON.stringify(cfg));
+        }
+      } catch (e) {
+        console.warn("Servidor inativo. A tentar usar a cache local...");
+      }
+      
+      // Se a requisição falhou (servidor a dormir), resgata do backup
+      if (!cfg.SUPABASE_URL) {
+        try {
+          const backup = localStorage.getItem('forge_config_backup');
+          if (backup) cfg = JSON.parse(backup);
+        } catch(err) {}
+      }
+      
       window.FORGE_CONFIG = Object.assign({}, window.FORGE_CONFIG || {}, cfg);
       return window.FORGE_CONFIG;
     })();
