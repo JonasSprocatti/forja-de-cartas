@@ -300,6 +300,7 @@ function render(){
   card.innerHTML = inner;
   applyOverlays(card);
   fitCard();
+  localStorage.setItem("forja_autosave", JSON.stringify(state));
 }
 /* escala o card para caber na largura disponível (mobile) */
 function fitCard(){
