@@ -384,27 +384,34 @@ Quando a Guardiã das Brumas entrar no campo de batalha, exile uma criatura alvo
   <button id="toPreview" class="to-preview" aria-label="Ver a prévia da carta">▲ Prévia</button>
 
   <script src="https://cdn.jsdelivr.net/npm/html-to-image@1.11.11/dist/html-to-image.js"></script>
-  <script>
-    // Configuração PÚBLICA vem das variáveis de ambiente, via /api/config.
+ <script>
+    // Configuração PÚBLICA via cache instantâneo
     window.__forgeConfigReady = (async () => {
       let cfg = {};
+      
+      // 1. TENTA O CACHE LOCAL PRIMEIRO (Tempo de carregamento: 0 milissegundos)
       try {
-        const r = await fetch("/api/config", { cache: "no-store" });
+        const backup = localStorage.getItem('forge_config_backup');
+        if (backup) {
+          cfg = JSON.parse(backup);
+          if (cfg.SUPABASE_URL) {
+            window.FORGE_CONFIG = Object.assign({}, window.FORGE_CONFIG || {}, cfg);
+            return window.FORGE_CONFIG; // Retorna e monta o botão de login na hora!
+          }
+        }
+      } catch(err) {}
+
+      // 2. SE NÃO TIVER CACHE (primeiro acesso da pessoa), busca na Vercel
+      try {
+        const r = await fetch("/api/config");
         if (r.ok) {
           cfg = await r.json();
-          // Guarda um backup no navegador para contornar o "cold start" do Render
-          localStorage.setItem('forge_config_backup', JSON.stringify(cfg));
+          if (cfg.SUPABASE_URL) {
+            localStorage.setItem('forge_config_backup', JSON.stringify(cfg));
+          }
         }
       } catch (e) {
-        console.warn("Servidor inativo. A tentar usar a cache local...");
-      }
-      
-      // Se a requisição falhou (servidor a dormir), resgata do backup
-      if (!cfg.SUPABASE_URL) {
-        try {
-          const backup = localStorage.getItem('forge_config_backup');
-          if (backup) cfg = JSON.parse(backup);
-        } catch(err) {}
+        console.warn("Erro ao buscar config", e);
       }
       
       window.FORGE_CONFIG = Object.assign({}, window.FORGE_CONFIG || {}, cfg);
