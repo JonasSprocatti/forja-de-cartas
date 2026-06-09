@@ -928,3 +928,16 @@ window.Forge.colorOf = function(data){
   if(c && c !== "auto") return c;
   try { return autoColor(data.mana || ""); } catch(e){ return "multi"; }
 };
+/* ============================================================
+   AUTO-SAVE RECOVERY
+   ============================================================ */
+window.addEventListener("DOMContentLoaded", () => {
+  const saved = localStorage.getItem("forja_autosave");
+  if (saved) {
+    try {
+      window.Forge.load(JSON.parse(saved));
+    } catch(e) {
+      console.error("Erro ao carregar o rascunho salvo.", e);
+    }
+  }
+});
