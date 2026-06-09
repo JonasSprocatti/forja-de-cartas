@@ -127,11 +127,20 @@ const acct = document.getElementById("acctArea");
     modal.querySelector("#gBtn").onclick = () =>
       sb.auth.signInWithOAuth({ provider: "google", options: { redirectTo: window.location.origin } });
     modal.querySelector("#loginBtn").onclick = async () => {
-      const { error } = await sb.auth.signInWithPassword({ email: modal.querySelector("#authEmail").value.trim(), password: modal.querySelector("#authPass").value });
+      const email = modal.querySelector("#authEmail").value.trim();
+      const password = modal.querySelector("#authPass").value;
+      if (!email || !password) return msg("Preencha o e-mail e a senha para entrar.");
+      
+      const { error } = await sb.auth.signInWithPassword({ email, password });
       msg(error ? error.message : ""); if (!error) closeModal();
     };
+    
     modal.querySelector("#signupBtn").onclick = async () => {
-      const { error } = await sb.auth.signUp({ email: modal.querySelector("#authEmail").value.trim(), password: modal.querySelector("#authPass").value });
+      const email = modal.querySelector("#authEmail").value.trim();
+      const password = modal.querySelector("#authPass").value;
+      if (!email || !password) return msg("Preencha um e-mail e uma senha para criar a conta.");
+      
+      const { error } = await sb.auth.signUp({ email, password });
       msg(error ? error.message : "Conta criada! Se pedir, confirme o e-mail e entre."); if (!error) closeModal();
     };
 
