@@ -144,24 +144,50 @@ const acct = document.getElementById("acctArea");
       msg(error ? error.message : "Conta criada! Se pedir, confirme o e-mail e entre."); if (!error) closeModal();
     };
 
-    async function refresh(session) {
+    // Desenha a área de conta IMEDIATAMENTE (logado ou não).
+    // A busca de VIP/admin/username acontece DEPOIS, FORA do lock de auth do
+    // Supabase. Fazer `await sb.from(...)` dentro do callback de
+    // onAuthStateChange causa deadlock do navigator.locks e trava a UI em
+    // "a carregar a conta…" após um refresh com sessão ativa.
+    function refresh(session) {
       const user = session?.user || null;
-      window.ForgeAuth.user = user; window.ForgeAuth.token = session?.access_token || null; window.ForgeAuth.isVip = false; window.ForgeAuth.isAdmin = false;
-      if (user) {
-        const { data } = await sb.from("profiles").select("username,is_vip,is_admin").eq("id", user.id).single();
-        window.ForgeAuth.isVip = !!(data && data.is_vip);
-        window.ForgeAuth.isAdmin = !!(data && data.is_admin);
-        renderAccount(data?.username || user.email, window.ForgeAuth.isVip);
-      } else renderAccount(null, false);
-      if (window.ForgeAds) window.ForgeAds.update(window.ForgeAuth.isVip);
+      window.ForgeAuth.user = user;
+      window.ForgeAuth.token = session?.access_token || null;
+      window.ForgeAuth.isVip = false;
+      window.ForgeAuth.isAdmin = false;
+
+      // 1) botões aparecem JÁ — nunca fica preso no estado de carregamento
+      renderAccount(user ? user.email : null, false);
+      if (!user) { if (window.ForgeAds) window.ForgeAds.update(false); return; }
+
+      // 2) enriquecimento adiado: setTimeout(0) tira a chamada de dentro do lock
+      setTimeout(async () => {
+        try {
+          const { data } = await sb.from("profiles")
+            .select("username,is_vip,is_admin").eq("id", user.id).single();
+          window.ForgeAuth.isVip = !!(data && data.is_vip);
+          window.ForgeAuth.isAdmin = !!(data && data.is_admin);
+          renderAccount(data?.username || user.email, window.ForgeAuth.isVip);
+        } catch (e) { console.warn("profiles:", e); }
+        if (window.ForgeAds) window.ForgeAds.update(window.ForgeAuth.isVip);
+      }, 0);
     }
-    sb.auth.getSession().then(async ({ data }) => {
-      await refresh(data.session);
+
+    let didInitParams = false;
+    function handleDeepLinks() {
+      if (didInitParams) return; didInitParams = true;
       const params = new URLSearchParams(location.search);
       if (params.get("col")) openCollectionById(params.get("col"));
       if (params.get("u")) openProfileByUsername(params.get("u"));
+    }
+
+    // INITIAL_SESSION já dispara no load com a sessão do storage, então cobre o
+    // primeiro render (não precisamos de um getSession() separado, que só criava
+    // corrida). NUNCA usar await de supabase diretamente neste callback.
+    sb.auth.onAuthStateChange((event, session) => {
+      refresh(session);
+      if (event === "INITIAL_SESSION" || event === "SIGNED_IN") setTimeout(handleDeepLinks, 0);
     });
-    sb.auth.onAuthStateChange((_e, session) => refresh(session));
 
     // ---------- VIP / pagamento ----------
     async function startCheckout() {
