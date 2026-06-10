@@ -646,13 +646,33 @@ const SAMPLES=[
    adv:{name:"Sumiço",mana:"B",type:"Instantâneo — Aventura",rules:"A criatura alvo recebe −3/−0 até o fim do turno."},rarity:"incomum"},
   {layout:"token",name:"Dragão",mana:"",type:"Ficha de Criatura — Dragão",pt:"5/5",rules:"Voar",rarity:"comum",artist:"você",collector:"—"},
 ];
-$("btnRandom").addEventListener("click",()=>{
-  if(!confirm("Carregar um exemplo aleatório? Isto substitui a carta atual — o que não estiver salvo será perdido.")) return;
+/* sorteia uma carta REAL do Scryfall (mesmo mapeamento do "Buscar").
+   restringe a cartas de papel comuns para mapear bem e dar "ar de realidade". */
+async function randomScryfall(){
+  const q="-is:funny -is:digital -t:token -t:emblem -t:plane -t:phenomenon -t:scheme -t:vanguard -t:conspiracy";
+  const r=await fetch(`https://api.scryfall.com/cards/random?q=${encodeURIComponent(q)}`,{headers:{Accept:"application/json"}});
+  if(!r.ok) throw new Error("Scryfall retornou "+r.status);
+  return r.json();
+}
+/* fallback local (usado offline ou se o Scryfall falhar) */
+function loadLocalSample(){
   const s=SAMPLES[Math.floor(Math.random()*SAMPLES.length)];
   Object.assign(state,{name:"",mana:"",type:"",rules:"",flavor:"",pt:"",loyalty:"4",defense:"5",pw:[],saga:[],cls:[],
     adv:{name:"",mana:"",type:"",rules:""},color:"auto",rarity:"incomum",artist:"você",collector:"001/250"});
   Object.assign(state,s); state.showBack=false; $("fLayout").value=state.layout;
-  populate(); applyLayoutVisibility(); renderRows(); render(); toast("Exemplo carregado.");
+  populate(); applyLayoutVisibility(); renderRows(); render();
+}
+$("btnRandom").addEventListener("click",async()=>{
+  if(!confirm("Carregar um exemplo aleatório? Isto substitui a carta atual — o que não estiver salvo será perdido.")) return;
+  const btn=$("btnRandom"), label=btn.textContent;
+  btn.disabled=true; btn.textContent="⟳ Sorteando…";
+  try{
+    const c=await randomScryfall(); mapScryfall(c);
+    toast("Exemplo: "+(c.name||"carta")+" — dados reais em inglês, edite à vontade.");
+  }catch(err){
+    loadLocalSample();
+    toast("Sem conexão com o Scryfall — carreguei um exemplo local.");
+  }finally{ btn.disabled=false; btn.textContent=label; }
 });
 
 /* ============================================================
