@@ -32,9 +32,16 @@ const acct = document.getElementById("acctArea");
         <p class="fmodal-hint" id="authMsg"></p>
       </div></div>`);
     const drawer = el(`
-      <div class="fdrawer" hidden><div class="fdrawer-box">
-        <div class="fdrawer-head"><h2>Minhas cartas</h2><button class="fmodal-x" data-closed>✕</button></div>
-        <div id="cardList" class="card-list"></div>
+      <div class="fmodal fgallery fmine" hidden><div class="fgallery-box">
+        <div class="fdrawer-head">
+          <h2>Minhas cartas</h2>
+          <div class="gal-head-r">
+            <input id="mineSearch" placeholder="Buscar por nome…" />
+            <button class="fmodal-x" data-closed>✕</button>
+          </div>
+        </div>
+        <div class="mine-toolbar"><span class="mine-count" id="mineCount"></span></div>
+        <div id="mineGrid" class="gal-grid"></div>
       </div></div>`);
     const gallery = el(`
       <div class="fmodal fgallery" hidden><div class="fgallery-box">
@@ -116,6 +123,7 @@ const acct = document.getElementById("acctArea");
     const show = (n) => (n.hidden = false), hide = (n) => (n.hidden = true);
     const openModal = () => show(modal), closeModal = () => hide(modal);
     const openDrawer = () => { show(drawer); loadMyCards(); }, closeDrawer = () => hide(drawer);
+    drawer.querySelector("#mineSearch").addEventListener("input", () => renderMyCards());
     const openGallery = () => { show(gallery); loadGallery(); };
     modal.addEventListener("click", (e) => { if (e.target.dataset.close !== undefined || e.target === modal) closeModal(); });
     drawer.addEventListener("click", (e) => { if (e.target.dataset.closed !== undefined || e.target === drawer) closeDrawer(); });
@@ -246,21 +254,47 @@ const acct = document.getElementById("acctArea");
       const { error } = await sb.from("cards").insert({ user_id: window.ForgeAuth.user.id, name: data.name || "Sem nome", layout: data.layout, color: data.color, data });
       T(error ? "Erro ao salvar: " + error.message : "Carta salva!", !!error);
     }
+    let myCards = [];
     async function loadMyCards() {
-      const list = drawer.querySelector("#cardList"); list.innerHTML = `<p class="muted">carregando…</p>`;
+      const grid = drawer.querySelector("#mineGrid"); grid.innerHTML = `<p class="muted">carregando…</p>`;
       const { data, error } = await sb.from("cards").select("id,name,layout,is_public,data,created_at").eq("user_id", window.ForgeAuth.user.id).order("updated_at", { ascending: false });
-      if (error) return (list.innerHTML = `<p class="muted">erro: ${error.message}</p>`);
-      if (!data.length) return (list.innerHTML = `<p class="muted">Nenhuma carta salva ainda.</p>`);
-      list.innerHTML = "";
-      data.forEach((c) => {
-        const row = el(`<div class="card-row"><div class="card-row-info"><b>${esc(c.name || "Sem nome")}</b><span>${esc(c.layout || "")}${c.is_public ? " · pública" : ""}</span></div>
-          <div class="card-row-actions"><button data-a="load">Abrir</button><button data-a="dup">Duplicar</button><button data-a="col">❖ Coleção</button><button data-a="pub">${c.is_public ? "Tornar privada" : "Publicar"}</button><button data-a="del" class="danger">Apagar</button></div></div>`);
-        row.querySelector('[data-a="load"]').onclick = () => { window.Forge.load(c.data); closeDrawer(); T("Carta aberta."); };
-        row.querySelector('[data-a="dup"]').onclick = () => { window.Forge.load(c.data); closeDrawer(); T("Cópia aberta — edite e salve para criar uma nova."); };
-        row.querySelector('[data-a="col"]').onclick = () => pickCollectionForCard(c.id, c.name);
-        row.querySelector('[data-a="pub"]').onclick = async () => { const { error } = await sb.from("cards").update({ is_public: !c.is_public }).eq("id", c.id); if (error) T(error.message, true); else loadMyCards(); };
-        row.querySelector('[data-a="del"]').onclick = async () => { const { error } = await sb.from("cards").delete().eq("id", c.id); if (error) T(error.message, true); else loadMyCards(); };
-        list.appendChild(row);
+      if (error) { grid.innerHTML = `<p class="muted">erro: ${error.message}</p>`; return; }
+      myCards = data || [];
+      renderMyCards();
+    }
+    function renderMyCards() {
+      const grid = drawer.querySelector("#mineGrid");
+      const count = drawer.querySelector("#mineCount");
+      const q = (drawer.querySelector("#mineSearch").value || "").trim().toLowerCase();
+      count.textContent = myCards.length ? `${myCards.length} carta${myCards.length > 1 ? "s" : ""} salva${myCards.length > 1 ? "s" : ""}` : "";
+      if (!myCards.length) { grid.innerHTML = `<p class="mine-empty">Você ainda não salvou nenhuma carta. Monte uma carta e clique em <b>⤓ Salvar</b>.</p>`; return; }
+      const rows = q ? myCards.filter((c) => (c.name || "").toLowerCase().includes(q)) : myCards;
+      if (!rows.length) { grid.innerHTML = `<p class="mine-empty">Nenhuma carta encontrada para “${esc(q)}”.</p>`; return; }
+      grid.innerHTML = "";
+      rows.forEach((c) => {
+        const pub = c.is_public;
+        const item = el(`<div class="gal-item mine-item">
+          <div class="gthumb"><div class="card"></div></div>
+          <div class="gal-meta">
+            <b>${esc(c.name || "Sem nome")}</b>
+            <span>${esc(c.layout || "—")} · <span class="mine-badge ${pub ? "pub" : "priv"}">${pub ? "pública" : "privada"}</span></span>
+          </div>
+          <div class="mine-actions">
+            <button data-a="load">Abrir</button>
+            <button data-a="dup">Duplicar</button>
+            <button data-a="col">❖ Coleção</button>
+            <button data-a="pub">${pub ? "Tornar privada" : "Publicar"}</button>
+            <button data-a="del" class="danger">Apagar</button>
+          </div></div>`);
+        window.Forge.previewInto(item.querySelector(".card"), c.data);
+        const openInEditor = () => { window.Forge.load(c.data); closeDrawer(); T("Carta aberta."); };
+        item.querySelector(".gthumb").onclick = openInEditor;
+        item.querySelector('[data-a="load"]').onclick = openInEditor;
+        item.querySelector('[data-a="dup"]').onclick = () => { window.Forge.load(c.data); closeDrawer(); T("Cópia aberta — edite e salve para criar uma nova."); };
+        item.querySelector('[data-a="col"]').onclick = () => pickCollectionForCard(c.id, c.name);
+        item.querySelector('[data-a="pub"]').onclick = async () => { const { error } = await sb.from("cards").update({ is_public: !c.is_public }).eq("id", c.id); if (error) T(error.message, true); else loadMyCards(); };
+        item.querySelector('[data-a="del"]').onclick = async () => { if (!confirm(`Apagar “${c.name || "Sem nome"}”? Esta ação não pode ser desfeita.`)) return; const { error } = await sb.from("cards").delete().eq("id", c.id); if (error) T(error.message, true); else loadMyCards(); };
+        grid.appendChild(item);
       });
     }
 

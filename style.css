@@ -1000,3 +1000,43 @@ body {
 .feat-meta { margin-top: 6px; font-size: 12px; line-height: 1.25; }
 .feat-meta b { display: block; color: var(--parch); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .feat-meta span { color: var(--parch-dim); }
+
+/* ===================== MINHAS CARTAS (tela cheia) ===================== */
+.fmine .gal-head-r { flex: 1; justify-content: flex-end; }
+.fmine #mineSearch {
+  font-family: "EB Garamond", serif; font-size: 15px; color: var(--parch);
+  background: var(--ink); border: 1px solid var(--line); border-radius: 8px;
+  padding: 8px 12px; min-width: 180px; max-width: 320px; flex: 1;
+}
+.fmine #mineSearch:focus { outline: none; border-color: var(--brass); }
+.mine-toolbar { display: flex; align-items: center; min-height: 18px; margin: 2px 0 12px; }
+.mine-count { font-size: 13px; color: var(--parch-dim); font-style: italic; }
+
+.mine-item {
+  background: var(--ink); border: 1px solid var(--line); border-radius: 14px;
+  padding: 12px 12px 14px; gap: 10px; transition: border-color .15s, transform .15s;
+}
+.mine-item:hover { border-color: var(--brass); transform: translateY(-2px); }
+.mine-item .gthumb { align-self: center; }
+
+.mine-badge { display: inline-block; font-size: 10px; line-height: 1.6; padding: 0 7px; border-radius: 999px; border: 1px solid var(--line); }
+.mine-badge.pub { color: #bfe3c0; border-color: rgba(120,200,140,.45); }
+.mine-badge.priv { color: var(--parch-dim); }
+
+.mine-actions { display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; margin-top: 2px; }
+.mine-actions button {
+  font-family: "Cinzel", serif; font-size: 11px; cursor: pointer;
+  background: rgba(201,161,74,.1); color: var(--brass-hi);
+  border: 1px solid var(--line); border-radius: 7px; padding: 5px 9px;
+}
+.mine-actions button:hover { border-color: var(--brass); }
+.mine-actions .danger { color: #f4c9b8; }
+.mine-actions .danger:hover { border-color: var(--ember); }
+
+.mine-empty { grid-column: 1 / -1; text-align: center; color: var(--parch-dim); font-style: italic; padding: 48px 0; }
+
+@media (max-width: 720px) {
+  .fmine .fdrawer-head { flex-wrap: wrap; gap: 8px; }
+  .fmine .gal-head-r { width: 100%; }
+  .fmine #mineSearch { max-width: none; }
+}
