@@ -5,6 +5,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="google-adsense-account" content="ca-pub-9827780756194019" />
   <link rel="icon" type="image/png" href="favicon.png" />
   <title>Forja de Cartas · Card Forge</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -391,7 +392,7 @@ Quando a Guardiã das Brumas entrar no campo de batalha, exile uma criatura alvo
       
       // 1. TENTA O CACHE LOCAL PRIMEIRO (Tempo de carregamento: 0 milissegundos)
       try {
-        const backup = localStorage.getItem('forge_config_backup');
+        const backup = localStorage.getItem('forge_config_backup_v2');
         if (backup) {
           cfg = JSON.parse(backup);
           if (cfg.SUPABASE_URL) {
@@ -407,7 +408,7 @@ Quando a Guardiã das Brumas entrar no campo de batalha, exile uma criatura alvo
         if (r.ok) {
           cfg = await r.json();
           if (cfg.SUPABASE_URL) {
-            localStorage.setItem('forge_config_backup', JSON.stringify(cfg));
+            localStorage.setItem('forge_config_backup_v2', JSON.stringify(cfg));
           }
         }
       } catch (e) {
