@@ -15,6 +15,26 @@
     s.src = "https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=" + encodeURIComponent(client);
     document.head.appendChild(s);
   }
+  function watchFill(host, ins) {
+    // O AdSense escreve data-ad-status="filled" | "unfilled" no <ins> assim que
+    // a requisição resolve. Se não preencher (site em revisão, sem inventário,
+    // bloqueador), recolhemos o espaço para não exibir a caixa "Publicidade" vazia.
+    let settled = false;
+    const collapse = () => { settled = true; host.hidden = true; host.dataset.filled = ""; };
+    const obs = new MutationObserver(() => {
+      const status = ins.getAttribute("data-ad-status");
+      if (!status || settled) return;
+      obs.disconnect();
+      if (status === "filled") { settled = true; }      // mantém visível
+      else collapse();                                   // "unfilled" → recolhe
+    });
+    obs.observe(ins, { attributes: true, attributeFilter: ["data-ad-status"] });
+    // Fallback: se em 6s não houver status "filled" (ex.: script bloqueado), recolhe.
+    setTimeout(() => {
+      if (settled) return;
+      if (ins.getAttribute("data-ad-status") !== "filled") { obs.disconnect(); collapse(); }
+    }, 6000);
+  }
   function showAds() {
     if (adsShown || !client) return;
     adsShown = true;
@@ -34,6 +54,7 @@
       ins.setAttribute("data-full-width-responsive", "true");
       host.appendChild(ins);
       try { (window.adsbygoogle = window.adsbygoogle || []).push({}); } catch (e) {}
+      watchFill(host, ins);
     });
   }
   function hideAds() {
