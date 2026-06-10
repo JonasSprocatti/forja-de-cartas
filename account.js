@@ -152,23 +152,18 @@ const acct = document.getElementById("acctArea");
       msg(error ? error.message : "Conta criada! Se pedir, confirme o e-mail e entre."); if (!error) closeModal();
     };
 
-    // Desenha a área de conta IMEDIATAMENTE (logado ou não).
-    // A busca de VIP/admin/username acontece DEPOIS, FORA do lock de auth do
-    // Supabase. Fazer `await sb.from(...)` dentro do callback de
-    // onAuthStateChange causa deadlock do navigator.locks e trava a UI em
-    // "a carregar a conta…" após um refresh com sessão ativa.
+    // Desenha a area de conta IMEDIATAMENTE (logado ou nao). A busca de
+    // VIP/admin/username acontece DEPOIS, FORA do lock de auth do Supabase.
+    // Fazer await sb.from(...) dentro do callback de onAuthStateChange causa
+    // deadlock do navigator.locks e trava a UI em "a carregar a conta...".
     function refresh(session) {
       const user = session?.user || null;
       window.ForgeAuth.user = user;
       window.ForgeAuth.token = session?.access_token || null;
       window.ForgeAuth.isVip = false;
       window.ForgeAuth.isAdmin = false;
-
-      // 1) botões aparecem JÁ — nunca fica preso no estado de carregamento
       renderAccount(user ? user.email : null, false);
       if (!user) { if (window.ForgeAds) window.ForgeAds.update(false); return; }
-
-      // 2) enriquecimento adiado: setTimeout(0) tira a chamada de dentro do lock
       setTimeout(async () => {
         try {
           const { data } = await sb.from("profiles")
@@ -189,9 +184,6 @@ const acct = document.getElementById("acctArea");
       if (params.get("u")) openProfileByUsername(params.get("u"));
     }
 
-    // INITIAL_SESSION já dispara no load com a sessão do storage, então cobre o
-    // primeiro render (não precisamos de um getSession() separado, que só criava
-    // corrida). NUNCA usar await de supabase diretamente neste callback.
     sb.auth.onAuthStateChange((event, session) => {
       refresh(session);
       if (event === "INITIAL_SESSION" || event === "SIGNED_IN") setTimeout(handleDeepLinks, 0);

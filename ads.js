@@ -16,20 +16,19 @@
     document.head.appendChild(s);
   }
   function watchFill(host, ins) {
-    // O AdSense escreve data-ad-status="filled" | "unfilled" no <ins> assim que
-    // a requisição resolve. Se não preencher (site em revisão, sem inventário,
-    // bloqueador), recolhemos o espaço para não exibir a caixa "Publicidade" vazia.
+    // O AdSense escreve data-ad-status="filled"|"unfilled" no <ins> quando a
+    // requisicao resolve. Se nao preencher (site em revisao, sem inventario,
+    // bloqueador), recolhemos o espaco para nao exibir a caixa "Publicidade" vazia.
     let settled = false;
     const collapse = () => { settled = true; host.hidden = true; host.dataset.filled = ""; };
     const obs = new MutationObserver(() => {
       const status = ins.getAttribute("data-ad-status");
       if (!status || settled) return;
       obs.disconnect();
-      if (status === "filled") { settled = true; }      // mantém visível
-      else collapse();                                   // "unfilled" → recolhe
+      if (status === "filled") { settled = true; }
+      else collapse();
     });
     obs.observe(ins, { attributes: true, attributeFilter: ["data-ad-status"] });
-    // Fallback: se em 6s não houver status "filled" (ex.: script bloqueado), recolhe.
     setTimeout(() => {
       if (settled) return;
       if (ins.getAttribute("data-ad-status") !== "filled") { obs.disconnect(); collapse(); }

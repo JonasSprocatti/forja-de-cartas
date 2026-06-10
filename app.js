@@ -300,7 +300,22 @@ function render(){
   card.innerHTML = inner;
   applyOverlays(card);
   fitCard();
-  localStorage.setItem("forja_autosave", JSON.stringify(state));
+  saveDraft();
+}
+/* auto-save do rascunho. So grava DEPOIS do boot (window.__autosaveReady);
+   senao o render() inicial (carta padrao) sobrescreveria o rascunho da sessao
+   anterior antes de o DOMContentLoaded restaura-lo. */
+function saveDraft(){
+  if(!window.__autosaveReady) return;
+  let json;
+  try { json = JSON.stringify(state); } catch(e){ return; }
+  try { localStorage.setItem("forja_autosave", json); }
+  catch(e){
+    try {
+      const light = Object.assign({}, state, { art:null, backArt:null, overlays:[] });
+      localStorage.setItem("forja_autosave", JSON.stringify(light));
+    } catch(_){ /* cota estourada: desiste em silencio */ }
+  }
 }
 /* escala o card para caber na largura disponível (mobile) */
 function fitCard(){
@@ -819,6 +834,19 @@ window.Forge.previewInto = function(el, data){
   window.addEventListener("scroll",onScroll,{passive:true}); onScroll();
 })();
 
+/* menu hamburguer (mobile) - recolhe os botoes da topbar num dropdown */
+(function(){
+  const tb = document.querySelector(".topbar");
+  const toggle = document.getElementById("navToggle");
+  const actions = document.getElementById("topbarActions");
+  if(!tb || !toggle || !actions) return;
+  const close = () => { tb.classList.remove("nav-open"); toggle.setAttribute("aria-expanded","false"); };
+  const open  = () => { tb.classList.add("nav-open");  toggle.setAttribute("aria-expanded","true");  };
+  toggle.addEventListener("click", (e) => { e.stopPropagation(); tb.classList.contains("nav-open") ? close() : open(); });
+  actions.addEventListener("click", (e) => { if (e.target.closest("button")) close(); });
+  document.addEventListener("click", (e) => { if (tb.classList.contains("nav-open") && !tb.contains(e.target)) close(); });
+})();
+
 /* ============================================================
    FOLHA DE IMPRESSÃO (proxies — 3×3, 63×88 mm, PDF via navegador)
    ============================================================ */
@@ -932,6 +960,8 @@ window.Forge.colorOf = function(data){
    AUTO-SAVE RECOVERY
    ============================================================ */
 window.addEventListener("DOMContentLoaded", () => {
+  // Restaura o rascunho da sessao anterior ANTES de habilitar a gravacao, para
+  // que o render() do boot (carta padrao) nao o sobrescreva antes de o lermos.
   const saved = localStorage.getItem("forja_autosave");
   if (saved) {
     try {
@@ -940,4 +970,6 @@ window.addEventListener("DOMContentLoaded", () => {
       console.error("Erro ao carregar o rascunho salvo.", e);
     }
   }
+  window.__autosaveReady = true;
+  saveDraft();
 });
