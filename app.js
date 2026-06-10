@@ -647,6 +647,7 @@ const SAMPLES=[
   {layout:"token",name:"Dragão",mana:"",type:"Ficha de Criatura — Dragão",pt:"5/5",rules:"Voar",rarity:"comum",artist:"você",collector:"—"},
 ];
 $("btnRandom").addEventListener("click",()=>{
+  if(!confirm("Carregar um exemplo aleatório? Isto substitui a carta atual — o que não estiver salvo será perdido.")) return;
   const s=SAMPLES[Math.floor(Math.random()*SAMPLES.length)];
   Object.assign(state,{name:"",mana:"",type:"",rules:"",flavor:"",pt:"",loyalty:"4",defense:"5",pw:[],saga:[],cls:[],
     adv:{name:"",mana:"",type:"",rules:""},color:"auto",rarity:"incomum",artist:"você",collector:"001/250"});
