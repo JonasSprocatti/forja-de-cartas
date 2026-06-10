@@ -309,11 +309,11 @@ function saveDraft(){
   if(!window.__autosaveReady) return;
   let json;
   try { json = JSON.stringify(state); } catch(e){ return; }
-  try { localStorage.setItem("forja_autosave", json); }
+  try { localStorage.setItem("forja_autosave", json); flashSaved(); }
   catch(e){
     try {
       const light = Object.assign({}, state, { art:null, backArt:null, overlays:[] });
-      localStorage.setItem("forja_autosave", JSON.stringify(light));
+      localStorage.setItem("forja_autosave", JSON.stringify(light)); flashSaved();
     } catch(_){ /* cota estourada: desiste em silencio */ }
   }
 }
@@ -847,11 +847,13 @@ window.Forge.previewInto = function(el, data){
   }
 };
 
-/* botão flutuante "ver prévia" no mobile */
+/* barra de ações flutuante no mobile (prévia + exportar) */
 (function(){
-  const tp=document.getElementById("toPreview"); if(!tp) return;
-  tp.addEventListener("click",()=>{ const s=document.querySelector(".stage"); if(s) s.scrollIntoView({behavior:"smooth",block:"start"}); });
-  const onScroll=()=>tp.classList.toggle("show", window.scrollY>440);
+  const bar=document.getElementById("mobileBar"); if(!bar) return;
+  const prev=document.getElementById("mbPreview"), exp=document.getElementById("mbExport");
+  if(prev) prev.addEventListener("click",()=>{ const s=document.querySelector(".stage"); if(s) s.scrollIntoView({behavior:"smooth",block:"start"}); });
+  if(exp)  exp.addEventListener("click",()=>{ const b=document.getElementById("btnExport"); if(b) b.click(); });
+  const onScroll=()=>bar.classList.toggle("show", window.scrollY>440);
   window.addEventListener("scroll",onScroll,{passive:true}); onScroll();
 })();
 
@@ -987,10 +989,95 @@ window.addEventListener("DOMContentLoaded", () => {
   if (saved) {
     try {
       window.Forge.load(JSON.parse(saved));
+      if (typeof toast === "function") toast("Rascunho restaurado.");
     } catch(e) {
       console.error("Erro ao carregar o rascunho salvo.", e);
     }
   }
   window.__autosaveReady = true;
   saveDraft();
+});
+
+
+/* ============================================================
+   MELHORIAS DE UX (lote)
+   ============================================================ */
+
+/* indicador de auto-save */
+let __saveFlashT=null;
+function flashSaved(){
+  const el=document.getElementById("saveStatus"); if(!el) return;
+  el.textContent="✓ rascunho salvo"; el.classList.add("show");
+  clearTimeout(__saveFlashT);
+  __saveFlashT=setTimeout(()=>el.classList.remove("show"),1600);
+}
+
+/* Nova carta (em branco) */
+function newCard(){
+  Object.assign(state,{
+    layout:"normal", color:"auto", name:"", mana:"", type:"", rules:"", flavor:"", pt:"",
+    rarity:"incomum", artist:"você", collector:"001/250", art:"", backArt:"",
+    loyalty:"4", defense:"5", pw:[], saga:[], cls:[],
+    adv:{name:"",mana:"",type:"",rules:""}, split:{name:"",mana:"",type:"",rules:""},
+    back:{name:"",mana:"",type:"",rules:"",flavor:"",pt:""},
+    showBack:false, frame:"", style:"modern", foil:false, frameEdit:null, overlays:[]
+  });
+  $("fLayout").value="normal";
+  populate(); applyLayoutVisibility(); renderRows(); renderOvList(); render();
+}
+(function(){ const b=$("btnNew"); if(b) b.addEventListener("click",()=>{
+  if(!confirm("Começar uma carta nova em branco? Isto substitui a carta atual — o que não estiver salvo será perdido.")) return;
+  newCard(); toast("Carta nova.");
+}); })();
+
+/* pips de mana clicáveis */
+(function(){
+  const pips=$("manaPips"), fm=$("fMana"); if(!pips||!fm) return;
+  pips.addEventListener("click",(e)=>{
+    const b=e.target.closest("button"); if(!b) return;
+    const m=b.dataset.m; let v=fm.value;
+    if(m==="clear") v="";
+    else if(m==="1"){ const g=v.match(/^(\d+)/); v=g?((parseInt(g[1],10)+1)+v.slice(g[1].length)):("1"+v); }
+    else v=v+m;
+    fm.value=v; collect(); render();
+  });
+})();
+
+/* colar imagem da área de transferência -> arte */
+document.addEventListener("paste",(e)=>{
+  const items=(e.clipboardData||{}).items||[];
+  for(const it of items){ if(it.type && it.type.startsWith("image/")){ const f=it.getAsFile(); if(f){ readFile(f,false); toast("Imagem colada como arte."); } return; } }
+});
+
+/* autocomplete do Scryfall (datalist) */
+(function(){
+  const inp=$("scryName"), dl=$("scryAC"); if(!inp||!dl) return;
+  let t=null, last="";
+  inp.addEventListener("input",()=>{
+    const q=inp.value.trim(); if(q.length<2||q===last) return; last=q;
+    clearTimeout(t); t=setTimeout(async()=>{
+      try{
+        const r=await fetch(`https://api.scryfall.com/cards/autocomplete?q=${encodeURIComponent(q)}`);
+        if(!r.ok) return; const j=await r.json();
+        dl.innerHTML=(j.data||[]).map(n=>`<option value="${String(n).replace(/"/g,"&quot;")}"></option>`).join("");
+      }catch(_){}
+    },220);
+  });
+})();
+
+/* atalhos de teclado: Ctrl/Cmd+S = Salvar, Ctrl/Cmd+E = Exportar */
+document.addEventListener("keydown",(e)=>{
+  const k=(e.key||"").toLowerCase();
+  if((e.ctrlKey||e.metaKey)&&k==="s"){ e.preventDefault(); const sb=document.getElementById("saveBtn"); if(sb) sb.click(); else toast("Faça login para salvar.",true); }
+  else if((e.ctrlKey||e.metaKey)&&k==="e"){ e.preventDefault(); const ex=document.getElementById("btnExport"); if(ex) ex.click(); }
+});
+
+/* ESC fecha o modal/painel aberto no topo */
+document.addEventListener("keydown",(e)=>{
+  if(e.key!=="Escape") return;
+  const open=[...document.querySelectorAll(".fmodal, .fdrawer, .fgallery")].filter(n=>!n.hidden);
+  if(!open.length) return;
+  const top=open[open.length-1];
+  const x=top.querySelector(".fmodal-x, [data-closed]");
+  if(x) x.click(); else top.hidden=true;
 });

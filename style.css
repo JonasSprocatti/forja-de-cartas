@@ -1064,3 +1064,55 @@ body {
   .topbar-actions #acctArea .btn { width: 100%; justify-content: center; }
   .topbar-actions .acct-user { justify-content: center; padding: 4px 0; }
 }
+
+/* ===================== MELHORIAS DE UX (lote) ===================== */
+
+/* indicador de auto-save */
+.save-status { text-align: center; font-size: 12px; color: #bfe3c0; font-style: italic; height: 16px; margin-top: 8px; opacity: 0; transition: opacity .25s; }
+.save-status.show { opacity: 1; }
+
+/* divisor sutil acima das ações da carta */
+.stage-controls { border-top: 1px solid rgba(201,161,74,.14); padding-top: 14px; }
+
+/* pips de mana clicáveis */
+.mana-pips { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 8px; }
+.mana-pips button {
+  min-width: 30px; height: 28px; padding: 0 8px; cursor: pointer;
+  font-family: "Cinzel", serif; font-weight: 600; font-size: 12px;
+  border: 1px solid var(--line); border-radius: 7px; background: var(--ink); color: var(--parch);
+}
+.mana-pips button:hover { border-color: var(--brass); }
+.mana-pips .mp-clear { color: var(--parch-dim); margin-left: auto; }
+.mana-pips .mp-w { background: #f5f1e0; color: #2b2410; }
+.mana-pips .mp-u { background: #1c5b8c; color: #eaf3fb; }
+.mana-pips .mp-b { background: #2a2730; color: #d9d4df; }
+.mana-pips .mp-r { background: #8a2b22; color: #fbe6e0; }
+.mana-pips .mp-g { background: #2b6b3f; color: #e6f4ea; }
+.mana-pips .mp-c { background: #cdc7ba; color: #2b2410; }
+
+/* skeletons de carregamento (galeria / Minhas cartas) */
+@keyframes skel { 0% { background-position: -200px 0; } 100% { background-position: calc(200px + 100%) 0; } }
+.skel-card {
+  height: 269px; border-radius: 14px; border: 1px solid var(--line);
+  background: linear-gradient(90deg, rgba(255,255,255,.02) 25%, rgba(201,161,74,.10) 37%, rgba(255,255,255,.02) 63%);
+  background-size: 200px 100%; animation: skel 1.2s ease-in-out infinite;
+}
+
+/* foco visível (acessibilidade — teclado) */
+:focus-visible { outline: 2px solid var(--brass); outline-offset: 2px; }
+
+/* barra de ações flutuante (mobile) */
+.mobile-bar { display: none; }
+@media (max-width: 640px) {
+  .mobile-bar {
+    position: fixed; left: 12px; right: 12px; bottom: 12px; z-index: 45;
+    display: flex; gap: 8px; opacity: 0; transform: translateY(120%); pointer-events: none;
+    transition: opacity .2s, transform .2s;
+  }
+  .mobile-bar.show { opacity: 1; transform: none; pointer-events: auto; }
+  .mobile-bar .mb-btn {
+    flex: 1; height: 48px; cursor: pointer; font-family: "Cinzel", serif; font-weight: 600; font-size: 14px;
+    border: 1px solid var(--brass); border-radius: 12px; background: var(--ink-2); color: var(--brass-hi); box-shadow: var(--shadow);
+  }
+  .mobile-bar .mb-gold { background: linear-gradient(180deg, #caa24a, #a9842f); color: #241a07; border-color: #caa24a; }
+}

@@ -257,7 +257,7 @@ const acct = document.getElementById("acctArea");
     }
     let myCards = [];
     async function loadMyCards() {
-      const grid = drawer.querySelector("#mineGrid"); grid.innerHTML = `<p class="muted">carregando…</p>`;
+      const grid = drawer.querySelector("#mineGrid"); grid.innerHTML = Array.from({length:6}).map(()=>`<div class="skel-card"></div>`).join("");
       const { data, error } = await sb.from("cards").select("id,name,layout,is_public,data,created_at").eq("user_id", window.ForgeAuth.user.id).order("updated_at", { ascending: false });
       if (error) { grid.innerHTML = `<p class="muted">erro: ${error.message}</p>`; return; }
       myCards = data || [];
@@ -334,7 +334,7 @@ const acct = document.getElementById("acctArea");
       });
     }
     async function loadGallery() {
-      const grid = gallery.querySelector("#galGrid"); grid.innerHTML = `<p class="muted">carregando…</p>`;
+      const grid = gallery.querySelector("#galGrid"); grid.innerHTML = Array.from({length:6}).map(()=>`<div class="skel-card"></div>`).join("");
       bindGalleryControls();
       const sort = gallery.querySelector("#gallerySort").value;
       const search = gallery.querySelector("#galSearch").value.trim();

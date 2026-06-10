@@ -47,7 +47,8 @@
       <div class="scry-bar">
         <span class="field-label">ↆ Importar carta real (Scryfall)</span>
         <div class="scry-row">
-          <input type="text" id="scryName" placeholder="nome da carta (ex.: Lightning Bolt, Teferi)" />
+          <input type="text" id="scryName" list="scryAC" placeholder="nome da carta (ex.: Lightning Bolt, Teferi)" />
+          <datalist id="scryAC"></datalist>
           <button id="btnScry" class="btn btn-ghost"><span class="btn-txt">Buscar</span><span class="btn-spin" hidden></span></button>
         </div>
         <p class="hint">Puxa nome, custo, tipo, regras, P/R, raridade e layout (em inglês). A ilustração não é importada — use a sua.</p>
@@ -162,6 +163,17 @@
           <label class="field grow" data-show="normal planeswalker saga class battle adventure token dfc split">
             <span class="field-label">Custo de mana</span>
             <input type="text" id="fMana" value="2WU" placeholder="ex.: 3, 1G, 2WU, XR" />
+            <div class="mana-pips" id="manaPips">
+              <button type="button" data-m="1">＋1</button>
+              <button type="button" data-m="W" class="mp-w">W</button>
+              <button type="button" data-m="U" class="mp-u">U</button>
+              <button type="button" data-m="B" class="mp-b">B</button>
+              <button type="button" data-m="R" class="mp-r">R</button>
+              <button type="button" data-m="G" class="mp-g">G</button>
+              <button type="button" data-m="C" class="mp-c">C</button>
+              <button type="button" data-m="X">X</button>
+              <button type="button" data-m="clear" class="mp-clear">limpar</button>
+            </div>
           </label>
           <label class="field">
             <span class="field-label">Cor do frame</span>
@@ -349,8 +361,10 @@ Quando a Guardiã das Brumas entrar no campo de batalha, exile uma criatura alvo
       <div class="stage-controls">
         <button id="btnExport" class="btn btn-gold">⤓ Exportar PNG</button>
         <button id="btnRandom" class="btn btn-ghost">⟳ Exemplo</button>
+        <button id="btnNew" class="btn btn-ghost">✦ Nova carta</button>
         <button id="btnFlip" class="btn btn-ghost" hidden>⟲ Virar carta</button>
       </div>
+      <div class="save-status" id="saveStatus" aria-live="polite"></div>
       <p class="stage-hint">A prévia atualiza enquanto você digita. Clique em <b>Exportar PNG</b> para baixar.</p>
     </section>
   </main>
@@ -384,7 +398,10 @@ Quando a Guardiã das Brumas entrar no campo de batalha, exile uma criatura alvo
     </div>
   </div>
 
-  <button id="toPreview" class="to-preview" aria-label="Ver a prévia da carta">▲ Prévia</button>
+  <div id="mobileBar" class="mobile-bar" aria-hidden="true">
+    <button id="mbPreview" class="mb-btn">▲ Prévia</button>
+    <button id="mbExport" class="mb-btn mb-gold">⤓ Exportar</button>
+  </div>
 
   <script src="https://cdn.jsdelivr.net/npm/html-to-image@1.11.11/dist/html-to-image.js"></script>
  <script>
