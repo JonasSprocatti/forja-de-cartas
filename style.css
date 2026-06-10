@@ -1055,6 +1055,7 @@ body {
     background: var(--ink-2); border: 1px solid var(--brass); border-radius: 12px;
     padding: 10px; box-shadow: var(--shadow); z-index: 60;
   }
+  .topbar.nav-open { z-index: 90; }
   .topbar.nav-open .topbar-actions { display: flex; }
   .topbar-actions .btn { width: 100%; justify-content: center; }
   .topbar-actions #acctArea {
