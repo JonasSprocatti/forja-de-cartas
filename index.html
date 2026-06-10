@@ -24,11 +24,10 @@
         <p>crie qualquer tipo de carta de batalha</p>
       </div>
     </div>
+    <div id="topbarPrimary" class="topbar-primary"></div>
     <button id="navToggle" class="nav-toggle" aria-label="Abrir menu" aria-expanded="false" aria-controls="topbarActions">☰</button>
     <div id="topbarActions" class="topbar-actions">
-      <button id="btnExport" class="btn btn-gold">⤓ Exportar PNG</button>
-      <button id="btnPrint" class="btn btn-ghost">🖨 Folha</button>
-      <button id="btnRandom" class="btn btn-ghost">⟳ Exemplo</button>
+      <button id="btnPrint" class="btn btn-ghost">🖨 Criar folha de impressão</button>
       <div id="acctArea" class="acct">
   <span style="color: var(--parch-dim); font-size: 13px; font-style: italic;">a carregar a conta...</span>
 </div>
@@ -348,6 +347,8 @@ Quando a Guardiã das Brumas entrar no campo de batalha, exile uma criatura alvo
         </div>
       </div>
       <div class="stage-controls">
+        <button id="btnExport" class="btn btn-gold">⤓ Exportar PNG</button>
+        <button id="btnRandom" class="btn btn-ghost">⟳ Exemplo</button>
         <button id="btnFlip" class="btn btn-ghost" hidden>⟲ Virar carta</button>
       </div>
       <p class="stage-hint">A prévia atualiza enquanto você digita. Clique em <b>Exportar PNG</b> para baixar.</p>

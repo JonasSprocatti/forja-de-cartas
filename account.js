@@ -214,27 +214,36 @@ const acct = document.getElementById("acctArea");
     }
 
     function renderAccount(name, vip) {
+      const prim = document.getElementById("topbarPrimary");
       const gal = `<button class="btn btn-ghost" id="galBtn">✦ Galeria</button>`;
       if (!name) {
-        acct.innerHTML = gal + `<button class="btn btn-gold" id="entrarBtn">Entrar</button>`;
-        acct.querySelector("#entrarBtn").onclick = openModal;
+        // deslogado: "Entrar" fica sempre visível (fora do hambúrguer)
+        if (prim) {
+          prim.innerHTML = `<button class="btn btn-gold" id="entrarBtn">Entrar</button>`;
+          prim.querySelector("#entrarBtn").onclick = openModal;
+        }
+        acct.innerHTML = gal;
       } else {
+        // "Virar VIP" e "Salvar" sempre visíveis (fora do hambúrguer)
+        if (prim) {
+          prim.innerHTML =
+            `${vip ? "" : '<button class="btn btn-gold" id="vipBtn">★ Virar VIP</button>'}
+             <button class="btn btn-ghost" id="saveBtn">⤓ Salvar</button>`;
+          const sbtn = prim.querySelector("#saveBtn"); if (sbtn) sbtn.onclick = saveCard;
+          const vb = prim.querySelector("#vipBtn"); if (vb) vb.onclick = startCheckout;
+        }
         acct.innerHTML = gal +
-          `<button class="btn btn-ghost" id="saveBtn">⤓ Salvar</button>
-           <button class="btn btn-ghost" id="mineBtn">▣ Minhas cartas</button>
+          `<button class="btn btn-ghost" id="mineBtn">▣ Minhas cartas</button>
            <button class="btn btn-ghost" id="colBtn">❖ Coleções</button>
            <button class="btn btn-ghost" id="profBtn">☺ Perfil</button>
            ${window.ForgeAuth.isAdmin ? '<button class="btn btn-ghost" id="modBtn">⚑ Moderação</button>' : ""}
-           ${vip ? "" : '<button class="btn btn-gold" id="vipBtn">★ Virar VIP</button>'}
            <span class="acct-user">${vip ? '<span class="vip">VIP</span> ' : ""}${esc(name)}</span>
            <button class="btn btn-ghost" id="logoutBtn">Sair</button>`;
-        acct.querySelector("#saveBtn").onclick = saveCard;
         acct.querySelector("#mineBtn").onclick = openDrawer;
         acct.querySelector("#colBtn").onclick = openCollections;
         acct.querySelector("#profBtn").onclick = openProfileEditor;
         const mb = acct.querySelector("#modBtn"); if (mb) mb.onclick = openModeration;
         acct.querySelector("#logoutBtn").onclick = () => sb.auth.signOut();
-        const vb = acct.querySelector("#vipBtn"); if (vb) vb.onclick = startCheckout;
       }
       acct.querySelector("#galBtn").onclick = openGallery;
     }

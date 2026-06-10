@@ -67,6 +67,7 @@ body {
 }
 .brand p { margin: 2px 0 0; font-size: 13px; color: var(--parch-dim); font-style: italic; letter-spacing: .04em; }
 .topbar-actions { display: flex; gap: 10px; }
+.topbar-primary { display: flex; align-items: center; gap: 10px; margin-left: auto; }
 
 /* ----------------------------- BOTÕES ----------------------------- */
 .btn {
@@ -483,7 +484,7 @@ body {
 .dz-sm .dz-icon { font-size: 20px; }
 .dz-sm .dz-text { font-size: 13px; }
 
-.stage-controls { display: flex; justify-content: center; margin-top: 14px; }
+.stage-controls { display: flex; justify-content: center; flex-wrap: wrap; gap: 10px; margin-top: 14px; }
 
 /* ============================================================
    SÍMBOLOS EXTRA (tap, energia, phyrexiano, híbrido) + barra Scryfall
@@ -1043,7 +1044,6 @@ body {
   .nav-toggle {
     display: inline-flex; align-items: center; justify-content: center;
     width: 44px; height: 40px; font-size: 20px; line-height: 1; cursor: pointer;
-    margin-left: auto;
     background: rgba(201,161,74,.08); color: var(--brass-hi);
     border: 1px solid var(--line); border-radius: 9px;
   }
