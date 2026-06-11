@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="google-adsense-account" content="ca-pub-9827780756194019" />
+  <link rel="icon" type="image/png" href="favicon.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+  <title>Como usar · Forja de Cartas</title>
+  <meta name="description" content="Guia completo: como criar uma carta personalizada passo a passo — custo de mana, layouts, raridade, molduras, importação e exportação em PNG." />
+</head>
+<body>
+  <header class="doc-header"><a class="brand-link" href="/">✦ Forja de Cartas</a></header>
+  <main class="doc">
+    <h1>Como criar a sua carta</h1>
+    <p class="lead">Um guia passo a passo pelos campos do editor e pelos recursos da Forja de Cartas. Não precisa de conhecimento técnico — só preencher e ver a prévia montar sozinha.</p>
+
+    <h2>1. Escolha o layout</h2>
+    <p>O primeiro seletor define o <b>tipo de carta</b>: padrão (criatura, mágica, artefato, encantamento), planeswalker, saga, classe, batalha, aventura, carta dividida, ficha ou emblema. Cada um mostra os campos certos para aquele formato — por exemplo, planeswalker pede habilidades de lealdade, e saga pede capítulos.</p>
+
+    <h2>2. Nome, custo e tipo</h2>
+    <p>O <b>nome</b> aparece na barra de título. O <b>custo de mana</b> aceita duas formas: a compacta, como <code>2WU</code> (dois genéricos, um branco, um azul), ou a explícita com chaves, como <code>{2}{W}{U}</code>. Números são mana genérico; letras são mana colorido. Você também pode clicar nos botões de símbolo abaixo do campo para montar o custo sem decorar a sintaxe.</p>
+    <p>A <b>linha de tipo</b> é livre — algo como "Criatura — Humano Mago" ou "Mágica Instantânea". Use o travessão para separar o tipo da subcategoria.</p>
+
+    <h2>3. Regras e ambientação</h2>
+    <p>No <b>texto de regras</b> você descreve o que a carta faz. Símbolos entre chaves viram ícones automaticamente: <code>{T}</code> para virar, <code>{E}</code> para energia, custos de mana no meio do texto, e assim por diante. O <b>texto de ambientação</b> (flavor) aparece em itálico no rodapé da caixa — é a frase de clima, sem efeito de jogo.</p>
+
+    <h2>4. Poder/Resistência e raridade</h2>
+    <p>Criaturas usam o campo <b>P/R</b> (ex.: <code>3/4</code>). Planeswalkers usam lealdade; batalhas usam defesa. A <b>raridade</b> muda a cor do símbolo da coleção (comum, incomum, rara, mítica).</p>
+
+    <h2>5. Moldura, cor e acabamento</h2>
+    <p>A <b>cor da moldura</b> pode ser automática (deduzida do custo de mana) ou fixa. Você pode trocar o <b>estilo da moldura</b>, ativar o <b>foil</b> e, se tiver instalado, escolher uma <b>moldura personalizada</b> em PNG ou SVG.</p>
+
+    <h2>6. Arte</h2>
+    <p>Coloque a sua ilustração arrastando o arquivo para a janela de arte, clicando para escolher, ou colando direto da área de transferência (Ctrl/Cmd+V). A imagem fica atrás da moldura e aparece pela janela de arte.</p>
+
+    <h2>7. Importar de uma carta real</h2>
+    <p>No topo do editor, a busca puxa os dados de uma carta existente (nome, custo, tipo, regras, raridade e layout) para servir de base — em inglês, conforme a fonte. A ilustração não é importada: use sempre a sua. O botão <b>Exemplo</b> sorteia uma carta real aleatória para inspirar.</p>
+
+    <h2>8. Salvar e exportar</h2>
+    <p>Com a conta criada, você pode <b>salvar</b> a carta, reuni-la em <b>coleções</b> e <b>publicá-la</b> na galeria. A qualquer momento, <b>Exportar PNG</b> baixa a carta em alta resolução, pronta para imprimir ou compartilhar. O editor também guarda um rascunho automático, então um recarregamento acidental da página não perde o seu trabalho.</p>
+
+    <h2>Personalização avançada</h2>
+    <p>Quem quer aproximar ainda mais do visual que imagina pode adicionar <b>molduras completas</b> próprias (PNG ou SVG, com a janela de arte transparente), <b>símbolos de mana</b> personalizados e trocar as <b>fontes</b> do texto da carta. Tudo isso é feito por arquivos de configuração nas pastas de <i>assets</i>, sem mexer no código principal.</p>
+
+    <p class="muted-note">Dica: para impressão, use sempre a arte na maior resolução possível e prefira molduras em SVG, que não perdem nitidez ao ampliar.</p>
+  </main>
+  <footer class="site-footer">
+    <div class="ft-inner">
+      <div class="ft-about">
+        <b>Forja de Cartas</b> é um editor online gratuito para criar e exportar cartas de batalha personalizadas no estilo dos grandes jogos de cartas colecionáveis. Monte criaturas, mágicas, planeswalkers, sagas e mais — com molduras, símbolos de mana, raridade e arte própria, direto no navegador.
+      </div>
+      <nav class="ft-links" aria-label="Rodapé">
+        <a href="/sobre.html">Sobre</a>
+        <a href="/guia.html">Como usar</a>
+        <a href="/privacidade.html">Privacidade</a>
+        <a href="/termos.html">Termos</a>
+      </nav>
+    </div>
+    <div class="ft-copy">© 2026 Forja de Cartas — projeto de fã, sem afiliação, patrocínio ou endosso da Wizards of the Coast. Magic: The Gathering e seus símbolos são marcas registradas da Wizards of the Coast.</div>
+  </footer>
+</body>
+</html>
