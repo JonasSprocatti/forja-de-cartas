@@ -18,6 +18,7 @@ const state = {
   showBack: false, frame: "", style: "modern", foil: false, frameEdit: null, overlays: [],
 };
 const FRAMES={};
+const MANA={};  /* símbolos de mana customizados, carregados de assets/mana/mana.json */
 const clone=o=>JSON.parse(JSON.stringify(o));
 
 /* ---------- utilidades de render ---------- */
@@ -28,6 +29,10 @@ function halfCls(x){return /^\d+$/.test(x)?"N":(["W","U","B","R","G","C"].includ
 function pipSpan(raw){
   const code=(raw||"").trim().toUpperCase();
   if(code==="") return "";
+  const cm=MANA[code];
+  if(cm) return cm.src
+    ? `<span class="pip pip-img"><img src="${cm.src}" alt="${escapeHTML(code)}"></span>`
+    : `<span class="pip pip-N"${cm.color?` style="background:${cm.color};color:${cm.textColor||'#1c160c'}"`:""}>${escapeHTML(cm.text||code)}</span>`;
   if(/^\d+$/.test(code)) return `<span class="pip pip-N">${code}</span>`;
   if(["X","Y","Z"].includes(code)) return `<span class="pip pip-N">${code}</span>`;
   if(code==="T") return `<span class="pip pip-tap" title="vire">↻</span>`;
@@ -729,6 +734,15 @@ $("btnZoneCopy").addEventListener("click",async()=>{
   catch{ toast("Copie manualmente:\n"+out.slice(0,60)+"…",false); console.log(out); }
 });
 
+async function loadManaSymbols(){
+  try{
+    const r=await fetch("assets/mana/mana.json",{cache:"no-store"});
+    if(!r.ok) throw new Error("manifest "+r.status);
+    const list=await r.json();
+    (list||[]).forEach(m=>{ if(m && m.code) MANA[String(m.code).toUpperCase()]=m; });
+    render();
+  }catch(e){ /* pasta ausente ou file:// : usa só os símbolos embutidos */ }
+}
 async function loadFrames(){
   try{
     const r=await fetch("assets/frames/frames.json",{cache:"no-store"});
@@ -782,7 +796,7 @@ $("ovInput").addEventListener("change",e=>{
   r.readAsDataURL(f); e.target.value="";
 });
 
-collect(); applyLayoutVisibility(); renderRows(); renderOvList(); render(); loadFrames();
+collect(); applyLayoutVisibility(); renderRows(); renderOvList(); render(); loadFrames(); loadManaSymbols();
 window.addEventListener("resize", fitCard);
 window.addEventListener("orientationchange", ()=>setTimeout(fitCard, 250));
 window.addEventListener("load", fitCard);
