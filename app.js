@@ -1095,3 +1095,47 @@ document.addEventListener("keydown",(e)=>{
   const x=top.querySelector(".fmodal-x, [data-closed]");
   if(x) x.click(); else top.hidden=true;
 });
+
+
+/* ============================================================
+   HERO da home — cartas reais flutuando atrás de vidro fosco
+   ============================================================ */
+(function(){
+  const wrap=document.getElementById("heroCards");
+  const start=document.getElementById("heroStart");
+  if(start) start.addEventListener("click",()=>{ const m=document.querySelector("main.layout"); if(m) m.scrollIntoView({behavior:"smooth",block:"start"}); });
+  if(!wrap) return;
+  const reduce=window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const N = (window.innerWidth<640) ? 5 : 9;   /* menos cartas no mobile */
+
+  async function randomCardImage(){
+    const q="is:hires -is:funny game:paper lang:en";
+    const r=await fetch(`https://api.scryfall.com/cards/random?q=${encodeURIComponent(q)}`,{headers:{Accept:"application/json"}});
+    if(!r.ok) throw new Error("scryfall "+r.status);
+    const j=await r.json();
+    const iu=j.image_uris||(j.card_faces&&j.card_faces[0]&&j.card_faces[0].image_uris);
+    return iu ? (iu.normal||iu.large||iu.png) : null;
+  }
+
+  (async()=>{
+    for(let i=0;i<N;i++){
+      try{
+        const src=await randomCardImage(); if(!src) continue;
+        const img=new Image();
+        img.alt=""; img.loading="lazy"; img.decoding="async"; img.referrerPolicy="no-referrer";
+        img.className="hero-card";
+        img.style.left=(2+Math.random()*82)+"%";
+        img.style.top=(Math.random()*68)+"%";
+        img.style.setProperty("--rot",(Math.random()*26-13).toFixed(1)+"deg");
+        img.style.setProperty("--drift",(18+Math.random()*22).toFixed(0)+"px");
+        img.style.animationDuration=(16+Math.random()*12).toFixed(1)+"s";
+        img.style.animationDelay=(-Math.random()*14).toFixed(1)+"s";
+        if(reduce) img.style.animation="none";
+        img.addEventListener("load",()=>img.classList.add("on"));
+        img.src=src;
+        wrap.appendChild(img);
+      }catch(_){ /* sem rede / Scryfall fora: o hero fica só com o gradiente */ }
+      await new Promise(res=>setTimeout(res,140));   /* gentileza com a API (rate limit) */
+    }
+  })();
+})();

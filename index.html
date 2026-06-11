@@ -34,6 +34,19 @@
     </div>
   </header>
 
+  <section class="hero" id="hero">
+    <div class="hero-cards" id="heroCards" aria-hidden="true"></div>
+    <div class="hero-glass">
+      <h1>Forje a carta que só existe na sua imaginação</h1>
+      <p>Crie criaturas, mágicas, planeswalkers, sagas e muito mais no estilo dos grandes jogos de cartas colecionáveis — com molduras, símbolos de mana, raridade e a sua própria arte. Gratuito, direto no navegador, com exportação em alta resolução.</p>
+      <div class="hero-cta">
+        <button id="heroStart" class="btn btn-gold hero-btn">⚒ Começar a criar</button>
+        <a href="/guia.html" class="btn btn-ghost hero-btn">Como funciona</a>
+      </div>
+      <p class="hero-credit">Cartas ao fundo exibidas via <a href="https://scryfall.com" target="_blank" rel="noopener">Scryfall</a> · © Wizards of the Coast — apenas como demonstração; sem afiliação.</p>
+    </div>
+  </section>
+
   <div id="adTop" class="ad-slot" hidden></div>
 
   <main class="layout">
@@ -187,7 +200,8 @@
           </label>
         </div>
         <p class="hint hint-mana" data-show="normal planeswalker saga class battle adventure token dfc split">
-          Números = mana genérica; letras <b>W U B R G C X</b> = colorida. Ex.: <code>2WU</code></p>
+          <b>Modo compacto</b> (sem chaves): números = mana genérica; letras <b>W U B R G C X S T</b>. Ex.: <code>2WU</code><br>
+          <b>Com chaves</b> <code>{…}</code>: aceita <i>todos</i> os símbolos — <code>{E}</code> energia, <code>{P}</code> phyrexiano, <code>{Q}</code> desvirar, <code>{Y}</code>/<code>{Z}</code>, híbridos <code>{W/U}</code>, <code>{2/W}</code>, <code>{W/P}</code>… Símbolos como <code>E P Y Z Q</code> <b>só funcionam entre chaves</b>.</p>
 
         <label class="field" data-show="normal land battle adventure token dfc">
           <span class="field-label">Linha de tipo</span>
