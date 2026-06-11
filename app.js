@@ -1105,8 +1105,15 @@ document.addEventListener("keydown",(e)=>{
   const start=document.getElementById("heroStart");
   if(start) start.addEventListener("click",()=>{ const m=document.querySelector("main.layout"); if(m) m.scrollIntoView({behavior:"smooth",block:"start"}); });
   if(!wrap) return;
+  /* visitantes recorrentes: hero compacto (o editor fica a um toque) */
+  const hero=document.getElementById("hero");
+  try{
+    if(localStorage.getItem("forge_hero_seen")) hero.classList.add("hero-compact");
+    else localStorage.setItem("forge_hero_seen","1");
+  }catch(_){}
   const reduce=window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  const N = (window.innerWidth<640) ? 5 : 9;   /* menos cartas no mobile */
+  const w=window.innerWidth;
+  const N = w<640 ? 6 : (w<1100 ? 10 : 16);   /* desktop largo = mais cartas */
 
   async function randomCardImage(){
     const q="is:hires -is:funny game:paper lang:en";
@@ -1124,8 +1131,9 @@ document.addEventListener("keydown",(e)=>{
         const img=new Image();
         img.alt=""; img.loading="lazy"; img.decoding="async"; img.referrerPolicy="no-referrer";
         img.className="hero-card";
-        img.style.left=(2+Math.random()*82)+"%";
-        img.style.top=(Math.random()*68)+"%";
+        img.style.left=(2+Math.random()*84)+"%";
+        img.style.top=(Math.random()*74)+"%";
+        if(w>=640) img.style.width=(150+Math.random()*85).toFixed(0)+"px";  /* tamanhos variados = profundidade */
         img.style.setProperty("--rot",(Math.random()*26-13).toFixed(1)+"deg");
         img.style.setProperty("--drift",(18+Math.random()*22).toFixed(0)+"px");
         img.style.animationDuration=(16+Math.random()*12).toFixed(1)+"s";
