@@ -867,6 +867,8 @@ window.Forge.previewInto = function(el, data){
   const prev=document.getElementById("mbPreview"), exp=document.getElementById("mbExport");
   if(prev) prev.addEventListener("click",()=>{ const s=document.querySelector(".stage"); if(s) s.scrollIntoView({behavior:"smooth",block:"start"}); });
   if(exp)  exp.addEventListener("click",()=>{ const b=document.getElementById("btnExport"); if(b) b.click(); });
+  const sv=document.getElementById("mbSave");
+  if(sv) sv.addEventListener("click",()=>{ const b=document.getElementById("saveBtn"); if(b) b.click(); else toast("Faça login para salvar.",true); });
   const onScroll=()=>bar.classList.toggle("show", window.scrollY>440);
   window.addEventListener("scroll",onScroll,{passive:true}); onScroll();
 })();
@@ -1146,4 +1148,11 @@ document.addEventListener("keydown",(e)=>{
       await new Promise(res=>setTimeout(res,140));   /* gentileza com a API (rate limit) */
     }
   })();
+})();
+
+
+/* "Salvar" junto da carta (a topbar some ao rolar; este fica sempre por perto) */
+(function(){
+  const p=document.getElementById("btnSaveProxy"); if(!p) return;
+  p.addEventListener("click",()=>{ const b=document.getElementById("saveBtn"); if(b) b.click(); else toast("Faça login para salvar.",true); });
 })();

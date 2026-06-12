@@ -40,7 +40,19 @@ const acct = document.getElementById("acctArea");
             <button class="fmodal-x" data-closed>✕</button>
           </div>
         </div>
-        <div class="mine-toolbar"><span class="mine-count" id="mineCount"></span></div>
+        <div class="mine-toolbar">
+          <div class="mine-filters">
+            <select id="mineVis" title="Visibilidade">
+              <option value="">todas</option><option value="pub">públicas</option><option value="priv">privadas</option>
+            </select>
+            <select id="mineLayout" title="Layout"><option value="">todos os layouts</option></select>
+            <select id="mineSort" title="Ordenação">
+              <option value="new">mais recentes</option><option value="old">mais antigas</option>
+              <option value="az">nome A–Z</option><option value="za">nome Z–A</option>
+            </select>
+          </div>
+          <span class="mine-count" id="mineCount"></span>
+        </div>
         <div id="mineGrid" class="gal-grid"></div>
       </div></div>`);
     const gallery = el(`
@@ -124,6 +136,8 @@ const acct = document.getElementById("acctArea");
     const openModal = () => show(modal), closeModal = () => hide(modal);
     const openDrawer = () => { show(drawer); loadMyCards(); }, closeDrawer = () => hide(drawer);
     drawer.querySelector("#mineSearch").addEventListener("input", () => renderMyCards());
+    ["mineVis","mineLayout","mineSort"].forEach((id) =>
+      drawer.querySelector("#"+id).addEventListener("change", () => renderMyCards()));
     const openGallery = () => { show(gallery); loadGallery(); };
     modal.addEventListener("click", (e) => { if (e.target.dataset.close !== undefined || e.target === modal) closeModal(); });
     drawer.addEventListener("click", (e) => { if (e.target.dataset.closed !== undefined || e.target === drawer) closeDrawer(); });
@@ -217,14 +231,12 @@ const acct = document.getElementById("acctArea");
       const prim = document.getElementById("topbarPrimary");
       const gal = `<button class="btn btn-ghost" id="galBtn">✦ Galeria</button>`;
       if (!name) {
-        // deslogado: "Entrar" fica sempre visível (fora do hambúrguer)
         if (prim) {
           prim.innerHTML = `<button class="btn btn-gold" id="entrarBtn">Entrar</button>`;
           prim.querySelector("#entrarBtn").onclick = openModal;
         }
         acct.innerHTML = gal;
       } else {
-        // "Virar VIP" e "Salvar" sempre visíveis (fora do hambúrguer)
         if (prim) {
           prim.innerHTML =
             `${vip ? "" : '<button class="btn btn-gold" id="vipBtn">★ Virar VIP</button>'}
@@ -253,24 +265,46 @@ const acct = document.getElementById("acctArea");
       if (!window.ForgeAuth.user) return openModal();
       const data = window.Forge.serialize();
       const { error } = await sb.from("cards").insert({ user_id: window.ForgeAuth.user.id, name: data.name || "Sem nome", layout: data.layout, color: data.color, data });
-      T(error ? "Erro ao salvar: " + error.message : "Carta salva!", !!error);
+      if (!error) return T("Carta salva!");
+      const msg = error.message || "";
+      if (msg.includes("LIMITE_CARTAS")) T("Limite atingido: até 100 cartas a cada 6 horas. Tente novamente mais tarde.", true);
+      else if (msg.includes("USUARIO_BANIDO")) T("Sua conta está suspensa e não pode salvar cartas.", true);
+      else T("Erro ao salvar: " + msg, true);
     }
     let myCards = [];
     async function loadMyCards() {
-      const grid = drawer.querySelector("#mineGrid"); grid.innerHTML = Array.from({length:6}).map(()=>`<div class="skel-card"></div>`).join("");
+      const grid = drawer.querySelector("#mineGrid");
+      grid.innerHTML = Array.from({length:6}).map(()=>`<div class="skel-card"></div>`).join("");
       const { data, error } = await sb.from("cards").select("id,name,layout,is_public,data,created_at").eq("user_id", window.ForgeAuth.user.id).order("updated_at", { ascending: false });
       if (error) { grid.innerHTML = `<p class="muted">erro: ${error.message}</p>`; return; }
       myCards = data || [];
+      // popula o filtro de layouts com os que existem nas suas cartas (preserva a seleção)
+      const lsel = drawer.querySelector("#mineLayout"); const cur = lsel.value;
+      const layouts = [...new Set(myCards.map((c) => c.layout).filter(Boolean))].sort();
+      lsel.innerHTML = `<option value="">todos os layouts</option>` +
+        layouts.map((l) => `<option value="${esc(l)}"${l === cur ? " selected" : ""}>${esc(l)}</option>`).join("");
       renderMyCards();
     }
     function renderMyCards() {
       const grid = drawer.querySelector("#mineGrid");
       const count = drawer.querySelector("#mineCount");
       const q = (drawer.querySelector("#mineSearch").value || "").trim().toLowerCase();
-      count.textContent = myCards.length ? `${myCards.length} carta${myCards.length > 1 ? "s" : ""} salva${myCards.length > 1 ? "s" : ""}` : "";
-      if (!myCards.length) { grid.innerHTML = `<p class="mine-empty">Você ainda não salvou nenhuma carta. Monte uma carta e clique em <b>⤓ Salvar</b>.</p>`; return; }
-      const rows = q ? myCards.filter((c) => (c.name || "").toLowerCase().includes(q)) : myCards;
-      if (!rows.length) { grid.innerHTML = `<p class="mine-empty">Nenhuma carta encontrada para “${esc(q)}”.</p>`; return; }
+      const vis = drawer.querySelector("#mineVis").value;
+      const lay = drawer.querySelector("#mineLayout").value;
+      const sort = drawer.querySelector("#mineSort").value;
+      if (!myCards.length) { count.textContent = ""; grid.innerHTML = `<p class="mine-empty">Você ainda não salvou nenhuma carta. Monte uma carta e clique em <b>⤓ Salvar</b>.</p>`; return; }
+      let rows = myCards.slice();                                   // ordem base: mais recentes
+      if (q)   rows = rows.filter((c) => (c.name || "").toLowerCase().includes(q));
+      if (vis === "pub")  rows = rows.filter((c) => c.is_public);
+      if (vis === "priv") rows = rows.filter((c) => !c.is_public);
+      if (lay) rows = rows.filter((c) => c.layout === lay);
+      if (sort === "old") rows.reverse();
+      else if (sort === "az") rows.sort((a, b) => (a.name || "").localeCompare(b.name || "", "pt"));
+      else if (sort === "za") rows.sort((a, b) => (b.name || "").localeCompare(a.name || "", "pt"));
+      count.textContent = rows.length === myCards.length
+        ? `${myCards.length} carta${myCards.length > 1 ? "s" : ""}`
+        : `${rows.length} de ${myCards.length} carta${myCards.length > 1 ? "s" : ""}`;
+      if (!rows.length) { grid.innerHTML = `<p class="mine-empty">Nenhuma carta encontrada com esses filtros.</p>`; return; }
       grid.innerHTML = "";
       rows.forEach((c) => {
         const pub = c.is_public;
@@ -654,12 +688,49 @@ const acct = document.getElementById("acctArea");
     function openModeration() { show(modDrawer); loadModeration(); }
     async function loadModeration() {
       const list = modDrawer.querySelector("#modList"); list.innerHTML = `<p class="muted">carregando…</p>`;
-      const { data, error } = await sb.from("reports").select("card_id,reason,created_at,cards(*)").order("created_at", { ascending: false });
+      const { data, error } = await sb.from("reports").select("card_id,reporter_id,reason,created_at,cards(*)").order("created_at", { ascending: false });
       if (error) return (list.innerHTML = `<p class="muted">erro: ${error.message}</p>`);
       if (!data.length) return (list.innerHTML = `<p class="muted">Nenhuma denúncia no momento. 🎉</p>`);
       const byCard = {};
       data.forEach((r) => { const id = r.card_id; if (!byCard[id]) byCard[id] = { card: r.cards, reasons: [], count: 0 }; byCard[id].count++; if (r.reason) byCard[id].reasons.push(r.reason); });
+
+      // ---- agregação por AUTOR: denunciantes DISTINTOS (evita que uma só
+      // pessoa infle a contagem denunciando várias cartas do mesmo autor) ----
+      const byAuthor = {};
+      data.forEach((r) => {
+        const uid = r.cards && r.cards.user_id; if (!uid) return;
+        (byAuthor[uid] = byAuthor[uid] || new Set()).add(r.reporter_id);
+      });
+      const uids = Object.keys(byAuthor);
+      let profs = {};
+      if (uids.length) {
+        const { data: pr } = await sb.from("profiles").select("id,username,is_banned").in("id", uids);
+        (pr || []).forEach((p) => (profs[p.id] = p));
+      }
       list.innerHTML = "";
+      if (uids.length) {
+        const head = el(`<div class="mod-authors"><h3>Autores denunciados</h3></div>`);
+        uids.sort((a, b) => byAuthor[b].size - byAuthor[a].size).forEach((uid) => {
+          const p = profs[uid] || {}; const n = byAuthor[uid].size;
+          const name = p.username || uid.slice(0, 8) + "…";
+          const banned = !!p.is_banned;
+          const row = el(`<div class="mod-author-row">
+            <span><b>${esc(name)}</b> — ${n} denunciante${n > 1 ? "s" : ""} distinto${n > 1 ? "s" : ""}${banned ? ' · <b class="mod-banned">banido</b>' : ""}</span>
+            ${banned
+              ? '<button data-a="unban">Remover banimento</button>'
+              : (n >= 5 ? '<button data-a="ban" class="danger">Banir usuário</button>' : '<span class="muted">banir libera com 5+</span>')}
+          </div>`);
+          const act = row.querySelector("button[data-a]");
+          if (act) act.onclick = async () => {
+            const toBan = act.dataset.a === "ban";
+            if (toBan && !confirm(`Banir “${name}”? A conta não poderá salvar novas cartas e as cartas públicas dela serão ocultadas. (Reversível.)`)) return;
+            const { error } = await sb.rpc("admin_set_banned", { target: uid, banned: toBan });
+            if (error) T(error.message, true); else { T(toBan ? "Usuário banido." : "Banimento removido."); loadModeration(); }
+          };
+          head.appendChild(row);
+        });
+        list.appendChild(head);
+      }
       Object.entries(byCard).forEach(([id, info]) => {
         const c = info.card;
         const row = el(`<div class="card-row">
