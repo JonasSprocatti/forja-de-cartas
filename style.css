@@ -1134,10 +1134,13 @@ body {
 .c-flavor, .split-half .c-rules { font-family: var(--card-font-body); }
 .c-pt, .pw-loyalty, .battle-def { font-family: var(--card-font-pt); }
 
-/* Para usar uma fonte própria (ex.: parecida com Magic), descomente e ajuste:
-@font-face { font-family: "CartaTitulo"; src: url("assets/fonts/minha-fonte.woff2") format("woff2"); font-display: swap; }
-:root { --card-font-title: "CartaTitulo", "Cinzel", serif; }
-   (A fonte oficial "Beleren" é da Wizards — use uma alternativa livre.) */
+@font-face {
+  font-family: "Beleren Bold";
+  src: url("./Beleren2016-Bold.ttf") format("truetype");
+  font-style: normal;
+  font-weight: bold;
+  text-rendering: optimizeLegibility;
+}
 
 /* ===================== PÁGINAS DE CONTEÚDO + RODAPÉ ===================== */
 .doc-header { display: flex; align-items: center; padding: 16px 22px; border-bottom: 1px solid var(--line); }
