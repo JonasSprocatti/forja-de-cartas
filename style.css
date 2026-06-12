@@ -219,7 +219,7 @@ body {
   border-radius: 26px; padding: 18px;
   background: linear-gradient(150deg, #161310 0%, #050505 100%);
   box-shadow: var(--shadow);
-  font-family: "EB Garamond", serif;
+  font-family: "Beleren Bold", serif;
   transition: transform .4s ease;
 }
 .stage-inner:hover .card { transform: rotateY(-6deg) rotateX(3deg); }
