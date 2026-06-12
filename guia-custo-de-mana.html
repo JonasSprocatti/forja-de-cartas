@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="google-adsense-account" content="ca-pub-9827780756194019" />
+  <title>Custo de mana e símbolos · Forja de Cartas</title>
+  <meta name="description" content="Como funciona o custo de mana em cartas estilo Magic: mana genérica e colorida, a sintaxe compacta e com chaves, e todos os símbolos suportados." />
+  <link rel="icon" type="image/png" href="favicon.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header class="doc-header"><a class="brand-link" href="/">✦ Forja de Cartas</a></header>
+  <main class="doc">
+    <p class="doc-crumb"><a href="/guia.html">Guia</a> › <span>Custo de mana e símbolos</span></p>
+
+    <h1>Custo de mana e símbolos: o guia completo</h1>
+    <p class="lead">O custo de mana é o coração de quase toda carta. Ele diz quanto e que tipo de recurso é preciso para lançá-la — e na Forja de Cartas você o escreve de duas formas, dependendo de quão exótico é o símbolo.</p>
+
+    <h2>Genérica e colorida</h2>
+    <p>Existem dois grupos básicos. A <b>mana genérica</b> é representada por números e pode ser paga com qualquer tipo de mana: um custo <code>3</code> significa "três de mana, de onde vier". A <b>mana colorida</b> é representada por letras, cada uma de uma cor: <b>W</b> (branco), <b>U</b> (azul), <b>B</b> (preto), <b>R</b> (vermelho) e <b>G</b> (verde). Existe ainda o <b>C</b> de incolor, usado por cartas ligadas a Eldrazi e afins.</p>
+    <p>Um custo como <code>2WU</code> quer dizer: dois de mana genérica, mais um branco e um azul — quatro de mana no total, sendo dois deles obrigatoriamente daquelas cores. A ordem convencional escreve os números primeiro e as cores depois.</p>
+
+    <h2>As duas sintaxes</h2>
+    <p>No editor, o campo de custo aceita o <b>modo compacto</b>, sem chaves, ideal para o dia a dia: você digita <code>2WU</code> direto. Nesse modo, são reconhecidos os dígitos e as letras <code>W U B R G C X S T</code>.</p>
+    <p>Para símbolos especiais, use o <b>modo com chaves</b> <code>{…}</code>, em que cada símbolo vai entre chaves e <i>qualquer</i> código é aceito. Assim, <code>{2}{W}{U}</code> é equivalente a <code>2WU</code>, mas só com chaves você consegue energia <code>{E}</code>, phyrexiano <code>{P}</code>, desvirar <code>{Q}</code> e os marcadores <code>{Y}</code> e <code>{Z}</code>. <b>Guarde esta regra:</b> símbolos como <code>E P Y Z Q</code> só funcionam entre chaves.</p>
+
+    <h2>Símbolos variáveis e de ação</h2>
+    <p>O <b>X</b> representa um valor variável definido quando a carta é lançada — <code>XR</code> é "X mais um vermelho". Os símbolos <b>{T}</b> (virar) e <b>{Q}</b> (desvirar) aparecem em custos de habilidades, não no custo de lançamento: "{T}: adicione um mana" significa "vire esta carta para isso acontecer". Há ainda <b>{E}</b> (energia), <b>{S}</b> (mana de neve) e o <b>{P}</b> phyrexiano, que permite pagar com mana ou com 2 pontos de vida.</p>
+
+    <h2>Híbridos</h2>
+    <p>Símbolos híbridos podem ser pagos de mais de um jeito e usam a barra. O <b>híbrido de duas cores</b> <code>{W/U}</code> aceita branco ou azul. O <b>híbrido monocolor</b> <code>{2/W}</code> aceita dois genéricos ou um branco. E o <b>phyrexiano colorido</b> <code>{W/P}</code> aceita branco ou 2 pontos de vida. Todos eles exigem a forma com chaves.</p>
+
+    <h2>Símbolos personalizados</h2>
+    <p>Se você precisa de um símbolo que não existe por padrão — meio (½), infinito (∞) ou um totalmente inventado para o seu jogo — a Forja permite adicioná-lo por imagem (PNG ou SVG) e usá-lo com a mesma sintaxe entre chaves. Isso é configurado nos arquivos de <i>assets</i> do site, sem mexer no editor.</p>
+
+    <p>Com o custo dominado, o próximo passo é entender como cada <a href="/guia-tipos-de-carta.html">tipo de carta e layout</a> muda os campos disponíveis.</p>
+
+    <div class="doc-more">
+      <a href="/guia.html">← Voltar ao guia</a>
+    </div>
+  </main>
+  <footer class="site-footer">
+    <div class="ft-inner">
+      <div class="ft-about"><b>Forja de Cartas</b> é um editor online gratuito para criar e exportar cartas de batalha personalizadas no estilo dos grandes jogos de cartas colecionáveis.</div>
+      <nav class="ft-links" aria-label="Rodapé">
+        <a href="/sobre.html">Sobre</a><a href="/guia.html">Como usar</a><a href="/privacidade.html">Privacidade</a><a href="/termos.html">Termos</a>
+      </nav>
+    </div>
+    <div class="ft-copy">© 2026 Forja de Cartas — projeto de fã, sem afiliação com a Wizards of the Coast.</div>
+  </footer>
+</body>
+</html>

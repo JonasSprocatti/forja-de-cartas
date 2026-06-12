@@ -78,7 +78,7 @@ function credit(){const a=escapeHTML(state.artist.trim()||"—");const c=escapeH
 /* peças reutilizáveis */
 function elArt(url,cls){
   if(url) return `<div class="art-window ${cls||""}"><img src="${url}" alt=""></div>`;
-  return `<div class="art-window ${cls||""}"><div class="art-ph"><span>⛰</span></div></div>`;
+  return `<div class="art-window ${cls||""}"><div class="art-ph"><span class="art-ph-ico">⛰</span><span class="art-ph-txt">sua arte aqui</span></div></div>`;
 }
 function titleBar(name,mana){
   return `<div class="title-bar"><span class="c-name">${escapeHTML(name||"Sem nome")}</span><span class="c-mana">${pips(mana)}</span></div>`;
@@ -100,7 +100,7 @@ function bottomBar(pt){
 function renderFullArt(d){
   const f=(d.flavor||"").trim();
   return `<div class="card-frame fa">
-    <div class="fa-art">${d.art?`<img src="${d.art}" alt="">`:`<div class="art-ph"><span>⛰</span></div>`}</div>
+    <div class="fa-art${d.art?"":" fa-noart"}">${d.art?`<img src="${d.art}" alt="">`:`<div class="art-ph"><span class="art-ph-ico">⛰</span><span class="art-ph-txt">sua arte aqui</span></div>`}</div>
     <div class="fa-top">
       <span class="c-name">${escapeHTML(d.name||"Sem nome")}</span>
       <span class="c-mana">${pips(d.mana)}</span>
@@ -305,6 +305,7 @@ function render(){
   card.innerHTML = inner;
   applyOverlays(card);
   fitCard();
+  fitFullArt();
   saveDraft();
 }
 /* auto-save do rascunho. So grava DEPOIS do boot (window.__autosaveReady);
@@ -325,16 +326,41 @@ function saveDraft(){
 /* escala o card para caber na largura disponível (mobile) */
 function fitCard(){
   const inner=document.querySelector(".stage-inner"); if(!inner||!card) return;
+  // neutraliza o transform antes de medir, senão offsetWidth volta o valor já escalado
+  // e o zoom do navegador acumula erro (layout "quebra")
+  card.style.transform=""; card.style.transformOrigin="";
   const vw=document.documentElement.clientWidth||window.innerWidth||9999;
   const parentW=(inner.parentElement?inner.parentElement.clientWidth:inner.clientWidth)||vw;
   const stageW=Math.min(parentW, vw-16);
   const w0=card.offsetWidth||480, h0=card.offsetHeight||672;
   if(!stageW||!w0) return;
   const scale=Math.min(1, stageW/w0);
-  card.style.transformOrigin = scale<1 ? "top left" : "";
-  card.style.transform = scale<1 ? `scale(${scale})` : "";
-  inner.style.width  = scale<1 ? (w0*scale)+"px" : "";
-  inner.style.height = scale<1 ? (h0*scale)+"px" : "";
+  if(scale<1){
+    card.style.transformOrigin="top left";
+    card.style.transform=`scale(${scale})`;
+    inner.style.width=(w0*scale)+"px"; inner.style.height=(h0*scale)+"px";
+  } else { inner.style.width=""; inner.style.height=""; }
+}
+
+/* BUG full-art: encolhe o texto até caber no painel inferior, sem cortar nada */
+function fitFullArt(){
+  if(state.style!=="fullart"||!card) return;
+  const fa=card.querySelector(".card-frame.fa"); if(!fa) return;
+  const bottom=fa.querySelector(".fa-bottom"), txt=fa.querySelector(".fa-text");
+  if(!bottom||!txt) return;
+  const maxH=(card.offsetHeight||672)*0.60;   /* painel inferior no máx. 60% da carta */
+  let fs=15; txt.style.fontSize=fs+"px";
+  let guard=0;
+  while(bottom.offsetHeight>maxH && fs>8.5 && guard<60){ fs-=0.5; txt.style.fontSize=fs+"px"; guard++; }
+}
+
+/* refit ao redimensionar / dar zoom no navegador (zoom dispara resize) */
+let __fitT=null;
+function scheduleFit(){ clearTimeout(__fitT); __fitT=setTimeout(()=>{ fitCard(); fitFullArt(); },80); }
+window.addEventListener("resize", scheduleFit, {passive:true});
+if("ResizeObserver" in window){
+  const si=document.querySelector(".stage-inner");
+  if(si) new ResizeObserver(scheduleFit).observe(si.parentElement||si);
 }
 
 /* ============================================================
