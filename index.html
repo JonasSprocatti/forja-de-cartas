@@ -27,6 +27,9 @@
     <div id="topbarPrimary" class="topbar-primary"></div>
     <button id="navToggle" class="nav-toggle" aria-label="Abrir menu" aria-expanded="false" aria-controls="topbarActions">☰</button>
     <div id="topbarActions" class="topbar-actions">
+      <button id="btnSaveTop" class="btn btn-gold">💾 Salvar</button>
+      <button id="btnImport" class="btn btn-ghost">📥 Importar planilha</button>
+      <button id="btnSaved" class="btn btn-ghost">▣ Salvas</button>
       <button id="btnPrint" class="btn btn-ghost">🖨 Criar folha de impressão</button>
       <div id="acctArea" class="acct">
   <span style="color: var(--parch-dim); font-size: 13px; font-style: italic;">a carregar a conta...</span>
@@ -469,8 +472,10 @@ Quando a Guardiã das Brumas entrar no campo de batalha, exile uma criatura alvo
       return window.FORGE_CONFIG;
     })();
   </script>
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
   <script src="ads.js"></script>
   <script src="app.js"></script>
   <script type="module" src="account.js"></script>
+  <script src="forge-cards.js"></script>
 </body>
 </html>

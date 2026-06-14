@@ -1268,3 +1268,114 @@ body {
 .doc-articles a:hover { border-color: var(--brass); transform: translateY(-2px); }
 .doc-articles b { display: block; font-family: "Cinzel", serif; color: var(--brass-hi); font-size: 15px; margin-bottom: 4px; }
 .doc-articles span { font-family: "EB Garamond", serif; font-size: 14px; color: var(--parch-dim); line-height: 1.45; }
+
+/* ============================================================
+   IMPORTAÇÃO DE PLANILHA + GALERIAS LOCAIS (forge-cards.js)
+   ============================================================ */
+.fx-badge {
+  display: inline-block; min-width: 18px; padding: 0 5px; margin-left: 2px;
+  font-size: 11px; line-height: 17px; text-align: center; border-radius: 9px;
+  background: var(--brass); color: #241a07; font-family: "Cinzel", serif;
+}
+
+/* ---- modal importar ---- */
+.fx-import-box { width: min(480px, 94vw); }
+.fx-lead { margin: 0; color: var(--parch-dim); font-size: 14px; line-height: 1.5; }
+.fx-tmpl { align-self: flex-start; }
+.fx-drop { margin: 4px 0 2px; }
+.fx-drop .dz-icon { font-size: 30px; }
+.dropzone.drag { border-color: var(--brass); color: var(--parch); background: rgba(201,161,74,.08); }
+.fx-status { min-height: 16px; margin: 0; font-size: 13px; color: var(--brass-hi); text-align: center; }
+.fx-status.err { color: #f4c9b8; }
+
+/* ---- abas (facções/abas da planilha) ---- */
+.fx-tabs { display: flex; flex-wrap: wrap; gap: 8px; margin: 4px 0 14px; }
+.fx-tab {
+  font-family: "Cinzel", serif; font-size: 12px; cursor: pointer;
+  background: var(--ink); color: var(--parch-dim);
+  border: 1px solid var(--line); border-radius: 999px; padding: 7px 14px; transition: .15s;
+}
+.fx-tab:hover { border-color: var(--brass); color: var(--parch); }
+.fx-tab.on { background: linear-gradient(180deg, var(--brass-hi), var(--brass)); color: #2a1f08; border-color: var(--brass-deep); }
+.fx-tab span { opacity: .7; font-size: 11px; }
+.fx-tab.on span { opacity: .85; }
+
+/* ---- barra de ferramentas das galerias ---- */
+.fx-toolbar { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin-bottom: 14px; }
+.fx-sel { font-size: 13px; color: var(--parch-dim); font-style: italic; }
+.fx-tools { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.fx-cloud { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--parch); }
+.fx-sub { font-size: 13px; color: var(--parch-dim); font-style: italic; font-weight: 400; }
+
+/* ---- itens das galerias (revisão / salvas) ---- */
+.fx-item { position: relative; background: var(--ink); border: 1px solid var(--line); border-radius: 12px; padding: 10px; gap: 6px; }
+.fx-pick {
+  display: inline-flex; align-items: center; gap: 6px; align-self: flex-start;
+  font-family: "Cinzel", serif; font-size: 12px; color: var(--brass-hi); cursor: pointer;
+}
+.fx-pick input { width: 16px; height: 16px; accent-color: var(--brass); cursor: pointer; }
+.fx-item .gthumb { align-self: center; }
+.fx-item-acts { display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; }
+.fx-item-acts button {
+  font-family: "Cinzel", serif; font-size: 11px; cursor: pointer;
+  background: rgba(201,161,74,.1); color: var(--brass-hi);
+  border: 1px solid var(--line); border-radius: 7px; padding: 5px 10px; transition: .15s;
+}
+.fx-item-acts button:hover { border-color: var(--brass); }
+.fx-item-acts .danger { color: #f4c9b8; }
+.fx-item-acts .danger:hover { border-color: var(--ember); }
+
+/* grade um pouco mais densa para revisar muitas cartas */
+.fx-grid { grid-template-columns: repeat(auto-fill, minmax(212px, 1fr)); }
+
+/* ============================================================
+   RESPONSIVIDADE — ajustes adicionais
+   ============================================================ */
+/* nunca deixa nada estourar a largura da tela */
+html, body { max-width: 100%; overflow-x: hidden; }
+img, svg, video { max-width: 100%; }
+
+/* tablets / telas médias */
+@media (max-width: 1100px) {
+  .layout { grid-template-columns: minmax(340px, 420px) 1fr; }
+}
+
+/* empilhado: garante que a coluna não force rolagem horizontal */
+@media (max-width: 940px) {
+  .layout { grid-template-columns: minmax(0, 1fr); }
+  .panel, .stage { width: 100%; max-width: 100%; }
+}
+
+@media (max-width: 720px) {
+  .fgallery-box { width: 96vw; padding: 16px; }
+  .fx-toolbar { gap: 8px; }
+  .fx-tools .btn { font-size: 12px; padding: 9px 12px; }
+  .fx-grid { grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 12px; }
+  .fx-grid .gthumb { width: 150px; height: 210px; }
+  .fx-grid .gthumb .card { transform: scale(0.3125); }
+}
+
+@media (max-width: 640px) {
+  /* topbar: botões em coluna no menu recolhido já é tratado; aqui afina o toque */
+  .topbar-actions .btn { width: 100%; justify-content: center; }
+  .stage-controls { gap: 8px; }
+  .stage-controls .btn { flex: 1 1 44%; justify-content: center; }
+  /* campos com alvo de toque maior */
+  .field input, .field textarea, .field select { font-size: 16px; } /* evita zoom no iOS */
+  .mana-pips button { padding: 8px 11px; }
+  .scry-row { flex-wrap: wrap; }
+  .scry-row input { flex: 1 1 100%; }
+  .scry-row .btn { flex: 1 1 100%; justify-content: center; }
+  /* galerias em 2 colunas no celular (em vez de 1) p/ revisar mais rápido */
+  .fx-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; justify-items: center; }
+  .fx-grid .gthumb { width: 132px; height: 185px; }
+  .fx-grid .gthumb .card { transform: scale(0.275); }
+  .fx-tabs { gap: 6px; }
+  .fx-tab { padding: 6px 11px; }
+}
+
+@media (max-width: 380px) {
+  .fx-grid { grid-template-columns: 1fr; }
+  .fx-grid .gthumb { width: 168px; height: 235px; }
+  .fx-grid .gthumb .card { transform: scale(0.35); }
+}

@@ -271,6 +271,16 @@ const acct = document.getElementById("acctArea");
       else if (msg.includes("USUARIO_BANIDO")) T("Sua conta está suspensa e não pode salvar cartas.", true);
       else T("Erro ao salvar: " + msg, true);
     }
+    // permite que outros módulos (ex.: importação de planilha) salvem na conta
+    window.ForgeCloud = {
+      get available() { return !!(window.ForgeAuth && window.ForgeAuth.user); },
+      async save(data) {
+        if (!window.ForgeAuth || !window.ForgeAuth.user) throw new Error("not-logged");
+        const { error } = await sb.from("cards").insert({ user_id: window.ForgeAuth.user.id, name: data.name || "Sem nome", layout: data.layout, color: data.color, data });
+        if (error) throw error;
+        return true;
+      }
+    };
     let myCards = [];
     async function loadMyCards() {
       const grid = drawer.querySelector("#mineGrid");
