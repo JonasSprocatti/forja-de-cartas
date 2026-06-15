@@ -12,6 +12,8 @@ const acct = document.getElementById("acctArea");
   const { createClient } = await import("https://esm.sh/@supabase/supabase-js@2");
   const sb = createClient(cfg.SUPABASE_URL, cfg.SUPABASE_ANON_KEY);
     window.ForgeAuth = { user: null, token: null, isVip: false };
+    // configurações globais (limites de IA/cartas) — lidas do banco; padrões seguros aqui
+    window.ForgeSettings = window.ForgeSettings || { ai_art_enabled: true, ai_art_bulk_enabled: false, ai_art_daily_limit: 3, noncard_daily_limit: 100 };
     const T = (m, e) => (window.toastForge ? window.toastForge(m, e) : console.log(m));
     const esc = (s) => (s || "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
     const el = (html) => { const d = document.createElement("div"); d.innerHTML = html.trim(); return d.firstChild; };
@@ -185,6 +187,7 @@ const acct = document.getElementById("acctArea");
           window.ForgeAuth.isVip = !!(data && data.is_vip);
           window.ForgeAuth.isAdmin = !!(data && data.is_admin);
           renderAccount(data?.username || user.email, window.ForgeAuth.isVip);
+          loadSettings();
         } catch (e) { console.warn("profiles:", e); }
         if (window.ForgeAds) window.ForgeAds.update(window.ForgeAuth.isVip);
       }, 0);
@@ -246,13 +249,14 @@ const acct = document.getElementById("acctArea");
           `<button class="btn btn-ghost" id="mineBtn">▣ Minhas cartas</button>
            <button class="btn btn-ghost" id="colBtn">❖ Coleções</button>
            <button class="btn btn-ghost" id="profBtn">☺ Perfil</button>
-           ${window.ForgeAuth.isAdmin ? '<button class="btn btn-ghost" id="modBtn">⚑ Moderação</button>' : ""}
+           ${window.ForgeAuth.isAdmin ? '<button class="btn btn-ghost" id="modBtn">⚑ Moderação</button> <button class="btn btn-ghost" id="iaAdminBtn">⚙ IA &amp; limites</button>' : ""}
            <span class="acct-user">${vip ? '<span class="vip">VIP</span> ' : ""}${esc(name)}</span>
            <button class="btn btn-ghost" id="logoutBtn">Sair</button>`;
         acct.querySelector("#mineBtn").onclick = openDrawer;
         acct.querySelector("#colBtn").onclick = openCollections;
         acct.querySelector("#profBtn").onclick = openProfileEditor;
         const mb = acct.querySelector("#modBtn"); if (mb) mb.onclick = openModeration;
+        const ia = acct.querySelector("#iaAdminBtn"); if (ia) ia.onclick = openIaAdmin;
         acct.querySelector("#logoutBtn").onclick = () => sb.auth.signOut();
       }
       acct.querySelector("#galBtn").onclick = openGallery;
@@ -729,6 +733,71 @@ const acct = document.getElementById("acctArea");
       const { data, error } = await sb.from("collections").insert({ user_id: window.ForgeAuth.user.id, name }).select("id").single();
       if (error) return T(error.message, true);
       if (await addCardToCollection(data.id, ccpCardId)) hide(cardColPick);
+    };
+
+    // ====================== PAINEL ADMIN: IA & LIMITES ======================
+    // carrega as configurações globais do banco (limites de IA/cartas)
+    async function loadSettings() {
+      try {
+        const { data } = await sb.from("app_settings")
+          .select("ai_art_enabled,ai_art_bulk_enabled,ai_art_daily_limit,noncard_daily_limit")
+          .eq("id", 1).maybeSingle();
+        if (data) window.ForgeSettings = data;
+      } catch (_) { /* mantém os padrões */ }
+    }
+
+    const iaModal = el(`<div class="fmodal" hidden><div class="fmodal-box ia-admin-box">
+      <button class="fmodal-x" data-ia>✕</button>
+      <h2 class="fmodal-title">⚙ IA &amp; limites <span class="ia-tag">admin</span></h2>
+      <p class="ia-lead">Estes ajustes valem para todos os usuários e são aplicados no servidor.</p>
+      <label class="ia-row"><span>Geração de arte por IA ativada</span><input type="checkbox" id="iaEnabled"></label>
+      <label class="ia-row"><span>Permitir arte por IA na importação de planilha</span><input type="checkbox" id="iaBulk"></label>
+      <label class="ia-row"><span>Artes por IA por dia — cada VIP</span><input type="number" id="iaArtLimit" min="0" max="999"></label>
+      <label class="ia-row"><span>Máx. de cartas em 24h — não-VIP</span><input type="number" id="iaCardLimit" min="0" max="9999"></label>
+      <p class="ia-usage" id="iaUsage">Uso de arte por IA (24h): —</p>
+      <div class="fmodal-actions">
+        <button class="btn btn-ghost" id="iaReload">Recarregar</button>
+        <button class="btn btn-gold" id="iaSave">Salvar configurações</button>
+      </div>
+      <p class="ia-msg" id="iaMsg" aria-live="polite"></p>
+    </div></div>`);
+    document.body.appendChild(iaModal);
+    iaModal.addEventListener("click", (e) => { if (e.target.dataset.ia !== undefined || e.target === iaModal) hide(iaModal); });
+
+    async function loadIaUsage() {
+      const u = iaModal.querySelector("#iaUsage");
+      try {
+        const since = new Date(Date.now() - 24 * 3600 * 1000).toISOString();
+        const { count } = await sb.from("ai_art_usage").select("id", { count: "exact", head: true }).gte("created_at", since);
+        u.textContent = `Uso de arte por IA (24h, todos os usuários): ${count || 0} geração(ões)`;
+      } catch (_) { u.textContent = "Uso de arte por IA (24h): indisponível"; }
+    }
+
+    async function openIaAdmin() {
+      if (!window.ForgeAuth.isAdmin) return;
+      iaModal.querySelector("#iaMsg").textContent = "";
+      await loadSettings();
+      const s = window.ForgeSettings || {};
+      iaModal.querySelector("#iaEnabled").checked = !!s.ai_art_enabled;
+      iaModal.querySelector("#iaBulk").checked = !!s.ai_art_bulk_enabled;
+      iaModal.querySelector("#iaArtLimit").value = s.ai_art_daily_limit != null ? s.ai_art_daily_limit : 3;
+      iaModal.querySelector("#iaCardLimit").value = s.noncard_daily_limit != null ? s.noncard_daily_limit : 100;
+      show(iaModal);
+      loadIaUsage();
+    }
+    iaModal.querySelector("#iaReload").onclick = () => openIaAdmin();
+    iaModal.querySelector("#iaSave").onclick = async () => {
+      const msg = iaModal.querySelector("#iaMsg"); msg.textContent = "Salvando…";
+      const { error } = await sb.rpc("admin_update_settings", {
+        p_ai_art_enabled: iaModal.querySelector("#iaEnabled").checked,
+        p_ai_art_bulk_enabled: iaModal.querySelector("#iaBulk").checked,
+        p_ai_art_daily_limit: parseInt(iaModal.querySelector("#iaArtLimit").value, 10) || 0,
+        p_noncard_daily_limit: parseInt(iaModal.querySelector("#iaCardLimit").value, 10) || 0,
+      });
+      if (error) { msg.textContent = "Erro ao salvar: " + error.message; return; }
+      await loadSettings();
+      msg.textContent = "Configurações salvas ✓";
+      T("Configurações de IA atualizadas.");
     };
 
     // ====================== MODERAÇÃO (admin) ======================

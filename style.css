@@ -1317,7 +1317,37 @@ body {
 .fx-col-name { width: 100%; max-width: 360px; margin: 2px 0 2px 24px; padding: 8px 10px; background: var(--paper, #1a140c); color: var(--parch); border: 1px solid var(--line); border-radius: 8px; font-size: 14px; }
 .fx-col-name:focus { outline: none; border-color: var(--brass); }
 .fx-art-opt .hint { flex-basis: 100%; margin: 2px 0 0 24px; }
-.fx-progress { margin: -6px 0 12px; font-size: 13px; color: var(--brass-hi); font-style: italic; }
+
+/* ---- tela de progresso de salvamento ---- */
+.fx-prog-modal { z-index: 300; }
+.fx-prog-box {
+  position: relative; width: 440px; max-width: 100%;
+  background: var(--ink-2); border: 1px solid var(--brass); border-radius: 16px;
+  padding: 24px; box-shadow: var(--shadow); display: flex; flex-direction: column; gap: 12px;
+}
+.fx-prog-phase { margin: 0; font-size: 14px; color: var(--parch); min-height: 20px; line-height: 1.45; }
+.fx-prog-track { height: 12px; border-radius: 99px; background: var(--ink); border: 1px solid var(--line); overflow: hidden; }
+.fx-prog-fill { height: 100%; width: 0%; border-radius: 99px; background: linear-gradient(90deg, var(--brass), var(--brass-hi)); transition: width .3s ease; }
+.fx-prog-meta { display: flex; justify-content: space-between; font-size: 12px; color: var(--parch-dim); }
+.fx-prog-errors {
+  margin-top: 2px; max-height: 180px; overflow: auto;
+  background: rgba(196,86,55,.08); border: 1px solid var(--ember, #c45637); border-radius: 10px; padding: 10px 12px;
+}
+.fx-prog-errors b { display: block; color: #f4c9b8; font-size: 13px; margin-bottom: 6px; }
+.fx-prog-errors ul { margin: 0; padding-left: 18px; }
+.fx-prog-errors li { font-size: 12.5px; color: #f0d8cd; line-height: 1.5; word-break: break-word; }
+.fx-prog-close { justify-content: center; }
+
+/* ---- painel admin: IA & limites ---- */
+.ia-admin-box { width: 460px; gap: 10px; }
+.ia-tag { font-family: "EB Garamond", serif; font-size: 11px; font-style: italic; color: var(--ink-2, #0c0a07); background: var(--brass-hi); padding: 2px 8px; border-radius: 99px; vertical-align: middle; }
+.ia-lead { margin: -4px 0 6px; font-size: 13px; color: var(--parch-dim); font-style: italic; }
+.ia-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; font-size: 14px; color: var(--parch); padding: 7px 0; border-bottom: 1px solid var(--line); }
+.ia-row input[type="checkbox"] { width: 18px; height: 18px; accent-color: var(--brass); cursor: pointer; flex: none; }
+.ia-row input[type="number"] { width: 90px; padding: 7px 9px; background: var(--ink); color: var(--parch); border: 1px solid var(--line); border-radius: 8px; font-size: 14px; text-align: right; }
+.ia-row input[type="number"]:focus { outline: none; border-color: var(--brass); }
+.ia-usage { margin: 8px 0 2px; font-size: 13px; color: var(--brass-hi); }
+.ia-msg { margin: 4px 0 0; font-size: 13px; color: var(--parch-dim); min-height: 18px; }
 
 /* ---- itens das galerias (revisão / salvas) ---- */
 .fx-item { position: relative; background: var(--ink); border: 1px solid var(--line); border-radius: 12px; padding: 10px; gap: 6px; }

@@ -16,18 +16,6 @@
 
   const LIMIT_MSG = "Você excedeu o limite de criação de cartas diária para usuário não-VIP, aguarde 24 horas até utilizar novamente.";
 
-  /* ----- limite diário de geração de arte por IA (controle no navegador) ----- */
-  const ART_MAX = 100;
-  const ART_KEY = "forja_ai_art_daily_v1";
-  const todayStr = () => new Date().toISOString().slice(0, 10);
-  function artUsedToday() {
-    try { const o = JSON.parse(localStorage.getItem(ART_KEY) || "{}"); return o.date === todayStr() ? (o.n || 0) : 0; }
-    catch (_) { return 0; }
-  }
-  function bumpArt(n) {
-    try { let o = JSON.parse(localStorage.getItem(ART_KEY) || "{}"); if (o.date !== todayStr()) o = { date: todayStr(), n: 0 }; o.n = (o.n || 0) + n; localStorage.setItem(ART_KEY, JSON.stringify(o)); }
-    catch (_) {}
-  }
   /* proporção da arte por layout (parametrizada no código; padrão 3:2 = janela normal) */
   const ART_ASPECT = { saga: "3:4", planeswalker: "4:3", battle: "16:9", emblem: "16:9", class: "16:9", token: "4:3", land: "3:2" };
   const aspectFor = (layout) => ART_ASPECT[layout] || "3:2";
@@ -41,7 +29,7 @@
       r = await fetch("/api/generate-art", {
         method: "POST",
         headers: Object.assign({ "Content-Type": "application/json" }, token ? { Authorization: "Bearer " + token } : {}),
-        body: JSON.stringify({ prompt, aspect: aspectFor(data.layout) })
+        body: JSON.stringify({ prompt, aspect: aspectFor(data.layout), source: "bulk" })
       });
     } catch (netErr) {
       const e = new Error("falha de rede ao falar com a IA (" + (netErr.message || "sem conexão") + ")"); e.status = 0; throw e;
@@ -60,8 +48,8 @@
       try { return await generateArt(data, meta); }
       catch (e) {
         const st = e.status || 0;
-        const fatal = /vip|sess|login|api ?key|não configurada|exclusiv/i.test(e.message || "") || st === 401 || st === 403;
-        const transient = st === 429 || st === 0 || (st >= 500 && st <= 599);
+        const fatal = st === 401 || st === 403 || st === 429 || /vip|sess|login|api ?key|não configurada|exclusiv|limite|cota|desativad/i.test(e.message || "");
+        const transient = !fatal && (st === 0 || (st >= 500 && st <= 599));
         if (fatal || !transient || attempt >= 3) throw e;
         attempt++;
         const wait = 4000 * attempt; // 4s, 8s, 12s
@@ -528,9 +516,11 @@
             <label class="chk"><input type="checkbox" id="fxColOne" checked> Criar coleção chamada:</label>
             <input type="text" id="fxColName" class="fx-col-name" maxlength="80" value="${esc(baseName)}">`;
         }
-        if (vip) {
+        const cfg = window.ForgeSettings || {};
+        if (vip && cfg.ai_art_enabled && cfg.ai_art_bulk_enabled) {
+          const lim = cfg.ai_art_daily_limit != null ? cfg.ai_art_daily_limit : 3;
           html += `<label class="chk fx-art-opt"><input type="checkbox" id="fxArt"> ✨ Gerar arte por IA para as cartas marcadas
-            <span class="hint">exclusivo VIP · limite de ${ART_MAX} artes por dia · cada carta é gerada separadamente, então pode demorar um pouco</span></label>`;
+            <span class="hint">exclusivo VIP · limite de ${lim} arte(s) por dia · cada carta é gerada separadamente, pode demorar</span></label>`;
         }
       }
       box.innerHTML = html;
@@ -603,12 +593,12 @@
           toSave = chosen.slice(0, remaining);
         }
 
-        // quais cartas receberão arte por IA (VIP + checkbox, respeitando a cota do dia)
+        // quais cartas receberão arte por IA (VIP + checkbox; cap pelo limite configurado, servidor é a fonte da verdade)
         const wantArt = window.ForgeCloud.isVip && $("fxArt") && $("fxArt").checked;
         let artTargets = [];
         if (wantArt) {
-          const budget = ART_MAX - artUsedToday();
-          if (budget > 0) artTargets = toSave.filter((x) => !x.c.data.art).slice(0, budget);
+          const dailyLimit = (window.ForgeSettings && window.ForgeSettings.ai_art_daily_limit) || 0;
+          if (dailyLimit > 0) artTargets = toSave.filter((x) => !x.c.data.art).slice(0, dailyLimit);
         }
 
         const totalSteps = artTargets.length + toSave.length;
@@ -620,24 +610,24 @@
         // 2) geração de arte por IA (uma de cada vez, com novas tentativas em instabilidade)
         if (wantArt) {
           if (!artTargets.length) {
-            Prog.error(`Cota de arte por IA esgotada hoje (limite ${ART_MAX}/dia). As cartas serão salvas sem arte gerada.`);
+            Prog.error(`Cota de arte por IA esgotada hoje (limite ${(window.ForgeSettings && window.ForgeSettings.ai_art_daily_limit) || 0}/dia). As cartas serão salvas sem arte gerada.`);
           }
-          let interDelay = 1500; // espaçamento base; aumenta se a IA acusar limite por minuto (429)
+          let interDelay = 1500; // espaçamento base; aumenta se a IA acusar instabilidade (5xx/rede)
           for (let i = 0; i < artTargets.length; i++) {
             const x = artTargets[i];
             const nm = x.c.data.name || "Sem nome";
             Prog.phase(`Gerando arte por IA ${i + 1}/${artTargets.length} — “${nm}” (pode demorar)`);
             try {
               const img = await generateArtRetry(x.c.data, x.c.meta, (att, wait, e) => {
-                if (e.status === 429) interDelay = Math.min(9000, interDelay + 2000);
+                interDelay = Math.min(9000, interDelay + 1500);
                 Prog.phase(`IA ocupada (${e.message}). Tentando de novo em ${Math.round(wait / 1000)}s… (${att}/3) — “${nm}”`);
               });
-              x.c.data.art = img; bumpArt(1); renderReviewGrid();
+              x.c.data.art = img; renderReviewGrid();
             } catch (e) {
               const st = e.status || 0;
               Prog.error(`Arte de “${nm}”: ${e.message || "falha"}`);
-              if (/vip|sess|login|api ?key|não configurada|exclusiv/i.test(e.message || "") || st === 401 || st === 403) {
-                Prog.error("Geração de arte interrompida (credencial/VIP). As demais cartas serão salvas sem arte.");
+              if (st === 401 || st === 403 || st === 429 || /vip|sess|login|api ?key|não configurada|exclusiv|limite|cota|desativad/i.test(e.message || "")) {
+                Prog.error("Geração de arte interrompida (limite diário ou credencial). As demais cartas serão salvas sem arte.");
                 break;
               }
               // erro transitório que esgotou as tentativas: pula esta carta e segue para a próxima
