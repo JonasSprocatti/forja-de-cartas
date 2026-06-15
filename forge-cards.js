@@ -12,6 +12,35 @@
   const T = (m, e) => (window.toastForge ? window.toastForge(m, e) : console.log(m));
   const esc = (s) => (s == null ? "" : String(s)).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
   const el = (html) => { const d = document.createElement("div"); d.innerHTML = html.trim(); return d.firstChild; };
+  const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+
+  const LIMIT_MSG = "Você excedeu o limite de criação de cartas diária para usuário não-VIP, aguarde 24 horas até utilizar novamente.";
+
+  /* ----- limite diário de geração de arte por IA (controle no navegador) ----- */
+  const ART_MAX = 100;
+  const ART_KEY = "forja_ai_art_daily_v1";
+  const todayStr = () => new Date().toISOString().slice(0, 10);
+  function artUsedToday() {
+    try { const o = JSON.parse(localStorage.getItem(ART_KEY) || "{}"); return o.date === todayStr() ? (o.n || 0) : 0; }
+    catch (_) { return 0; }
+  }
+  function bumpArt(n) {
+    try { let o = JSON.parse(localStorage.getItem(ART_KEY) || "{}"); if (o.date !== todayStr()) o = { date: todayStr(), n: 0 }; o.n = (o.n || 0) + n; localStorage.setItem(ART_KEY, JSON.stringify(o)); }
+    catch (_) {}
+  }
+  /* gera a arte de uma carta via /api/generate-art (prompt = Descrição + Nome + Tipo) */
+  async function generateArt(data, meta) {
+    const token = window.ForgeAuth && window.ForgeAuth.token;
+    const prompt = [meta && meta.artDesc, data.name, data.type].filter(Boolean).join(" — ");
+    const r = await fetch("/api/generate-art", {
+      method: "POST",
+      headers: Object.assign({ "Content-Type": "application/json" }, token ? { Authorization: "Bearer " + token } : {}),
+      body: JSON.stringify({ prompt })
+    });
+    const d = await r.json().catch(() => ({}));
+    if (!r.ok) throw new Error(d.error || ("Erro " + r.status));
+    return d.image;
+  }
 
   /* espera o app.js expor window.Forge */
   function whenForge(cb) {
@@ -292,6 +321,8 @@
             <button class="btn btn-gold" id="fxSave">⤓ Salvar selecionadas</button>
           </div>
         </div>
+        <div class="fx-options" id="fxOptions"></div>
+        <p class="fx-progress" id="fxProgress" hidden></p>
         <div class="gal-grid fx-grid" id="fxGrid"></div>
       </div></div>`);
 
@@ -323,9 +354,12 @@
     const btnImport = $("btnImport"), btnSaved = $("btnSaved"), btnSaveTop = $("btnSaveTop");
     if (btnImport) btnImport.onclick = () => { $("fxStatus").textContent = ""; show(importModal); };
     if (btnSaved) btnSaved.onclick = () => openSaved();
-    if (btnSaveTop) btnSaveTop.onclick = () => {
-      const cloud = $("saveBtn");                 // botão de salvar na conta (aparece se logado)
-      if (cloud) cloud.click(); else ForgeLocal.saveCurrent();
+    if (btnSaveTop) btnSaveTop.onclick = async () => {
+      if (window.ForgeCloud && window.ForgeCloud.available) {
+        await window.ForgeCloud.saveCurrent();   // logado: salva na conta (mostra a mensagem de limite se exceder)
+      } else {
+        ForgeLocal.saveCurrent();                // sem login: salva neste navegador (grátis)
+      }
     };
     $("fxTemplate").onclick = downloadTemplate;
 
@@ -378,8 +412,36 @@
       // mostra opção "salvar na conta" só quando logado
       const cloudWrap = $("fxCloudWrap");
       cloudWrap.hidden = !(window.ForgeCloud && window.ForgeCloud.available);
+      renderReviewOptions();
       renderReviewGrid();
       show(review);
+    }
+
+    /* monta as opções de coleção / arte por IA conforme login, VIP e nº de abas */
+    function renderReviewOptions() {
+      const box = $("fxOptions");
+      const logged = !!(window.ForgeCloud && window.ForgeCloud.available);
+      const vip = !!(window.ForgeCloud && window.ForgeCloud.isVip);
+      const multi = current.sheets.length > 1;
+      const baseName = String(current.fileName || "Coleção").replace(/\.(xlsx|xls)$/i, "").trim() || "Coleção";
+      let html = "";
+      if (!logged) {
+        html = `<p class="fx-opt-note">💡 Entre na sua conta para salvar as cartas na nuvem e organizá-las em coleções. Sem login, elas ficam guardadas só neste navegador.</p>`;
+      } else {
+        if (multi) {
+          html += `<p class="fx-opt-note">Identifiquei <b>${current.sheets.length} abas</b> nesta planilha. Quer que eu crie <b>uma coleção para cada aba</b>?</p>
+            <label class="chk"><input type="checkbox" id="fxColEach" checked> Sim — uma coleção por aba (cada uma com o nome da aba)</label>`;
+        } else {
+          html += `<p class="fx-opt-note">Quer que eu organize estas cartas em uma <b>coleção</b>? Sugeri o nome do arquivo — você pode editar abaixo ou desmarcar para seguir sem coleção.</p>
+            <label class="chk"><input type="checkbox" id="fxColOne" checked> Criar coleção chamada:</label>
+            <input type="text" id="fxColName" class="fx-col-name" maxlength="80" value="${esc(baseName)}">`;
+        }
+        if (vip) {
+          html += `<label class="chk fx-art-opt"><input type="checkbox" id="fxArt"> ✨ Gerar arte por IA para as cartas marcadas
+            <span class="hint">exclusivo VIP · limite de ${ART_MAX} artes por dia · cada carta é gerada separadamente, então pode demorar um pouco</span></label>`;
+        }
+      }
+      box.innerHTML = html;
     }
 
     function renderReviewGrid() {
@@ -424,19 +486,100 @@
     $("fxSave").onclick = async () => {
       const chosen = flatCards().filter((x) => selected.has(x.key));
       if (!chosen.length) { T("Marque ao menos uma carta para salvar.", true); return; }
-      const items = chosen.map((x) => ({ data: x.c.data, meta: x.c.meta }));
-      // conta (Supabase) se logado e marcado
+
       const cloudWrap = $("fxCloudWrap");
-      const wantsCloud = !cloudWrap.hidden && $("fxCloud").checked && window.ForgeCloud && window.ForgeCloud.available;
-      if (wantsCloud) {
-        const btn = $("fxSave"); btn.disabled = true; btn.textContent = "Salvando na conta…";
-        let ok = 0, fail = 0;
-        for (const it of items) { try { await window.ForgeCloud.save(it.data); ok++; } catch (_) { fail++; } }
-        btn.disabled = false; updateSelCount();
-        T(fail ? `${ok} salvas na conta, ${fail} falharam.` : `${ok} carta(s) salvas na sua conta ✓`, !!fail);
-      } else {
-        const n = ForgeLocal.saveMany(items);
+      const wantsCloud = !cloudWrap.hidden && $("fxCloud") && $("fxCloud").checked && window.ForgeCloud && window.ForgeCloud.available;
+
+      // ---------- caminho LOCAL (grátis, sem limite) ----------
+      if (!wantsCloud) {
+        const n = ForgeLocal.saveMany(chosen.map((x) => ({ data: x.c.data, meta: x.c.meta })));
         if (n) { T(`${n} carta(s) salvas neste navegador ✓`); refreshSavedCount(); }
+        return;
+      }
+
+      // ---------- caminho NUVEM ----------
+      const btn = $("fxSave"); btn.disabled = true;
+      const prog = $("fxProgress");
+      const setProg = (m) => { if (prog) { prog.hidden = false; prog.textContent = m; } };
+      const endProg = () => { if (prog) prog.hidden = true; };
+
+      try {
+        // 1) limite diário de criação (não-VIP)
+        let remaining = Infinity;
+        try { remaining = await window.ForgeCloud.remainingToday(); } catch (_) {}
+        if (remaining <= 0) { T(LIMIT_MSG, true); return; }
+        if (chosen.length > remaining) {
+          if (!confirm(`Você só pode salvar mais ${remaining} carta(s) na nuvem nas próximas 24h (limite para não-VIP). Salvar as primeiras ${remaining} e parar?`)) return;
+        }
+
+        // 2) arte por IA (somente VIP + checkbox), espaçada para não dar timeout
+        const wantArt = window.ForgeCloud.isVip && $("fxArt") && $("fxArt").checked;
+        if (wantArt) {
+          let budget = ART_MAX - artUsedToday();
+          if (budget <= 0) {
+            T(`Você já usou as ${ART_MAX} artes de IA de hoje — as cartas serão salvas sem arte gerada.`, true);
+          } else {
+            for (let i = 0; i < chosen.length && budget > 0; i++) {
+              const x = chosen[i];
+              if (x.c.data.art) continue; // já tem arte; não gasta cota
+              setProg(`Gerando arte por IA ${i + 1}/${chosen.length}… (uma de cada vez para não exceder o tempo)`);
+              try {
+                const img = await generateArt(x.c.data, x.c.meta);
+                if (img) { x.c.data.art = img; bumpArt(1); budget--; renderReviewGrid(); }
+              } catch (e) {
+                if (/limite|429|exclusiv|vip|cota|quota/i.test(e.message || "")) { T("Geração de arte interrompida: " + e.message, true); break; }
+                // erro pontual numa carta: segue para a próxima
+              }
+              await sleep(1200);
+            }
+          }
+        }
+
+        // 3) coleções
+        const eachCol = $("fxColEach") && $("fxColEach").checked;            // multi-abas
+        const oneCol = $("fxColOne") && $("fxColOne").checked;              // aba única
+        const oneColName = ($("fxColName") && $("fxColName").value.trim()) ||
+          String(current.fileName || "Coleção").replace(/\.(xlsx|xls)$/i, "");
+
+        // agrupa as escolhidas por aba (mantém a ordem)
+        const bySheet = new Map();
+        chosen.forEach((x) => {
+          if (!bySheet.has(x.si)) bySheet.set(x.si, { name: current.sheets[x.si].name, items: [] });
+          bySheet.get(x.si).items.push(x);
+        });
+
+        let saved = 0, hitLimit = false;
+        for (const [, grp] of bySheet) {
+          let colId = null;
+          try {
+            if (eachCol) colId = await window.ForgeCloud.createCollection(grp.name);
+            else if (oneCol) colId = await window.ForgeCloud.createCollection(oneColName);
+          } catch (e) { T("Não consegui criar a coleção: " + e.message, true); }
+
+          for (const x of grp.items) {
+            setProg(`Salvando na nuvem ${saved + 1}/${chosen.length}…`);
+            try {
+              const id = await window.ForgeCloud.save(x.c.data);
+              saved++;
+              if (colId && id) { try { await window.ForgeCloud.addToCollection(colId, id); } catch (_) {} }
+            } catch (e) {
+              if (e.code === "LIMITE") { hitLimit = true; break; }
+              if (e.code === "BANIDO") { T("Sua conta está suspensa e não pode salvar cartas.", true); return; }
+              // erro pontual: ignora esta carta e segue
+            }
+          }
+          if (hitLimit) break;
+        }
+
+        endProg();
+        if (hitLimit) T(LIMIT_MSG, true);
+        if (saved) {
+          const colMsg = (eachCol || oneCol) ? " e organizada(s) em coleção(ões)" : "";
+          T(`${saved} carta(s) salva(s) na sua conta${colMsg} ✓`);
+          refreshSavedCount();
+        }
+      } finally {
+        btn.disabled = false; endProg(); updateSelCount();
       }
     };
 

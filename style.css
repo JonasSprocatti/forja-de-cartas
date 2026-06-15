@@ -1307,6 +1307,18 @@ body {
 .fx-cloud { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--parch); }
 .fx-sub { font-size: 13px; color: var(--parch-dim); font-style: italic; font-weight: 400; }
 
+/* ---- opções de importação (coleção / arte por IA) ---- */
+.fx-options { display: flex; flex-direction: column; gap: 8px; margin: 2px 0 14px; padding: 12px 14px; background: var(--ink); border: 1px solid var(--line); border-radius: 12px; }
+.fx-options:empty { display: none; }
+.fx-opt-note { margin: 0 0 2px; font-size: 13.5px; color: var(--parch); line-height: 1.5; }
+.fx-opt-note b { color: var(--brass-hi); }
+.fx-options .chk { display: flex; align-items: center; gap: 8px; font-size: 13.5px; color: var(--parch); cursor: pointer; flex-wrap: wrap; }
+.fx-options .chk input[type="checkbox"] { width: 16px; height: 16px; accent-color: var(--brass); cursor: pointer; }
+.fx-col-name { width: 100%; max-width: 360px; margin: 2px 0 2px 24px; padding: 8px 10px; background: var(--paper, #1a140c); color: var(--parch); border: 1px solid var(--line); border-radius: 8px; font-size: 14px; }
+.fx-col-name:focus { outline: none; border-color: var(--brass); }
+.fx-art-opt .hint { flex-basis: 100%; margin: 2px 0 0 24px; }
+.fx-progress { margin: -6px 0 12px; font-size: 13px; color: var(--brass-hi); font-style: italic; }
+
 /* ---- itens das galerias (revisão / salvas) ---- */
 .fx-item { position: relative; background: var(--ink); border: 1px solid var(--line); border-radius: 12px; padding: 10px; gap: 6px; }
 .fx-pick {

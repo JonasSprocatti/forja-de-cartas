@@ -239,9 +239,7 @@ const acct = document.getElementById("acctArea");
       } else {
         if (prim) {
           prim.innerHTML =
-            `${vip ? "" : '<button class="btn btn-gold" id="vipBtn">★ Virar VIP</button>'}
-             <button class="btn btn-ghost" id="saveBtn">⤓ Salvar</button>`;
-          const sbtn = prim.querySelector("#saveBtn"); if (sbtn) sbtn.onclick = saveCard;
+            `${vip ? "" : '<button class="btn btn-gold" id="vipBtn">★ Virar VIP</button>'}`;
           const vb = prim.querySelector("#vipBtn"); if (vb) vb.onclick = startCheckout;
         }
         acct.innerHTML = gal +
@@ -261,24 +259,69 @@ const acct = document.getElementById("acctArea");
     }
 
     // ====================== SALVAR / MINHAS ======================
+    const LIMIT_MSG = "Você excedeu o limite de criação de cartas diária para usuário não-VIP, aguarde 24 horas até utilizar novamente.";
+    // normaliza erros do banco em Error com .code ("LIMITE" | "BANIDO")
+    function cloudErr(error) {
+      const msg = (error && error.message) || "";
+      if (msg.includes("LIMITE_CARTAS")) { const e = new Error("LIMITE_CARTAS"); e.code = "LIMITE"; return e; }
+      if (msg.includes("USUARIO_BANIDO")) { const e = new Error("USUARIO_BANIDO"); e.code = "BANIDO"; return e; }
+      return error instanceof Error ? error : new Error(msg || "erro");
+    }
+    // salva a carta ATUAL do editor na conta (usado pelo "💾 Salvar")
     async function saveCard() {
       if (!window.ForgeAuth.user) return openModal();
-      const data = window.Forge.serialize();
-      const { error } = await sb.from("cards").insert({ user_id: window.ForgeAuth.user.id, name: data.name || "Sem nome", layout: data.layout, color: data.color, data });
-      if (!error) return T("Carta salva!");
-      const msg = error.message || "";
-      if (msg.includes("LIMITE_CARTAS")) T("Limite atingido: até 100 cartas a cada 6 horas. Tente novamente mais tarde.", true);
-      else if (msg.includes("USUARIO_BANIDO")) T("Sua conta está suspensa e não pode salvar cartas.", true);
-      else T("Erro ao salvar: " + msg, true);
+      try {
+        await window.ForgeCloud.save(window.Forge.serialize());
+        T("Carta salva na sua conta ✓");
+        return true;
+      } catch (e) {
+        if (e.code === "LIMITE") T(LIMIT_MSG, true);
+        else if (e.code === "BANIDO") T("Sua conta está suspensa e não pode salvar cartas.", true);
+        else T("Erro ao salvar: " + e.message, true);
+        return false;
+      }
     }
-    // permite que outros módulos (ex.: importação de planilha) salvem na conta
+    // API usada por outros módulos (ex.: importação de planilha)
     window.ForgeCloud = {
       get available() { return !!(window.ForgeAuth && window.ForgeAuth.user); },
+      get isVip() { return !!(window.ForgeAuth && window.ForgeAuth.isVip); },
+      limitMessage: LIMIT_MSG,
+      saveCurrent: saveCard,
+      // salva um objeto de carta e devolve o id criado (lança erro com .code em limite/banimento)
       async save(data) {
         if (!window.ForgeAuth || !window.ForgeAuth.user) throw new Error("not-logged");
-        const { error } = await sb.from("cards").insert({ user_id: window.ForgeAuth.user.id, name: data.name || "Sem nome", layout: data.layout, color: data.color, data });
+        const { data: row, error } = await sb.from("cards")
+          .insert({ user_id: window.ForgeAuth.user.id, name: data.name || "Sem nome", layout: data.layout, color: data.color, data })
+          .select("id").single();
+        if (error) throw cloudErr(error);
+        return row && row.id;
+      },
+      // cria uma coleção (privada) e devolve o id
+      async createCollection(name) {
+        if (!window.ForgeAuth || !window.ForgeAuth.user) throw new Error("not-logged");
+        const { data, error } = await sb.from("collections")
+          .insert({ user_id: window.ForgeAuth.user.id, name: String(name || "Coleção").slice(0, 80) })
+          .select("id").single();
         if (error) throw error;
+        return data && data.id;
+      },
+      // vincula uma carta a uma coleção (ignora duplicado)
+      async addToCollection(collectionId, cardId) {
+        if (!collectionId || !cardId) return false;
+        const { error } = await sb.from("collection_cards").insert({ collection_id: collectionId, card_id: cardId });
+        if (error && error.code !== "23505") throw error;
         return true;
+      },
+      // quantas cartas o usuário ainda pode salvar nas próximas 24h (Infinity p/ VIP)
+      async remainingToday() {
+        if (!window.ForgeAuth || !window.ForgeAuth.user) return 0;
+        if (window.ForgeAuth.isVip) return Infinity;
+        const since = new Date(Date.now() - 24 * 3600 * 1000).toISOString();
+        const { count, error } = await sb.from("cards")
+          .select("id", { count: "exact", head: true })
+          .eq("user_id", window.ForgeAuth.user.id).gte("created_at", since);
+        if (error) return Infinity; // em erro de leitura, o servidor ainda protege
+        return Math.max(0, 100 - (count || 0));
       }
     };
     let myCards = [];

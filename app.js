@@ -894,7 +894,7 @@ window.Forge.previewInto = function(el, data){
   if(prev) prev.addEventListener("click",()=>{ const s=document.querySelector(".stage"); if(s) s.scrollIntoView({behavior:"smooth",block:"start"}); });
   if(exp)  exp.addEventListener("click",()=>{ const b=document.getElementById("btnExport"); if(b) b.click(); });
   const sv=document.getElementById("mbSave");
-  if(sv) sv.addEventListener("click",()=>{ const b=document.getElementById("saveBtn"); if(b) b.click(); else if(window.ForgeLocal) window.ForgeLocal.saveCurrent(); else toast("Salvamento indisponível.",true); });
+  if(sv) sv.addEventListener("click",()=>{ const b=document.getElementById("btnSaveTop"); if(b) b.click(); else if(window.ForgeLocal) window.ForgeLocal.saveCurrent(); else toast("Salvamento indisponível.",true); });
   const onScroll=()=>bar.classList.toggle("show", window.scrollY>440);
   window.addEventListener("scroll",onScroll,{passive:true}); onScroll();
 })();
@@ -1110,7 +1110,7 @@ document.addEventListener("paste",(e)=>{
 /* atalhos de teclado: Ctrl/Cmd+S = Salvar, Ctrl/Cmd+E = Exportar */
 document.addEventListener("keydown",(e)=>{
   const k=(e.key||"").toLowerCase();
-  if((e.ctrlKey||e.metaKey)&&k==="s"){ e.preventDefault(); const sb=document.getElementById("saveBtn"); if(sb) sb.click(); else if(window.ForgeLocal) window.ForgeLocal.saveCurrent(); else toast("Salvamento indisponível.",true); }
+  if((e.ctrlKey||e.metaKey)&&k==="s"){ e.preventDefault(); const sb=document.getElementById("btnSaveTop"); if(sb) sb.click(); else if(window.ForgeLocal) window.ForgeLocal.saveCurrent(); else toast("Salvamento indisponível.",true); }
   else if((e.ctrlKey||e.metaKey)&&k==="e"){ e.preventDefault(); const ex=document.getElementById("btnExport"); if(ex) ex.click(); }
 });
 
@@ -1180,5 +1180,5 @@ document.addEventListener("keydown",(e)=>{
 /* "Salvar" junto da carta (a topbar some ao rolar; este fica sempre por perto) */
 (function(){
   const p=document.getElementById("btnSaveProxy"); if(!p) return;
-  p.addEventListener("click",()=>{ const b=document.getElementById("saveBtn"); if(b) b.click(); else if(window.ForgeLocal) window.ForgeLocal.saveCurrent(); else toast("Salvamento indisponível.",true); });
+  p.addEventListener("click",()=>{ const b=document.getElementById("btnSaveTop"); if(b) b.click(); else if(window.ForgeLocal) window.ForgeLocal.saveCurrent(); else toast("Salvamento indisponível.",true); });
 })();
