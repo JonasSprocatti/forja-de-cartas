@@ -553,8 +553,11 @@ $("btnAiArt").addEventListener("click",async()=>{
   const prompt=$("artPrompt").value.trim(); if(!prompt) return toast("Descreva a arte primeiro.",true);
   if(!aiAllowed()) return;
   const btn=$("btnAiArt"); spin(btn,true);
+  // proporção da arte conforme o layout/estilo (parametrizada no código)
+  const aspect = state.style==="fullart" ? "3:4"
+    : ({ saga:"3:4", planeswalker:"4:3", battle:"16:9", emblem:"16:9", class:"16:9", token:"4:3", land:"3:2" })[state.layout] || "3:2";
   try{
-    const res=await fetch("/api/generate-art",{method:"POST",headers:aiHeaders(),body:JSON.stringify({prompt})});
+    const res=await fetch("/api/generate-art",{method:"POST",headers:aiHeaders(),body:JSON.stringify({prompt, aspect})});
     if(!res.ok) throw new Error((await res.json().catch(()=>({}))).error||`Erro ${res.status}`);
     const d=await res.json(); if(d.image) setArt(d.image, state.layout==="dfc"&&state.showBack); else throw new Error("Resposta sem imagem.");
     toast("Arte gerada!");

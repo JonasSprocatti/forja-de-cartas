@@ -28,18 +28,47 @@
     try { let o = JSON.parse(localStorage.getItem(ART_KEY) || "{}"); if (o.date !== todayStr()) o = { date: todayStr(), n: 0 }; o.n = (o.n || 0) + n; localStorage.setItem(ART_KEY, JSON.stringify(o)); }
     catch (_) {}
   }
+  /* proporção da arte por layout (parametrizada no código; padrão 3:2 = janela normal) */
+  const ART_ASPECT = { saga: "3:4", planeswalker: "4:3", battle: "16:9", emblem: "16:9", class: "16:9", token: "4:3", land: "3:2" };
+  const aspectFor = (layout) => ART_ASPECT[layout] || "3:2";
+
   /* gera a arte de uma carta via /api/generate-art (prompt = Descrição + Nome + Tipo) */
   async function generateArt(data, meta) {
     const token = window.ForgeAuth && window.ForgeAuth.token;
     const prompt = [meta && meta.artDesc, data.name, data.type].filter(Boolean).join(" — ");
-    const r = await fetch("/api/generate-art", {
-      method: "POST",
-      headers: Object.assign({ "Content-Type": "application/json" }, token ? { Authorization: "Bearer " + token } : {}),
-      body: JSON.stringify({ prompt })
-    });
-    const d = await r.json().catch(() => ({}));
-    if (!r.ok) throw new Error(d.error || ("Erro " + r.status));
+    let r;
+    try {
+      r = await fetch("/api/generate-art", {
+        method: "POST",
+        headers: Object.assign({ "Content-Type": "application/json" }, token ? { Authorization: "Bearer " + token } : {}),
+        body: JSON.stringify({ prompt, aspect: aspectFor(data.layout) })
+      });
+    } catch (netErr) {
+      const e = new Error("falha de rede ao falar com a IA (" + (netErr.message || "sem conexão") + ")"); e.status = 0; throw e;
+    }
+    let d = {};
+    try { d = await r.json(); } catch (_) { d = {}; }
+    if (!r.ok) { const e = new Error(d && d.error ? d.error : ("a IA respondeu com erro HTTP " + r.status)); e.status = r.status; throw e; }
+    if (!d.image) { const e = new Error("a IA não retornou nenhuma imagem"); e.status = r.status; throw e; }
     return d.image;
+  }
+
+  /* gera com novas tentativas em erros transitórios (limite por minuto 429, 5xx, rede) */
+  async function generateArtRetry(data, meta, onRetry) {
+    let attempt = 0;
+    while (true) {
+      try { return await generateArt(data, meta); }
+      catch (e) {
+        const st = e.status || 0;
+        const fatal = /vip|sess|login|api ?key|não configurada|exclusiv/i.test(e.message || "") || st === 401 || st === 403;
+        const transient = st === 429 || st === 0 || (st >= 500 && st <= 599);
+        if (fatal || !transient || attempt >= 3) throw e;
+        attempt++;
+        const wait = 4000 * attempt; // 4s, 8s, 12s
+        if (onRetry) onRetry(attempt, wait, e);
+        await sleep(wait);
+      }
+    }
   }
 
   /* espera o app.js expor window.Forge */
@@ -322,7 +351,6 @@
           </div>
         </div>
         <div class="fx-options" id="fxOptions"></div>
-        <p class="fx-progress" id="fxProgress" hidden></p>
         <div class="gal-grid fx-grid" id="fxGrid"></div>
       </div></div>`);
 
@@ -349,6 +377,70 @@
     [importModal, review, saved].forEach((n) => {
       n.addEventListener("click", (e) => { if (e.target === n || e.target.dataset.x !== undefined) hide(n); });
     });
+
+    /* ----- tela de PROGRESSO de salvamento (com barra + log de erros) ----- */
+    const progModal = el(`
+      <div class="fmodal fx-prog-modal" id="fxProgModal" hidden><div class="fx-prog-box">
+        <h2 class="fmodal-title" id="fxProgTitle">Salvando…</h2>
+        <p class="fx-prog-phase" id="fxProgPhase">Preparando…</p>
+        <div class="fx-prog-track"><div class="fx-prog-fill" id="fxProgFill"></div></div>
+        <div class="fx-prog-meta"><span id="fxProgPct">0%</span><span id="fxProgStep"></span></div>
+        <div class="fx-prog-errors" id="fxProgErrors" hidden>
+          <b id="fxProgErrTitle">Avisos / erros</b>
+          <ul id="fxProgErrList"></ul>
+        </div>
+        <button class="btn btn-gold fx-prog-close" id="fxProgClose" hidden>Fechar</button>
+      </div></div>`);
+    document.body.appendChild(progModal);
+
+    const Prog = {
+      _errs: 0,
+      _admin() { return !!(window.ForgeAuth && window.ForgeAuth.isAdmin); },
+      open(title) {
+        this._errs = 0;
+        $("fxProgTitle").textContent = title || "Salvando…";
+        $("fxProgPhase").textContent = "Preparando…";
+        $("fxProgFill").style.width = "0%";
+        $("fxProgPct").textContent = "0%";
+        $("fxProgStep").textContent = "";
+        $("fxProgErrors").hidden = true;
+        $("fxProgErrTitle").textContent = "Avisos / erros";
+        $("fxProgErrList").innerHTML = "";
+        $("fxProgClose").hidden = true;
+        progModal.hidden = false;
+        document.body.style.overflow = "hidden";
+      },
+      phase(t) { $("fxProgPhase").textContent = t || ""; },
+      step(done, total, label) {
+        const p = total ? Math.round((done / total) * 100) : 0;
+        $("fxProgFill").style.width = p + "%";
+        $("fxProgPct").textContent = p + "%";
+        if (label !== undefined) $("fxProgStep").textContent = label;
+      },
+      // log detalhado só para ADMIN; demais usuários veem apenas uma contagem no fim
+      error(msg) {
+        this._errs++;
+        if (!this._admin()) return;
+        $("fxProgErrors").hidden = false;
+        $("fxProgErrTitle").textContent = "Avisos / erros (admin)";
+        const li = document.createElement("li");
+        li.textContent = msg;
+        $("fxProgErrList").appendChild(li);
+      },
+      done(title) {
+        if (title) $("fxProgTitle").textContent = title;
+        $("fxProgPhase").textContent = "";
+        $("fxProgStep").textContent = "";
+        if (!this._admin() && this._errs > 0) {
+          $("fxProgErrors").hidden = false;
+          $("fxProgErrTitle").textContent = "Atenção";
+          $("fxProgErrList").innerHTML = `<li>${this._errs} item(ns) não puderam ser processados. Tente novamente mais tarde.</li>`;
+        }
+        $("fxProgClose").hidden = false;
+      },
+      close() { progModal.hidden = true; if (![importModal, review, saved].some((m) => !m.hidden)) document.body.style.overflow = ""; }
+    };
+    $("fxProgClose").onclick = () => Prog.close();
 
     /* ---------- topbar: liga os botões ---------- */
     const btnImport = $("btnImport"), btnSaved = $("btnSaved"), btnSaveTop = $("btnSaveTop");
@@ -499,87 +591,115 @@
 
       // ---------- caminho NUVEM ----------
       const btn = $("fxSave"); btn.disabled = true;
-      const prog = $("fxProgress");
-      const setProg = (m) => { if (prog) { prog.hidden = false; prog.textContent = m; } };
-      const endProg = () => { if (prog) prog.hidden = true; };
 
       try {
         // 1) limite diário de criação (não-VIP)
         let remaining = Infinity;
         try { remaining = await window.ForgeCloud.remainingToday(); } catch (_) {}
-        if (remaining <= 0) { T(LIMIT_MSG, true); return; }
+        if (remaining <= 0) { btn.disabled = false; T(LIMIT_MSG, true); return; }
+        let toSave = chosen;
         if (chosen.length > remaining) {
-          if (!confirm(`Você só pode salvar mais ${remaining} carta(s) na nuvem nas próximas 24h (limite para não-VIP). Salvar as primeiras ${remaining} e parar?`)) return;
+          if (!confirm(`Você só pode salvar mais ${remaining} carta(s) na nuvem nas próximas 24h (limite para não-VIP). Salvar as primeiras ${remaining} e parar?`)) { btn.disabled = false; return; }
+          toSave = chosen.slice(0, remaining);
         }
 
-        // 2) arte por IA (somente VIP + checkbox), espaçada para não dar timeout
+        // quais cartas receberão arte por IA (VIP + checkbox, respeitando a cota do dia)
         const wantArt = window.ForgeCloud.isVip && $("fxArt") && $("fxArt").checked;
+        let artTargets = [];
         if (wantArt) {
-          let budget = ART_MAX - artUsedToday();
-          if (budget <= 0) {
-            T(`Você já usou as ${ART_MAX} artes de IA de hoje — as cartas serão salvas sem arte gerada.`, true);
-          } else {
-            for (let i = 0; i < chosen.length && budget > 0; i++) {
-              const x = chosen[i];
-              if (x.c.data.art) continue; // já tem arte; não gasta cota
-              setProg(`Gerando arte por IA ${i + 1}/${chosen.length}… (uma de cada vez para não exceder o tempo)`);
-              try {
-                const img = await generateArt(x.c.data, x.c.meta);
-                if (img) { x.c.data.art = img; bumpArt(1); budget--; renderReviewGrid(); }
-              } catch (e) {
-                if (/limite|429|exclusiv|vip|cota|quota/i.test(e.message || "")) { T("Geração de arte interrompida: " + e.message, true); break; }
-                // erro pontual numa carta: segue para a próxima
-              }
-              await sleep(1200);
-            }
-          }
+          const budget = ART_MAX - artUsedToday();
+          if (budget > 0) artTargets = toSave.filter((x) => !x.c.data.art).slice(0, budget);
         }
 
-        // 3) coleções
+        const totalSteps = artTargets.length + toSave.length;
+        let step = 0;
+
+        Prog.open(wantArt ? "Salvando cartas (com arte por IA)…" : "Salvando cartas…");
+        Prog.step(0, totalSteps);
+
+        // 2) geração de arte por IA (uma de cada vez, com novas tentativas em instabilidade)
+        if (wantArt) {
+          if (!artTargets.length) {
+            Prog.error(`Cota de arte por IA esgotada hoje (limite ${ART_MAX}/dia). As cartas serão salvas sem arte gerada.`);
+          }
+          let interDelay = 1500; // espaçamento base; aumenta se a IA acusar limite por minuto (429)
+          for (let i = 0; i < artTargets.length; i++) {
+            const x = artTargets[i];
+            const nm = x.c.data.name || "Sem nome";
+            Prog.phase(`Gerando arte por IA ${i + 1}/${artTargets.length} — “${nm}” (pode demorar)`);
+            try {
+              const img = await generateArtRetry(x.c.data, x.c.meta, (att, wait, e) => {
+                if (e.status === 429) interDelay = Math.min(9000, interDelay + 2000);
+                Prog.phase(`IA ocupada (${e.message}). Tentando de novo em ${Math.round(wait / 1000)}s… (${att}/3) — “${nm}”`);
+              });
+              x.c.data.art = img; bumpArt(1); renderReviewGrid();
+            } catch (e) {
+              const st = e.status || 0;
+              Prog.error(`Arte de “${nm}”: ${e.message || "falha"}`);
+              if (/vip|sess|login|api ?key|não configurada|exclusiv/i.test(e.message || "") || st === 401 || st === 403) {
+                Prog.error("Geração de arte interrompida (credencial/VIP). As demais cartas serão salvas sem arte.");
+                break;
+              }
+              // erro transitório que esgotou as tentativas: pula esta carta e segue para a próxima
+            }
+            step++; Prog.step(step, totalSteps);
+            await sleep(interDelay);
+          }
+          step = artTargets.length; Prog.step(step, totalSteps); // normaliza se parou no meio
+        }
+
+        // 3) coleções + salvar na nuvem
         const eachCol = $("fxColEach") && $("fxColEach").checked;            // multi-abas
         const oneCol = $("fxColOne") && $("fxColOne").checked;              // aba única
         const oneColName = ($("fxColName") && $("fxColName").value.trim()) ||
           String(current.fileName || "Coleção").replace(/\.(xlsx|xls)$/i, "");
 
-        // agrupa as escolhidas por aba (mantém a ordem)
         const bySheet = new Map();
-        chosen.forEach((x) => {
+        toSave.forEach((x) => {
           if (!bySheet.has(x.si)) bySheet.set(x.si, { name: current.sheets[x.si].name, items: [] });
           bySheet.get(x.si).items.push(x);
         });
 
+        Prog.phase("Salvando na nuvem…");
         let saved = 0, hitLimit = false;
         for (const [, grp] of bySheet) {
           let colId = null;
           try {
             if (eachCol) colId = await window.ForgeCloud.createCollection(grp.name);
             else if (oneCol) colId = await window.ForgeCloud.createCollection(oneColName);
-          } catch (e) { T("Não consegui criar a coleção: " + e.message, true); }
+          } catch (e) { Prog.error(`Coleção “${grp.name}”: ${e.message || "falha ao criar"}`); }
 
           for (const x of grp.items) {
-            setProg(`Salvando na nuvem ${saved + 1}/${chosen.length}…`);
+            Prog.phase(`Salvando na nuvem ${saved + 1}/${toSave.length} — “${x.c.data.name || "Sem nome"}”`);
             try {
               const id = await window.ForgeCloud.save(x.c.data);
               saved++;
-              if (colId && id) { try { await window.ForgeCloud.addToCollection(colId, id); } catch (_) {} }
+              if (colId && id) { try { await window.ForgeCloud.addToCollection(colId, id); } catch (e2) { Prog.error(`Vincular “${x.c.data.name || "Sem nome"}” à coleção: ${e2.message || "falha"}`); } }
             } catch (e) {
-              if (e.code === "LIMITE") { hitLimit = true; break; }
-              if (e.code === "BANIDO") { T("Sua conta está suspensa e não pode salvar cartas.", true); return; }
-              // erro pontual: ignora esta carta e segue
+              if (e.code === "LIMITE") { hitLimit = true; Prog.error(LIMIT_MSG); break; }
+              if (e.code === "BANIDO") { hitLimit = true; Prog.error("Sua conta está suspensa e não pode salvar cartas."); break; }
+              Prog.error(`Salvar “${x.c.data.name || "Sem nome"}”: ${e.message || "falha"}`);
             }
+            step++; Prog.step(step, totalSteps);
           }
           if (hitLimit) break;
         }
 
-        endProg();
-        if (hitLimit) T(LIMIT_MSG, true);
+        Prog.step(totalSteps, totalSteps);
+        const colMsg = (eachCol || oneCol) ? " e organizada(s) em coleção(ões)" : "";
+        Prog.done(saved ? `Concluído — ${saved} carta(s) salva(s)` : "Concluído — nada salvo");
         if (saved) {
-          const colMsg = (eachCol || oneCol) ? " e organizada(s) em coleção(ões)" : "";
+          Prog.phase(`${saved} carta(s) salva(s) na sua conta${colMsg}.`);
           T(`${saved} carta(s) salva(s) na sua conta${colMsg} ✓`);
           refreshSavedCount();
+        } else if (!hitLimit) {
+          Prog.phase("Nenhuma carta foi salva — confira os avisos acima.");
         }
+      } catch (e) {
+        Prog.error("Erro inesperado: " + (e.message || e));
+        Prog.done("Falhou");
       } finally {
-        btn.disabled = false; endProg(); updateSelCount();
+        btn.disabled = false; updateSelCount();
       }
     };
 
