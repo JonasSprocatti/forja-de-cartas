@@ -1,0 +1,48 @@
+/* ============================================================
+   SPACING, RADII, SHADOWS, MOTION — Forja de Cartas
+   ============================================================ */
+
+:root {
+  /* ---- Spacing scale (the panel breathes in 6 / 8 / 12 / 14 / 18 / 22 steps) ---- */
+  --space-1: 4px;
+  --space-2: 6px;
+  --space-3: 8px;
+  --space-4: 12px;
+  --space-5: 14px;
+  --space-6: 18px;
+  --space-7: 22px;
+  --space-8: 32px;
+  --space-9: 44px;
+
+  /* ---- Radii ---- */
+  --radius-pip:    50%;    /* mana pips — perfect circles */
+  --radius-input:  9px;    /* inputs, selects */
+  --radius-btn:    10px;   /* buttons */
+  --radius-panel:  14px;   /* --r — panels, modals */
+  --radius-bar:    7px;    /* card title/type bars */
+  --radius-card:   26px;   /* the card object itself */
+  --radius-pill:   999px;  /* tags, segmented controls */
+  --r: 14px;               /* legacy alias used across the app */
+
+  /* ---- Shadows ---- */
+  --shadow:        0 18px 50px rgba(0,0,0,.55);     /* panels, cards, modals */
+  --shadow-card:   0 18px 44px rgba(0,0,0,.55);     /* drifting / hero cards */
+  --shadow-gold:   0 4px 0 var(--brass-deep), 0 10px 22px rgba(201,161,74,.25); /* gold button rest */
+  --shadow-gold-hover: 0 5px 0 var(--brass-deep), 0 14px 28px rgba(201,161,74,.32);
+  --shadow-rune:   0 4px 0 #1c1528, 0 10px 24px rgba(90,60,140,.25);
+  --shadow-inset:  inset 0 1px 0 rgba(255,255,255,.04);
+
+  /* Beveled bar emboss (title/type bars, P/T plates) */
+  --bevel:
+    inset 0 1.5px 0 rgba(255,255,255,.6),
+    inset 0 -3px 4px rgba(0,0,0,.28),
+    inset 0 0 0 1px rgba(0,0,0,.3),
+    0 2px 3px rgba(0,0,0,.3);  /* @kind shadow */
+
+  /* ---- Motion ---- */
+  --ease: cubic-bezier(.4, 0, .2, 1);  /* @kind other */
+  --dur-fast:  .15s;   /* @kind other */
+  --dur-base:  .18s;   /* @kind other */
+  --dur-slow:  .4s;    /* @kind other */
+  --dur-foil:  7s;     /* @kind other */
+}

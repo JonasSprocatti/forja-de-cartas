@@ -1,0 +1,123 @@
+/* ============================================================
+   Forge UI kit — layout chrome. Tokens come from ../../styles.css.
+   ============================================================ */
+* { box-sizing: border-box; }
+html, body { margin: 0; }
+body {
+  background: var(--ink); color: var(--parch); font-family: var(--font-body);
+  min-height: 100vh; overflow-x: hidden;
+}
+.fk-app { position: relative; z-index: 1; min-height: 100vh; display: flex; flex-direction: column; }
+
+/* ---------- drifting background ---------- */
+.fk-bg { position: fixed; inset: 0; z-index: 0; overflow: hidden; pointer-events: none; }
+.fk-bg-vignette {
+  position: absolute; inset: 0;
+  background: radial-gradient(120% 90% at 50% 0%, transparent 30%, rgba(0,0,0,.55) 75%, var(--ink) 100%);
+  z-index: 2;
+}
+.fk-bg-card {
+  position: absolute; opacity: .28; transform: rotate(var(--rot));
+  filter: saturate(.9) brightness(.92);
+  animation: fk-drift 16s ease-in-out infinite;
+}
+@keyframes fk-drift {
+  0%, 100% { transform: rotate(var(--rot)) translateY(0); }
+  50% { transform: rotate(var(--rot)) translateY(-22px); }
+}
+@media (prefers-reduced-motion: reduce) { .fk-bg-card { animation: none; } }
+
+/* ---------- header ---------- */
+.fk-header {
+  position: sticky; top: 0; z-index: 5;
+  display: flex; align-items: center; gap: 24px;
+  padding: 14px 28px;
+  background: linear-gradient(180deg, rgba(20,17,13,.92), rgba(20,17,13,.72));
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--line);
+}
+.fk-brand { display: flex; align-items: center; gap: 10px; background: none; border: none; cursor: pointer; padding: 0; }
+.fk-brand-mark {
+  width: 34px; height: 34px; display: grid; place-items: center; font-size: 17px;
+  border-radius: 9px; color: var(--text-on-gold);
+  background: linear-gradient(180deg, var(--brass-hi), var(--brass)); box-shadow: var(--shadow-gold);
+}
+.fk-brand-word { font-family: var(--font-display); font-weight: 700; font-size: 18px; letter-spacing: .05em; color: var(--brass-hi); }
+.fk-nav { display: flex; gap: 4px; margin-left: 8px; }
+.fk-nav-link {
+  font-family: var(--font-display); font-size: 13px; letter-spacing: .04em; font-weight: 600;
+  background: none; border: none; cursor: pointer; color: var(--parch-dim);
+  padding: 8px 14px; border-radius: 8px; transition: var(--dur-fast) var(--ease);
+}
+.fk-nav-link:hover { color: var(--parch); }
+.fk-nav-link.is-active { color: var(--brass-hi); background: rgba(201,161,74,.1); }
+.fk-header-right { margin-left: auto; display: flex; align-items: center; gap: 14px; }
+
+/* ---------- hero ---------- */
+.fk-hero { flex: 1; display: grid; place-items: center; padding: 80px 24px 100px; text-align: center; }
+.fk-hero-inner { max-width: 680px; }
+.fk-hero-eyebrow {
+  display: inline-flex; align-items: center; gap: 10px; padding: 6px 16px 6px 8px;
+  border: 1px solid var(--line); border-radius: var(--radius-pill);
+  font-family: var(--font-display); font-size: 12px; letter-spacing: .1em; text-transform: uppercase;
+  color: var(--brass); background: rgba(201,161,74,.06);
+}
+.fk-hero-title {
+  font-family: var(--font-display); font-weight: 700; font-size: clamp(40px, 7vw, 76px);
+  letter-spacing: .03em; line-height: 1.05; margin: 22px 0 0;
+  color: var(--brass-hi); text-shadow: 0 2px 24px rgba(201,161,74,.25);
+}
+.fk-hero-lead { font-size: 19px; line-height: 1.6; color: var(--parch); opacity: .92; margin: 20px auto 0; max-width: 560px; }
+.fk-hero-cta { display: flex; gap: 14px; justify-content: center; margin-top: 32px; flex-wrap: wrap; }
+.fk-hero-note { margin-top: 18px; font-size: 13px; color: var(--parch-dim); font-style: italic; }
+
+/* ---------- editor ---------- */
+.fk-editor {
+  flex: 1; display: grid; grid-template-columns: minmax(0, 1fr) 480px; gap: 32px;
+  align-items: start; padding: 36px 28px 60px; max-width: 1240px; margin: 0 auto; width: 100%;
+}
+.fk-preview { position: sticky; top: 90px; display: flex; flex-direction: column; align-items: center; gap: 22px; }
+.fk-preview-stage { perspective: 1400px; }
+.fk-preview-actions { display: flex; gap: 12px; }
+.fk-panel { max-height: none; }
+.fk-form, .fk-ai { margin-top: 18px; display: block; }
+.fk-ai { display: flex; flex-direction: column; gap: 14px; }
+.fk-field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.fk-field-row .fdc-field { margin-bottom: 14px; }
+.fk-panel-footer { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 18px; padding-top: 18px; border-top: 1px solid var(--line); }
+
+/* ---------- gallery ---------- */
+.fk-gallery { flex: 1; max-width: 1180px; margin: 0 auto; width: 100%; padding: 36px 28px 70px; }
+.fk-gallery-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 20px; flex-wrap: wrap; margin-bottom: 26px; }
+.fk-h2 { font-family: var(--font-display); font-weight: 700; font-size: 30px; letter-spacing: .04em; color: var(--brass-hi); margin: 0; }
+.fk-sub { color: var(--parch-dim); margin: 6px 0 0; font-size: 16px; }
+.fk-filters { display: flex; gap: 8px; flex-wrap: wrap; }
+.fk-chip {
+  font-family: var(--font-display); font-size: 12px; letter-spacing: .04em; font-weight: 600;
+  padding: 7px 14px; border-radius: var(--radius-pill); cursor: pointer;
+  background: var(--ink-2); border: 1px solid var(--line); color: var(--parch-dim); transition: var(--dur-fast) var(--ease);
+}
+.fk-chip:hover { color: var(--parch); border-color: var(--brass); }
+.fk-chip.is-active { background: linear-gradient(180deg, var(--brass), var(--brass-deep)); color: #241a06; border-color: transparent; }
+.fk-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(288px, 1fr)); gap: 28px 24px; justify-items: center; }
+.fk-grid-item { margin: 0; cursor: pointer; transition: transform var(--dur-base) var(--ease); }
+.fk-grid-item:hover { transform: translateY(-4px); }
+.fk-grid-meta { display: flex; justify-content: space-between; align-items: center; margin-top: 12px; padding: 0 4px; width: 288px; }
+.fk-grid-author { font-family: var(--font-body); font-style: italic; color: var(--parch-dim); font-size: 14px; }
+.fk-grid-likes { font-family: var(--font-display); font-size: 13px; color: var(--like); }
+
+/* ---------- toast host ---------- */
+.fk-toast-host { position: fixed; left: 50%; bottom: 28px; transform: translateX(-50%); z-index: 30; display: flex; flex-direction: column; gap: 10px; align-items: center; }
+.fk-toast-enter { animation: fk-toast-in .3s var(--ease); }
+@keyframes fk-toast-in { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
+
+/* ---------- guide (simple doc) ---------- */
+.fk-guide { flex: 1; max-width: 760px; margin: 0 auto; width: 100%; padding: 44px 28px 70px; }
+.fk-guide h2 { font-family: var(--font-display); color: var(--brass-hi); font-size: 30px; letter-spacing: .03em; margin: 0 0 8px; }
+.fk-guide p { font-size: 17px; line-height: 1.7; color: var(--parch); }
+.fk-guide h3 { font-family: var(--font-display); color: var(--brass); font-size: 16px; letter-spacing: .06em; text-transform: uppercase; margin: 28px 0 6px; }
+
+@media (max-width: 960px) {
+  .fk-editor { grid-template-columns: 1fr; }
+  .fk-preview { position: static; }
+}

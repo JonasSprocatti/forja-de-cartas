@@ -1,0 +1,56 @@
+/* ============================================================
+   COLORS — Forja de Cartas
+   Theme: "scriptorium" / arcane workshop.
+   Dark ink + parchment + brass/gold + ember.
+   ============================================================ */
+
+:root {
+  /* ---- Base palette ---- */
+  --ink:        #14110d;   /* deepest background ink */
+  --ink-2:      #1d1812;   /* panel / surface */
+  --ink-3:      #2a2218;   /* raised surface / toast */
+  --parch:      #efe4cc;   /* primary text on dark */
+  --parch-dim:  #d9c9a6;   /* secondary / muted text */
+  --brass:      #c9a14a;   /* primary accent (gold) */
+  --brass-hi:   #f0d488;   /* bright gold — highlights, links */
+  --brass-deep: #7a5e25;   /* deep gold — button base / shadow */
+  --ember:      #b6502a;   /* warning / destructive / heat */
+  --line:       rgba(201,161,74,.28);  /* hairline borders (brass @ 28%) */
+
+  /* ---- Semantic surfaces ---- */
+  --surface-page:    var(--ink);
+  --surface-panel:   var(--ink-2);
+  --surface-raised:  var(--ink-3);
+  --surface-sunken:  var(--ink);   /* inputs sit on the deepest ink */
+
+  /* ---- Semantic text ---- */
+  --text-body:    var(--parch);
+  --text-muted:   var(--parch-dim);
+  --text-accent:  var(--brass);
+  --text-link:    var(--brass-hi);
+  --text-on-gold: #2a1f08;   /* dark ink for text on a gold button */
+
+  /* ---- Semantic borders ---- */
+  --border-hairline: var(--line);
+  --border-accent:   var(--brass);
+  --border-danger:   var(--ember);
+
+  /* ---- Status ---- */
+  --success: #bfe3c0;   /* save confirmations */
+  --danger:  #f4c9b8;   /* destructive text / errors */
+  --like:    #e98aa6;   /* hearts / favourites */
+
+  /* ---- Mana / color identity (WUBRG) ---- */
+  --mana-w: #f5f1e0;  --mana-w-deep: #c7ba92;
+  --mana-u: #2a72b8;  --mana-u-deep: #235080;
+  --mana-b: #2a2520;  --mana-b-deep: #161310;
+  --mana-r: #b6361c;  --mana-r-deep: #943219;
+  --mana-g: #2f7d40;  --mana-g-deep: #316631;
+  --mana-c: #a89f8c;  --mana-c-deep: #827a68;  /* colorless / generic */
+
+  /* ---- Rarity ---- */
+  --rarity-common:   #2a2520;
+  --rarity-uncommon: #7d8794;  /* silver */
+  --rarity-rare:     #b8973f;  /* gold */
+  --rarity-mythic:   #c2501f;  /* orange-red */
+}

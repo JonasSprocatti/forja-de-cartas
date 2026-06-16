@@ -1,0 +1,14 @@
+/* ============================================================
+   Forja de Cartas — Design System
+   Global entry point. Consumers link THIS file only.
+   Keep it a list of @imports — no rules live here.
+   ============================================================ */
+
+@import url("./tokens/fonts.css");
+@import url("./tokens/colors.css");
+@import url("./tokens/typography.css");
+@import url("./tokens/spacing.css");
+@import url("./tokens/card-themes.css");
+@import url("./styles/components.css");
+@import url("./styles/card.css");
+@import url("./styles/card-framed.css");

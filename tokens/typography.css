@@ -1,0 +1,76 @@
+/* ============================================================
+   TYPOGRAPHY — Forja de Cartas
+   Cinzel = engraved display / labels / buttons (UPPERCASE, tracked)
+   EB Garamond = body & form copy
+   Spectral = card rules & flavor text (the "printed" voice)
+   Bitter = numerals (power/toughness, loyalty, defense)
+   ============================================================ */
+
+:root {
+  /* ---- Font families ---- */
+  --font-display: "Cinzel", serif;                 /* headings, labels, buttons */
+  --font-body:    "EB Garamond", Georgia, serif;   /* UI body & inputs */
+  --font-rules:   "Spectral", Georgia, serif;      /* card rules / flavor */
+  --font-numeral: "Bitter", "Cinzel", serif;       /* P/T, loyalty, defense */
+  --font-title:   "Beleren Bold", "Cinzel", serif; /* heavy card-title face */
+  --font-mono:    ui-monospace, Menlo, Consolas, monospace;
+
+  /* ---- Card-specific aliases (overridable per card) ---- */
+  --card-font-title: var(--font-display);  /* card name + type line */
+  --card-font-body:  var(--font-rules);    /* rules + flavor */
+  --card-font-pt:    var(--font-numeral);  /* power/toughness etc. */
+
+  /* ---- Type scale (UI) ---- */
+  --fs-eyebrow:   11px;   /* Cinzel uppercase field labels */
+  --fs-caption:   13px;   /* hints, credits */
+  --fs-body:      16px;   /* inputs, paragraphs */
+  --fs-lead:      19px;   /* doc lead paragraphs */
+  --fs-h3:        20px;
+  --fs-h2:        clamp(20px, 3vw, 28px);  /* @kind font */
+  --fs-h1:        clamp(26px, 4.4vw, 42px);  /* @kind font */
+
+  /* ---- Tracking ---- */
+  --tracking-label: .12em;   /* uppercase eyebrow labels */
+  --tracking-display: .06em; /* big Cinzel headings */
+  --tracking-tight: .01em;
+
+  /* ---- Line heights ---- */
+  --lh-tight: 1.18;   /* @kind font */
+  --lh-rules: 1.32;   /* @kind font */
+  --lh-body:  1.6;    /* @kind font */
+}
+
+/* ---- Display heading ---- */
+.fdc-display {
+  font-family: var(--font-display);
+  font-weight: 700;
+  letter-spacing: var(--tracking-display);
+  line-height: var(--lh-tight);
+  color: var(--brass-hi);
+}
+
+/* ---- Eyebrow / field label ---- */
+.fdc-label {
+  font-family: var(--font-display);
+  font-size: var(--fs-eyebrow);
+  font-weight: 600;
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  color: var(--brass);
+}
+
+/* ---- Body copy ---- */
+.fdc-body {
+  font-family: var(--font-body);
+  font-size: var(--fs-body);
+  line-height: var(--lh-body);
+  color: var(--text-body);
+}
+
+/* ---- Hint / italic caption ---- */
+.fdc-hint {
+  font-family: var(--font-body);
+  font-size: var(--fs-caption);
+  font-style: italic;
+  color: var(--text-muted);
+}

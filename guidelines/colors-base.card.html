@@ -1,0 +1,27 @@
+<!-- @dsCard group="Colors" viewport="700x200" name="Base palette" subtitle="Ink, parchment, brass & ember — the scriptorium core" -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<link rel="stylesheet" href="../styles.css" />
+<style>
+  body { margin: 0; background: var(--ink); font-family: var(--font-body); padding: 20px; }
+  .row { display: grid; grid-template-columns: repeat(6, 1fr); gap: 12px; }
+  .sw { border-radius: 10px; overflow: hidden; border: 1px solid var(--line); }
+  .chip { height: 64px; }
+  .meta { padding: 8px 10px; background: var(--ink-2); }
+  .name { font-family: var(--font-display); font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: var(--parch); }
+  .hex { font-family: var(--font-mono); font-size: 11px; color: var(--parch-dim); margin-top: 2px; }
+</style>
+</head>
+<body>
+  <div class="row">
+    <div class="sw"><div class="chip" style="background:#14110d"></div><div class="meta"><div class="name">Ink</div><div class="hex">#14110d</div></div></div>
+    <div class="sw"><div class="chip" style="background:#1d1812"></div><div class="meta"><div class="name">Ink 2</div><div class="hex">#1d1812</div></div></div>
+    <div class="sw"><div class="chip" style="background:#2a2218"></div><div class="meta"><div class="name">Ink 3</div><div class="hex">#2a2218</div></div></div>
+    <div class="sw"><div class="chip" style="background:#efe4cc"></div><div class="meta"><div class="name">Parch</div><div class="hex">#efe4cc</div></div></div>
+    <div class="sw"><div class="chip" style="background:#c9a14a"></div><div class="meta"><div class="name">Brass</div><div class="hex">#c9a14a</div></div></div>
+    <div class="sw"><div class="chip" style="background:#b6502a"></div><div class="meta"><div class="name">Ember</div><div class="hex">#b6502a</div></div></div>
+  </div>
+</body>
+</html>

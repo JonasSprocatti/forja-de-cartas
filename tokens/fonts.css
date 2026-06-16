@@ -1,0 +1,21 @@
+/* ============================================================
+   FONTS — Forja de Cartas
+   Webfonts shipped with the system. Cinzel/EB Garamond/Spectral/Bitter
+   come from Google Fonts; Beleren Bold is self-hosted (card titles).
+   ============================================================ */
+
+/* Google Fonts — display (Cinzel), body (EB Garamond), card rules
+   (Spectral ≈ MPlantin) and numerals (Bitter ≈ Matrix). */
+@import url("https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Spectral:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Bitter:wght@600;700;800&display=swap");
+
+/* Beleren Bold — the heavy display face used on card titles.
+   NOTE: Beleren is owned by Wizards of the Coast. It is self-hosted here
+   because the user supplied the file; ship it only where you have rights. */
+@font-face {
+  font-family: "Beleren Bold";
+  src: url("../assets/fonts/Beleren2016-Bold.ttf") format("truetype");
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  text-rendering: optimizeLegibility;
+}

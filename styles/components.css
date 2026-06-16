@@ -1,0 +1,165 @@
+/* ============================================================
+   COMPONENT STYLES — Forja de Cartas
+   Classes consumed by the bundled React primitives. Lives in the
+   styles.css closure so demos & UI kits get them by linking one file.
+   All visuals derive from the design tokens.
+   ============================================================ */
+
+/* ----------------------------- BUTTONS ----------------------------- */
+.fdc-btn {
+  font-family: var(--font-display); font-weight: 600; letter-spacing: .04em;
+  font-size: 14px; cursor: pointer; border-radius: var(--radius-btn);
+  padding: 11px 18px; border: 1px solid transparent; transition: var(--dur-base) var(--ease);
+  display: inline-flex; align-items: center; gap: 8px; line-height: 1;
+  text-decoration: none;
+}
+.fdc-btn--gold {
+  background: linear-gradient(180deg, var(--brass-hi), var(--brass));
+  color: var(--text-on-gold); border-color: var(--brass-deep);
+  box-shadow: var(--shadow-gold);
+}
+.fdc-btn--gold:hover { transform: translateY(-1px); box-shadow: var(--shadow-gold-hover); }
+.fdc-btn--gold:active { transform: translateY(2px); box-shadow: 0 2px 0 var(--brass-deep); }
+.fdc-btn--ghost {
+  background: rgba(255,255,255,.03); color: var(--parch-dim); border-color: var(--line);
+}
+.fdc-btn--ghost:hover { color: var(--parch); border-color: var(--brass); }
+.fdc-btn--rune {
+  background: linear-gradient(180deg, #3a2c50, #2a2038);
+  color: var(--brass-hi); border-color: #5b4780; box-shadow: var(--shadow-rune);
+}
+.fdc-btn--rune:hover { transform: translateY(-1px); filter: brightness(1.12); }
+.fdc-btn--rune:active { transform: translateY(2px); box-shadow: 0 2px 0 #1c1528; }
+.fdc-btn--block { width: 100%; justify-content: center; }
+.fdc-btn--sm { font-size: 12px; padding: 9px 12px; }
+.fdc-btn--lg { font-size: 15px; padding: 13px 26px; }
+.fdc-btn[disabled], .fdc-btn--disabled { opacity: .55; cursor: not-allowed; transform: none !important; }
+
+/* ----------------------------- MANA PIPS ----------------------------- */
+.fdc-pip {
+  width: 21px; height: 21px; border-radius: var(--radius-pip);
+  display: inline-flex; align-items: center; justify-content: center;
+  font-family: var(--font-display); font-weight: 700; font-size: 12px; color: #fff;
+  box-shadow: inset 0 -2px 3px rgba(0,0,0,.35), inset 0 2px 2px rgba(255,255,255,.35), 0 1px 1px rgba(0,0,0,.3);
+  position: relative; flex: none; vertical-align: -4px;
+}
+.fdc-pip::after {
+  content: ""; position: absolute; left: 14%; right: 14%; top: 8%; height: 34%;
+  border-radius: 50%; background: linear-gradient(rgba(255,255,255,.55), rgba(255,255,255,0)); pointer-events: none;
+}
+.fdc-pip--W { background: radial-gradient(circle at 35% 30%, #fffdf3, #e8e0c8); color: #3a3320; }
+.fdc-pip--U { background: radial-gradient(circle at 35% 30%, #6fb6e8, #2a72b8); }
+.fdc-pip--B { background: radial-gradient(circle at 35% 30%, #6a6258, #2a2520); }
+.fdc-pip--R { background: radial-gradient(circle at 35% 30%, #e87a55, #b6361c); }
+.fdc-pip--G { background: radial-gradient(circle at 35% 30%, #6fc081, #2f7d40); }
+.fdc-pip--C, .fdc-pip--N, .fdc-pip--X { background: radial-gradient(circle at 35% 30%, #d8d2c4, #a89f8c); color: #2a2520; }
+.fdc-pip--T   { background: radial-gradient(circle at 35% 30%, #d8d2c4, #8a8275); color: #1c160c; font-size: 13px; }
+.fdc-pip--E   { background: radial-gradient(circle at 35% 30%, #d8e8a0, #7a9a35); color: #1c2406; font-size: 12px; }
+.fdc-pip--P   { background: radial-gradient(circle at 35% 30%, #c8b8c8, #6a5a6a); color: #f0e6f0; }
+/* size variants */
+.fdc-pip--sm { width: 17px; height: 17px; font-size: 11px; }
+.fdc-pip--lg { width: 26px; height: 26px; font-size: 14px; }
+
+.fdc-manacost { display: inline-flex; gap: 3px; align-items: center; }
+
+/* ----------------------------- RARITY GEM ----------------------------- */
+.fdc-rarity { font-size: 16px; line-height: 1; }
+.fdc-rarity--comum,   .fdc-rarity--common   { color: var(--rarity-common); }
+.fdc-rarity--incomum, .fdc-rarity--uncommon { color: var(--rarity-uncommon); }
+.fdc-rarity--rara,    .fdc-rarity--rare      { color: var(--rarity-rare); }
+.fdc-rarity--mítica,  .fdc-rarity--mythic    { color: var(--rarity-mythic); }
+
+/* ----------------------------- BADGE / TAG ----------------------------- */
+.fdc-badge {
+  display: inline-block; font-family: var(--font-display); font-weight: 700;
+  font-size: 10px; letter-spacing: .08em; line-height: 1.6;
+  padding: 2px 7px; border-radius: var(--radius-bar);
+}
+.fdc-badge--gold { background: linear-gradient(180deg, var(--brass-hi), var(--brass)); color: var(--text-on-gold); }
+.fdc-badge--pub  { color: #bfe3c0; border: 1px solid rgba(120,200,140,.45); border-radius: var(--radius-pill); padding: 0 7px; }
+.fdc-badge--priv { color: var(--parch-dim); border: 1px solid var(--line); border-radius: var(--radius-pill); padding: 0 7px; }
+.fdc-badge--neutral { color: var(--parch); border: 1px solid var(--line); border-radius: var(--radius-pill); padding: 0 7px; }
+
+/* ----------------------------- FIELDS ----------------------------- */
+.fdc-field { display: block; margin-bottom: 14px; }
+.fdc-field-label {
+  display: block; font-family: var(--font-display); font-size: var(--fs-eyebrow);
+  font-weight: 600; letter-spacing: var(--tracking-label); text-transform: uppercase;
+  color: var(--brass); margin-bottom: 6px;
+}
+.fdc-input, .fdc-textarea, .fdc-select {
+  width: 100%; font-family: var(--font-body); font-size: 16px;
+  color: var(--parch); background: var(--ink);
+  border: 1px solid var(--line); border-radius: var(--radius-input);
+  padding: 10px 12px; transition: var(--dur-fast) var(--ease);
+}
+.fdc-textarea { line-height: 1.4; resize: vertical; }
+.fdc-input:focus, .fdc-textarea:focus, .fdc-select:focus {
+  outline: none; border-color: var(--brass); box-shadow: 0 0 0 3px rgba(201,161,74,.15);
+}
+.fdc-input::placeholder, .fdc-textarea::placeholder { color: var(--parch-dim); opacity: .7; }
+.fdc-select {
+  cursor: pointer; appearance: none; padding-right: 32px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' fill='%23c9a14a'%3E%3Cpath d='M6 8 0 0h12z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat; background-position: right 12px center;
+}
+.fdc-hint { font-size: 13px; color: var(--parch-dim); font-style: italic; margin: 2px 0 0; }
+
+/* ----------------------------- TOGGLE (foil-style) ----------------------------- */
+.fdc-toggle {
+  font-family: var(--font-display); font-size: 13px; font-weight: 600; cursor: pointer;
+  padding: 10px 14px; border-radius: var(--radius-input); background: var(--ink); color: var(--parch-dim);
+  border: 1px solid var(--line); transition: var(--dur-fast) var(--ease); display: inline-flex;
+  align-items: center; gap: 8px;
+}
+.fdc-toggle:hover { border-color: var(--brass); color: var(--parch); }
+.fdc-toggle.is-on {
+  background: linear-gradient(115deg,#b6504f,#5a4f9a,#3f9a8a); color: #fff;
+  border-color: transparent; box-shadow: 0 0 14px rgba(150,90,200,.4);
+}
+
+/* ----------------------------- SEGMENTED CONTROL ----------------------------- */
+.fdc-seg {
+  display: inline-grid; grid-auto-flow: column; gap: 6px;
+  background: var(--ink); border: 1px solid var(--line); border-radius: 12px; padding: 5px;
+}
+.fdc-seg--block { display: grid; grid-auto-columns: 1fr; }
+.fdc-seg-btn {
+  font-family: var(--font-display); font-size: 13px; font-weight: 600; letter-spacing: .03em;
+  cursor: pointer; padding: 10px 16px; border-radius: 8px; border: none;
+  background: transparent; color: var(--parch-dim); transition: var(--dur-base) var(--ease);
+  display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+}
+.fdc-seg-btn.is-active {
+  background: linear-gradient(180deg, var(--brass), var(--brass-deep));
+  color: #241a06; box-shadow: 0 2px 8px rgba(0,0,0,.3);
+}
+
+/* ----------------------------- DROPZONE ----------------------------- */
+.fdc-dropzone {
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 8px; padding: 28px; border: 2px dashed var(--line); border-radius: 12px;
+  cursor: pointer; color: var(--parch-dim); transition: var(--dur-base) var(--ease); text-align: center;
+}
+.fdc-dropzone:hover, .fdc-dropzone.is-drag { border-color: var(--brass); color: var(--parch); background: rgba(201,161,74,.04); }
+.fdc-dropzone--sm { padding: 14px; flex-direction: row; gap: 10px; }
+.fdc-dz-icon { font-size: 28px; color: var(--brass); }
+.fdc-dropzone--sm .fdc-dz-icon { font-size: 20px; }
+.fdc-dz-text { font-size: 14px; }
+
+/* ----------------------------- PANEL / SURFACE ----------------------------- */
+.fdc-panel {
+  background: linear-gradient(180deg, rgba(239,228,204,.05), rgba(239,228,204,.02)), var(--ink-2);
+  border: 1px solid var(--line); border-radius: var(--radius-panel);
+  padding: 22px; box-shadow: var(--shadow), var(--shadow-inset);
+}
+
+/* ----------------------------- TOAST ----------------------------- */
+.fdc-toast {
+  background: var(--ink-3); color: var(--parch); border: 1px solid var(--brass);
+  padding: 12px 22px; border-radius: var(--radius-btn); font-size: 15px;
+  box-shadow: var(--shadow); display: inline-flex; align-items: center; gap: 8px;
+  font-family: var(--font-body);
+}
+.fdc-toast--err { border-color: var(--ember); color: #f4c9b8; }
+.fdc-toast--ok  { border-color: rgba(120,200,140,.6); color: var(--success); }

@@ -1,0 +1,26 @@
+/* ============================================================
+   CARD COLOR THEMES — Forja de Cartas
+   The five-color identity (WUBRG) + multicolor + colorless, expressed
+   as the four frame variables every card layout reads:
+     --frame    : top of the frame gradient
+     --frame-2  : bottom of the frame gradient
+     --titlebg  : title / type / P-T plate fill
+     --txtbg    : parchment text-box fill
+   Set data-color on the card root to switch identity.
+   ============================================================ */
+
+:root {
+  /* default = multicolor gold */
+  --frame:   #dcc46b;
+  --frame-2: #a8862f;
+  --titlebg: #ecdb9c;
+  --txtbg:   #f5edd3;
+}
+
+.fdc-card[data-color="W"]     { --frame:#efe7cf; --frame-2:#c7ba92; --titlebg:#f5efdd; --txtbg:#f8f3e6; }
+.fdc-card[data-color="U"]     { --frame:#5a97c9; --frame-2:#235080; --titlebg:#a9c8e0; --txtbg:#e6eef4; }
+.fdc-card[data-color="B"]     { --frame:#3f3b34; --frame-2:#161310; --titlebg:#6a6359; --txtbg:#d9d3c4; }
+.fdc-card[data-color="R"]     { --frame:#d4794f; --frame-2:#943219; --titlebg:#e3a987; --txtbg:#f4e7db; }
+.fdc-card[data-color="G"]     { --frame:#6fa869; --frame-2:#316631; --titlebg:#a8c79c; --txtbg:#e8f0de; }
+.fdc-card[data-color="multi"] { --frame:#dcc46b; --frame-2:#a8862f; --titlebg:#ecdb9c; --txtbg:#f5edd3; }
+.fdc-card[data-color="C"]     { --frame:#bdb5a4; --frame-2:#827a68; --titlebg:#d6cfbc; --txtbg:#efe9da; }

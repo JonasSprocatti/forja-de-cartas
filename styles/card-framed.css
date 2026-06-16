@@ -1,0 +1,49 @@
+/* ============================================================
+   FRAMED CARD — Forja de Cartas
+   Image-frame render mode for the Card component: a real frame PNG
+   (transparent art window) with the artwork behind it and text drawn
+   into percentage-positioned zones. Frames are 960×1344 (2× of 480×672)
+   with a transparent art window, from JonasSprocatti/forja-de-cartas.
+   Font sizes use cqw so the card scales at any width.
+   ============================================================ */
+
+.fdc-card--framed {
+  width: 480px; height: 672px; padding: 0; position: relative;
+  background: transparent; box-shadow: var(--shadow);
+  border-radius: 26px;
+  container-type: size;            /* enables cqw/cqh units below */
+  font-family: var(--font-title);
+}
+.fdc-card--framed.fdc-card--sm { width: 288px; height: 403px; }
+.fdc-card--framed.fdc-card--xs { width: 192px; height: 269px; }
+
+/* artwork sits behind the frame, showing through the transparent window */
+.fdc-cf-art {
+  position: absolute; overflow: hidden; z-index: 1;
+  background: radial-gradient(circle at 50% 34%, #2c271f 0%, #0f0d0a 84%);
+}
+.fdc-cf-art img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.fdc-cf-art-ph { width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; color: #6a6151; }
+.fdc-cf-art-ph-ico { font-size: 9cqw; line-height: 1; opacity: .75; }
+.fdc-cf-art-ph-txt { font-family: var(--font-display); font-size: 2.4cqw; letter-spacing: .06em; text-transform: uppercase; opacity: .6; }
+
+/* the frame PNG over the art */
+.fdc-cf-frame { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 2; pointer-events: none; }
+
+/* text zones, above the frame */
+.fdc-cf-zone { position: absolute; z-index: 3; display: flex; align-items: center; overflow: hidden; }
+.fdc-cf-zone--top { align-items: flex-start; }
+
+.fdc-cf-name   { font-family: var(--card-font-title); font-weight: 600; color: #1c160c; font-size: 5.2cqw; letter-spacing: .005em; white-space: nowrap; text-shadow: 0 1px 0 rgba(255,255,255,.35); }
+.fdc-cf-mana   { justify-content: flex-end; }
+.fdc-cf-mana .fdc-manacost { gap: .6cqw; }
+.fdc-cf-mana .fdc-pip { width: 5.6cqw; height: 5.6cqw; font-size: 3cqw; }
+.fdc-cf-type   { font-family: var(--card-font-title); font-weight: 500; color: #1c160c; font-size: 3.6cqw; letter-spacing: .005em; white-space: nowrap; }
+.fdc-cf-type .fdc-rarity { font-size: 4cqw; margin-left: auto; padding-left: 2cqw; }
+.fdc-cf-text   { display: block; align-items: stretch; }
+.fdc-cf-rules  { font-family: var(--card-font-body); color: #1a150d; font-size: 3.7cqw; line-height: 1.28; white-space: pre-wrap; }
+.fdc-cf-rules .reminder { font-style: italic; color: #4a4234; }
+.fdc-cf-flavor { font-family: var(--card-font-body); font-style: italic; color: #463c2a; font-size: 3.4cqw; line-height: 1.25; margin-top: 1.6cqw; padding-top: 1.6cqw; border-top: 1px solid rgba(0,0,0,.14); }
+.fdc-cf-flavor:empty { display: none; }
+.fdc-cf-pt     { justify-content: center; font-family: var(--card-font-pt); font-weight: 800; color: #1c160c; font-size: 4.6cqw; }
+.fdc-cf-credit { font-family: var(--card-font-pt); font-weight: 600; color: #5a4a32; font-size: 2.5cqw; letter-spacing: .01em; white-space: nowrap; opacity: .9; }

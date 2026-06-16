@@ -1,0 +1,29 @@
+<!-- @dsCard group="Spacing" viewport="700x180" name="Radii & shadows" subtitle="Corner radii and the panel / gold / bevel shadows" -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<link rel="stylesheet" href="../styles.css" />
+<style>
+  body { margin: 0; background: var(--ink); padding: 22px; }
+  .row { display: flex; gap: 22px; align-items: center; flex-wrap: wrap; }
+  .item { display: flex; flex-direction: column; align-items: center; gap: 8px; }
+  .box { width: 80px; height: 64px; background: var(--ink-2); border: 1px solid var(--line); }
+  .lbl { font-family: var(--font-mono); font-size: 10px; color: var(--parch-dim); text-align: center; }
+  .gold { background: linear-gradient(180deg, var(--brass-hi), var(--brass)); border: none; box-shadow: var(--shadow-gold); }
+  .bevel { background: #ecdb9c; box-shadow: var(--bevel); border: none; }
+  .panel { box-shadow: var(--shadow); }
+</style>
+</head>
+<body>
+  <div class="row">
+    <div class="item"><div class="box" style="border-radius:9px"></div><div class="lbl">input · 9px</div></div>
+    <div class="item"><div class="box" style="border-radius:14px"></div><div class="lbl">panel · 14px</div></div>
+    <div class="item"><div class="box" style="border-radius:26px"></div><div class="lbl">card · 26px</div></div>
+    <div class="item"><div class="box" style="border-radius:999px;width:64px"></div><div class="lbl">pill · 999px</div></div>
+    <div class="item"><div class="box gold" style="border-radius:10px"></div><div class="lbl">shadow-gold</div></div>
+    <div class="item"><div class="box panel" style="border-radius:14px"></div><div class="lbl">shadow (panel)</div></div>
+    <div class="item"><div class="box bevel" style="border-radius:7px"></div><div class="lbl">bevel (bars)</div></div>
+  </div>
+</body>
+</html>

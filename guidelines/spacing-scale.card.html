@@ -1,0 +1,28 @@
+<!-- @dsCard group="Spacing" viewport="700x150" name="Spacing scale" subtitle="The panel breathes in 4–44px steps" -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<link rel="stylesheet" href="../styles.css" />
+<style>
+  body { margin: 0; background: var(--ink); padding: 22px; }
+  .row { display: flex; align-items: flex-end; gap: 16px; }
+  .item { display: flex; flex-direction: column; align-items: center; gap: 6px; }
+  .bar { background: linear-gradient(180deg, var(--brass-hi), var(--brass)); border-radius: 3px; width: 26px; }
+  .lbl { font-family: var(--font-mono); font-size: 10px; color: var(--parch-dim); }
+</style>
+</head>
+<body>
+  <div class="row">
+    <div class="item"><div class="bar" style="height:4px"></div><div class="lbl">1·4</div></div>
+    <div class="item"><div class="bar" style="height:6px"></div><div class="lbl">2·6</div></div>
+    <div class="item"><div class="bar" style="height:8px"></div><div class="lbl">3·8</div></div>
+    <div class="item"><div class="bar" style="height:12px"></div><div class="lbl">4·12</div></div>
+    <div class="item"><div class="bar" style="height:14px"></div><div class="lbl">5·14</div></div>
+    <div class="item"><div class="bar" style="height:18px"></div><div class="lbl">6·18</div></div>
+    <div class="item"><div class="bar" style="height:22px"></div><div class="lbl">7·22</div></div>
+    <div class="item"><div class="bar" style="height:32px"></div><div class="lbl">8·32</div></div>
+    <div class="item"><div class="bar" style="height:44px"></div><div class="lbl">9·44</div></div>
+  </div>
+</body>
+</html>
