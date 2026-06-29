@@ -1,4 +1,5 @@
 [
+  //Brancas
   {
     "id": "W-Basic",
     "name": "Branco Clássico",
@@ -31,6 +32,430 @@
     "id": "W-Legendary",
     "name": "Branco Lendária",
     "src": "assets/frames/W-Legendary.png",
+    "zones": {
+      "art":    { "x": 6.25, "y": 14.3, "w": 87.5, "h": 37.8 },
+      "name":   { "x": 6,    "y": 4.2,  "w": 60,   "h": 8,  "align": "left",  "color": "#1c160c", "size": 26, "font": "title" },
+      "mana":   { "x": 64,   "y": 4.2,  "w": 30,   "h": 8,  "align": "right" },
+      "type":   { "x": 6.5,  "y": 53.5, "w": 80,   "h": 7,  "align": "left",  "color": "#1c160c", "size": 18, "font": "title" },
+      "text":   { "x": 6.5,  "y": 64,   "w": 87,   "h": 26, "align": "left",  "color": "#1a150d", "size": 19, "font": "body" },
+      "pt":     { "x": 78.5, "y": 92.5, "w": 16,   "h": 6,  "align": "center","color": "#1c160c", "size": 24, "font": "pt" },
+      "credit": { "x": 6,    "y": 94,   "w": 55,   "h": 4,  "align": "left",  "color": "#efe3cf", "size": 13, "font": "pt" }
+    }
+  },
+    {
+    "id": "W-Legendary-PR",
+    "name": "Branco Lendária com Poder e Resistencia",
+    "src": "assets/frames/W-Legendary-PR.png",
+    "zones": {
+      "art":    { "x": 6.25, "y": 14.3, "w": 87.5, "h": 37.8 },
+      "name":   { "x": 6,    "y": 4.2,  "w": 60,   "h": 8,  "align": "left",  "color": "#1c160c", "size": 26, "font": "title" },
+      "mana":   { "x": 64,   "y": 4.2,  "w": 30,   "h": 8,  "align": "right" },
+      "type":   { "x": 6.5,  "y": 53.5, "w": 80,   "h": 7,  "align": "left",  "color": "#1c160c", "size": 18, "font": "title" },
+      "text":   { "x": 6.5,  "y": 64,   "w": 87,   "h": 26, "align": "left",  "color": "#1a150d", "size": 19, "font": "body" },
+      "pt":     { "x": 78.5, "y": 92.5, "w": 16,   "h": 6,  "align": "center","color": "#1c160c", "size": 24, "font": "pt" },
+      "credit": { "x": 6,    "y": 94,   "w": 55,   "h": 4,  "align": "left",  "color": "#efe3cf", "size": 13, "font": "pt" }
+    }
+  },
+
+  //Pretas
+    {
+    "id": "B-Basic",
+    "name": "Preto Clássico",
+    "src": "assets/frames/B-Basic.png",
+    "zones": {
+      "art":    { "x": 6.25, "y": 14.3, "w": 87.5, "h": 37.8 },
+      "name":   { "x": 6,    "y": 4.2,  "w": 60,   "h": 8,  "align": "left",  "color": "#1c160c", "size": 26, "font": "title" },
+      "mana":   { "x": 64,   "y": 4.2,  "w": 30,   "h": 8,  "align": "right" },
+      "type":   { "x": 6.5,  "y": 53.5, "w": 80,   "h": 7,  "align": "left",  "color": "#1c160c", "size": 18, "font": "title" },
+      "text":   { "x": 6.5,  "y": 64,   "w": 87,   "h": 26, "align": "left",  "color": "#1a150d", "size": 19, "font": "body" },
+      "pt":     { "x": 78.5, "y": 92.5, "w": 16,   "h": 6,  "align": "center","color": "#1c160c", "size": 24, "font": "pt" },
+      "credit": { "x": 6,    "y": 94,   "w": 55,   "h": 4,  "align": "left",  "color": "#efe3cf", "size": 13, "font": "pt" }
+    }
+  },
+    {
+    "id": "B-Basic-PR Counter",
+    "name": "Preto Clássico com Poder e Resistência",
+    "src": "assets/frames/B-Basic-PR Counter.png",
+    "zones": {
+      "art":    { "x": 6.25, "y": 14.3, "w": 87.5, "h": 37.8 },
+      "name":   { "x": 6,    "y": 4.2,  "w": 60,   "h": 8,  "align": "left",  "color": "#1c160c", "size": 26, "font": "title" },
+      "mana":   { "x": 64,   "y": 4.2,  "w": 30,   "h": 8,  "align": "right" },
+      "type":   { "x": 6.5,  "y": 53.5, "w": 80,   "h": 7,  "align": "left",  "color": "#1c160c", "size": 18, "font": "title" },
+      "text":   { "x": 6.5,  "y": 64,   "w": 87,   "h": 26, "align": "left",  "color": "#1a150d", "size": 19, "font": "body" },
+      "pt":     { "x": 78.5, "y": 92.5, "w": 16,   "h": 6,  "align": "center","color": "#1c160c", "size": 24, "font": "pt" },
+      "credit": { "x": 6,    "y": 94,   "w": 55,   "h": 4,  "align": "left",  "color": "#efe3cf", "size": 13, "font": "pt" }
+    }
+  },
+      {
+    "id": "B-Legendary",
+    "name": "Preto Lendária",
+    "src": "assets/frames/B-Legendary.png",
+    "zones": {
+      "art":    { "x": 6.25, "y": 14.3, "w": 87.5, "h": 37.8 },
+      "name":   { "x": 6,    "y": 4.2,  "w": 60,   "h": 8,  "align": "left",  "color": "#1c160c", "size": 26, "font": "title" },
+      "mana":   { "x": 64,   "y": 4.2,  "w": 30,   "h": 8,  "align": "right" },
+      "type":   { "x": 6.5,  "y": 53.5, "w": 80,   "h": 7,  "align": "left",  "color": "#1c160c", "size": 18, "font": "title" },
+      "text":   { "x": 6.5,  "y": 64,   "w": 87,   "h": 26, "align": "left",  "color": "#1a150d", "size": 19, "font": "body" },
+      "pt":     { "x": 78.5, "y": 92.5, "w": 16,   "h": 6,  "align": "center","color": "#1c160c", "size": 24, "font": "pt" },
+      "credit": { "x": 6,    "y": 94,   "w": 55,   "h": 4,  "align": "left",  "color": "#efe3cf", "size": 13, "font": "pt" }
+    }
+  },
+    {
+    "id": "B-Legendary-PR",
+    "name": "Preto Lendária com Poder e Resistência",
+    "src": "assets/frames/B-Legendary-PR.png",
+    "zones": {
+      "art":    { "x": 6.25, "y": 14.3, "w": 87.5, "h": 37.8 },
+      "name":   { "x": 6,    "y": 4.2,  "w": 60,   "h": 8,  "align": "left",  "color": "#1c160c", "size": 26, "font": "title" },
+      "mana":   { "x": 64,   "y": 4.2,  "w": 30,   "h": 8,  "align": "right" },
+      "type":   { "x": 6.5,  "y": 53.5, "w": 80,   "h": 7,  "align": "left",  "color": "#1c160c", "size": 18, "font": "title" },
+      "text":   { "x": 6.5,  "y": 64,   "w": 87,   "h": 26, "align": "left",  "color": "#1a150d", "size": 19, "font": "body" },
+      "pt":     { "x": 78.5, "y": 92.5, "w": 16,   "h": 6,  "align": "center","color": "#1c160c", "size": 24, "font": "pt" },
+      "credit": { "x": 6,    "y": 94,   "w": 55,   "h": 4,  "align": "left",  "color": "#efe3cf", "size": 13, "font": "pt" }
+    }
+  },
+
+  //Azuis
+    {
+    "id": "U-Basic",
+    "name": "Azul Clássico",
+    "src": "assets/frames/U-Basic.png",
+    "zones": {
+      "art":    { "x": 6.25, "y": 14.3, "w": 87.5, "h": 37.8 },
+      "name":   { "x": 6,    "y": 4.2,  "w": 60,   "h": 8,  "align": "left",  "color": "#1c160c", "size": 26, "font": "title" },
+      "mana":   { "x": 64,   "y": 4.2,  "w": 30,   "h": 8,  "align": "right" },
+      "type":   { "x": 6.5,  "y": 53.5, "w": 80,   "h": 7,  "align": "left",  "color": "#1c160c", "size": 18, "font": "title" },
+      "text":   { "x": 6.5,  "y": 64,   "w": 87,   "h": 26, "align": "left",  "color": "#1a150d", "size": 19, "font": "body" },
+      "pt":     { "x": 78.5, "y": 92.5, "w": 16,   "h": 6,  "align": "center","color": "#1c160c", "size": 24, "font": "pt" },
+      "credit": { "x": 6,    "y": 94,   "w": 55,   "h": 4,  "align": "left",  "color": "#efe3cf", "size": 13, "font": "pt" }
+    }
+  },
+    {
+    "id": "U-Basic-PR Counter",
+    "name": "Azul Clássico com Poder e Resistência",
+    "src": "assets/frames/U-Basic-PR Counter.png",
+    "zones": {
+      "art":    { "x": 6.25, "y": 14.3, "w": 87.5, "h": 37.8 },
+      "name":   { "x": 6,    "y": 4.2,  "w": 60,   "h": 8,  "align": "left",  "color": "#1c160c", "size": 26, "font": "title" },
+      "mana":   { "x": 64,   "y": 4.2,  "w": 30,   "h": 8,  "align": "right" },
+      "type":   { "x": 6.5,  "y": 53.5, "w": 80,   "h": 7,  "align": "left",  "color": "#1c160c", "size": 18, "font": "title" },
+      "text":   { "x": 6.5,  "y": 64,   "w": 87,   "h": 26, "align": "left",  "color": "#1a150d", "size": 19, "font": "body" },
+      "pt":     { "x": 78.5, "y": 92.5, "w": 16,   "h": 6,  "align": "center","color": "#1c160c", "size": 24, "font": "pt" },
+      "credit": { "x": 6,    "y": 94,   "w": 55,   "h": 4,  "align": "left",  "color": "#efe3cf", "size": 13, "font": "pt" }
+    }
+  },
+      {
+    "id": "U-Legendary",
+    "name": "Azul Lendária",
+    "src": "assets/frames/U-Legendary.png",
+    "zones": {
+      "art":    { "x": 6.25, "y": 14.3, "w": 87.5, "h": 37.8 },
+      "name":   { "x": 6,    "y": 4.2,  "w": 60,   "h": 8,  "align": "left",  "color": "#1c160c", "size": 26, "font": "title" },
+      "mana":   { "x": 64,   "y": 4.2,  "w": 30,   "h": 8,  "align": "right" },
+      "type":   { "x": 6.5,  "y": 53.5, "w": 80,   "h": 7,  "align": "left",  "color": "#1c160c", "size": 18, "font": "title" },
+      "text":   { "x": 6.5,  "y": 64,   "w": 87,   "h": 26, "align": "left",  "color": "#1a150d", "size": 19, "font": "body" },
+      "pt":     { "x": 78.5, "y": 92.5, "w": 16,   "h": 6,  "align": "center","color": "#1c160c", "size": 24, "font": "pt" },
+      "credit": { "x": 6,    "y": 94,   "w": 55,   "h": 4,  "align": "left",  "color": "#efe3cf", "size": 13, "font": "pt" }
+    }
+  },
+    {
+    "id": "U-Legendary-PR",
+    "name": "Azul Lendária com Poder e Resistência",
+    "src": "assets/frames/U-Legendary-PR.png",
+    "zones": {
+      "art":    { "x": 6.25, "y": 14.3, "w": 87.5, "h": 37.8 },
+      "name":   { "x": 6,    "y": 4.2,  "w": 60,   "h": 8,  "align": "left",  "color": "#1c160c", "size": 26, "font": "title" },
+      "mana":   { "x": 64,   "y": 4.2,  "w": 30,   "h": 8,  "align": "right" },
+      "type":   { "x": 6.5,  "y": 53.5, "w": 80,   "h": 7,  "align": "left",  "color": "#1c160c", "size": 18, "font": "title" },
+      "text":   { "x": 6.5,  "y": 64,   "w": 87,   "h": 26, "align": "left",  "color": "#1a150d", "size": 19, "font": "body" },
+      "pt":     { "x": 78.5, "y": 92.5, "w": 16,   "h": 6,  "align": "center","color": "#1c160c", "size": 24, "font": "pt" },
+      "credit": { "x": 6,    "y": 94,   "w": 55,   "h": 4,  "align": "left",  "color": "#efe3cf", "size": 13, "font": "pt" }
+    }
+  },
+  
+  //Verdes
+
+    {
+    "id": "G-Basic",
+    "name": "Verde Clássico",
+    "src": "assets/frames/G-Basic.png",
+    "zones": {
+      "art":    { "x": 6.25, "y": 14.3, "w": 87.5, "h": 37.8 },
+      "name":   { "x": 6,    "y": 4.2,  "w": 60,   "h": 8,  "align": "left",  "color": "#1c160c", "size": 26, "font": "title" },
+      "mana":   { "x": 64,   "y": 4.2,  "w": 30,   "h": 8,  "align": "right" },
+      "type":   { "x": 6.5,  "y": 53.5, "w": 80,   "h": 7,  "align": "left",  "color": "#1c160c", "size": 18, "font": "title" },
+      "text":   { "x": 6.5,  "y": 64,   "w": 87,   "h": 26, "align": "left",  "color": "#1a150d", "size": 19, "font": "body" },
+      "pt":     { "x": 78.5, "y": 92.5, "w": 16,   "h": 6,  "align": "center","color": "#1c160c", "size": 24, "font": "pt" },
+      "credit": { "x": 6,    "y": 94,   "w": 55,   "h": 4,  "align": "left",  "color": "#efe3cf", "size": 13, "font": "pt" }
+    }
+  },
+    {
+    "id": "G-Basic-PR Counter",
+    "name": "Verde Clássico com Poder e Resistência",
+    "src": "assets/frames/G-Basic-PR Counter.png",
+    "zones": {
+      "art":    { "x": 6.25, "y": 14.3, "w": 87.5, "h": 37.8 },
+      "name":   { "x": 6,    "y": 4.2,  "w": 60,   "h": 8,  "align": "left",  "color": "#1c160c", "size": 26, "font": "title" },
+      "mana":   { "x": 64,   "y": 4.2,  "w": 30,   "h": 8,  "align": "right" },
+      "type":   { "x": 6.5,  "y": 53.5, "w": 80,   "h": 7,  "align": "left",  "color": "#1c160c", "size": 18, "font": "title" },
+      "text":   { "x": 6.5,  "y": 64,   "w": 87,   "h": 26, "align": "left",  "color": "#1a150d", "size": 19, "font": "body" },
+      "pt":     { "x": 78.5, "y": 92.5, "w": 16,   "h": 6,  "align": "center","color": "#1c160c", "size": 24, "font": "pt" },
+      "credit": { "x": 6,    "y": 94,   "w": 55,   "h": 4,  "align": "left",  "color": "#efe3cf", "size": 13, "font": "pt" }
+    }
+  },
+      {
+    "id": "G-Legendary",
+    "name": "Verde Lendária",
+    "src": "assets/frames/G-Legendary.png",
+    "zones": {
+      "art":    { "x": 6.25, "y": 14.3, "w": 87.5, "h": 37.8 },
+      "name":   { "x": 6,    "y": 4.2,  "w": 60,   "h": 8,  "align": "left",  "color": "#1c160c", "size": 26, "font": "title" },
+      "mana":   { "x": 64,   "y": 4.2,  "w": 30,   "h": 8,  "align": "right" },
+      "type":   { "x": 6.5,  "y": 53.5, "w": 80,   "h": 7,  "align": "left",  "color": "#1c160c", "size": 18, "font": "title" },
+      "text":   { "x": 6.5,  "y": 64,   "w": 87,   "h": 26, "align": "left",  "color": "#1a150d", "size": 19, "font": "body" },
+      "pt":     { "x": 78.5, "y": 92.5, "w": 16,   "h": 6,  "align": "center","color": "#1c160c", "size": 24, "font": "pt" },
+      "credit": { "x": 6,    "y": 94,   "w": 55,   "h": 4,  "align": "left",  "color": "#efe3cf", "size": 13, "font": "pt" }
+    }
+  },
+    {
+    "id": "G-Legendary-PR",
+    "name": "Verde Lendária com Poder e Resistência",
+    "src": "assets/frames/G-Legendary-PR.png",
+    "zones": {
+      "art":    { "x": 6.25, "y": 14.3, "w": 87.5, "h": 37.8 },
+      "name":   { "x": 6,    "y": 4.2,  "w": 60,   "h": 8,  "align": "left",  "color": "#1c160c", "size": 26, "font": "title" },
+      "mana":   { "x": 64,   "y": 4.2,  "w": 30,   "h": 8,  "align": "right" },
+      "type":   { "x": 6.5,  "y": 53.5, "w": 80,   "h": 7,  "align": "left",  "color": "#1c160c", "size": 18, "font": "title" },
+      "text":   { "x": 6.5,  "y": 64,   "w": 87,   "h": 26, "align": "left",  "color": "#1a150d", "size": 19, "font": "body" },
+      "pt":     { "x": 78.5, "y": 92.5, "w": 16,   "h": 6,  "align": "center","color": "#1c160c", "size": 24, "font": "pt" },
+      "credit": { "x": 6,    "y": 94,   "w": 55,   "h": 4,  "align": "left",  "color": "#efe3cf", "size": 13, "font": "pt" }
+    }
+  },
+
+  //Vermelhas
+
+    {
+    "id": "R-Basic",
+    "name": "Vermelho Clássico",
+    "src": "assets/frames/R-Basic.png",
+    "zones": {
+      "art":    { "x": 6.25, "y": 14.3, "w": 87.5, "h": 37.8 },
+      "name":   { "x": 6,    "y": 4.2,  "w": 60,   "h": 8,  "align": "left",  "color": "#1c160c", "size": 26, "font": "title" },
+      "mana":   { "x": 64,   "y": 4.2,  "w": 30,   "h": 8,  "align": "right" },
+      "type":   { "x": 6.5,  "y": 53.5, "w": 80,   "h": 7,  "align": "left",  "color": "#1c160c", "size": 18, "font": "title" },
+      "text":   { "x": 6.5,  "y": 64,   "w": 87,   "h": 26, "align": "left",  "color": "#1a150d", "size": 19, "font": "body" },
+      "pt":     { "x": 78.5, "y": 92.5, "w": 16,   "h": 6,  "align": "center","color": "#1c160c", "size": 24, "font": "pt" },
+      "credit": { "x": 6,    "y": 94,   "w": 55,   "h": 4,  "align": "left",  "color": "#efe3cf", "size": 13, "font": "pt" }
+    }
+  },
+    {
+    "id": "R-Basic-PR Counter",
+    "name": "Vermelho Clássico com Poder e Resistência",
+    "src": "assets/frames/R-Basic-PR Counter.png",
+    "zones": {
+      "art":    { "x": 6.25, "y": 14.3, "w": 87.5, "h": 37.8 },
+      "name":   { "x": 6,    "y": 4.2,  "w": 60,   "h": 8,  "align": "left",  "color": "#1c160c", "size": 26, "font": "title" },
+      "mana":   { "x": 64,   "y": 4.2,  "w": 30,   "h": 8,  "align": "right" },
+      "type":   { "x": 6.5,  "y": 53.5, "w": 80,   "h": 7,  "align": "left",  "color": "#1c160c", "size": 18, "font": "title" },
+      "text":   { "x": 6.5,  "y": 64,   "w": 87,   "h": 26, "align": "left",  "color": "#1a150d", "size": 19, "font": "body" },
+      "pt":     { "x": 78.5, "y": 92.5, "w": 16,   "h": 6,  "align": "center","color": "#1c160c", "size": 24, "font": "pt" },
+      "credit": { "x": 6,    "y": 94,   "w": 55,   "h": 4,  "align": "left",  "color": "#efe3cf", "size": 13, "font": "pt" }
+    }
+  },
+      {
+    "id": "R-Legendary",
+    "name": "Vermelho Lendária",
+    "src": "assets/frames/R-Legendary.png",
+    "zones": {
+      "art":    { "x": 6.25, "y": 14.3, "w": 87.5, "h": 37.8 },
+      "name":   { "x": 6,    "y": 4.2,  "w": 60,   "h": 8,  "align": "left",  "color": "#1c160c", "size": 26, "font": "title" },
+      "mana":   { "x": 64,   "y": 4.2,  "w": 30,   "h": 8,  "align": "right" },
+      "type":   { "x": 6.5,  "y": 53.5, "w": 80,   "h": 7,  "align": "left",  "color": "#1c160c", "size": 18, "font": "title" },
+      "text":   { "x": 6.5,  "y": 64,   "w": 87,   "h": 26, "align": "left",  "color": "#1a150d", "size": 19, "font": "body" },
+      "pt":     { "x": 78.5, "y": 92.5, "w": 16,   "h": 6,  "align": "center","color": "#1c160c", "size": 24, "font": "pt" },
+      "credit": { "x": 6,    "y": 94,   "w": 55,   "h": 4,  "align": "left",  "color": "#efe3cf", "size": 13, "font": "pt" }
+    }
+  },
+    {
+    "id": "R-Legendary-PR",
+    "name": "Vermelho Lendária com Poder e Resistência",
+    "src": "assets/frames/R-Legendary-PR.png",
+    "zones": {
+      "art":    { "x": 6.25, "y": 14.3, "w": 87.5, "h": 37.8 },
+      "name":   { "x": 6,    "y": 4.2,  "w": 60,   "h": 8,  "align": "left",  "color": "#1c160c", "size": 26, "font": "title" },
+      "mana":   { "x": 64,   "y": 4.2,  "w": 30,   "h": 8,  "align": "right" },
+      "type":   { "x": 6.5,  "y": 53.5, "w": 80,   "h": 7,  "align": "left",  "color": "#1c160c", "size": 18, "font": "title" },
+      "text":   { "x": 6.5,  "y": 64,   "w": 87,   "h": 26, "align": "left",  "color": "#1a150d", "size": 19, "font": "body" },
+      "pt":     { "x": 78.5, "y": 92.5, "w": 16,   "h": 6,  "align": "center","color": "#1c160c", "size": 24, "font": "pt" },
+      "credit": { "x": 6,    "y": 94,   "w": 55,   "h": 4,  "align": "left",  "color": "#efe3cf", "size": 13, "font": "pt" }
+    }
+  },
+  
+  //Eldrazi
+
+    {
+    "id": "E-Basic",
+    "name": "Eldrazi Clássico",
+    "src": "assets/frames/E-Basic.png",
+    "zones": {
+      "art":    { "x": 6.25, "y": 14.3, "w": 87.5, "h": 37.8 },
+      "name":   { "x": 6,    "y": 4.2,  "w": 60,   "h": 8,  "align": "left",  "color": "#1c160c", "size": 26, "font": "title" },
+      "mana":   { "x": 64,   "y": 4.2,  "w": 30,   "h": 8,  "align": "right" },
+      "type":   { "x": 6.5,  "y": 53.5, "w": 80,   "h": 7,  "align": "left",  "color": "#1c160c", "size": 18, "font": "title" },
+      "text":   { "x": 6.5,  "y": 64,   "w": 87,   "h": 26, "align": "left",  "color": "#1a150d", "size": 19, "font": "body" },
+      "pt":     { "x": 78.5, "y": 92.5, "w": 16,   "h": 6,  "align": "center","color": "#1c160c", "size": 24, "font": "pt" },
+      "credit": { "x": 6,    "y": 94,   "w": 55,   "h": 4,  "align": "left",  "color": "#efe3cf", "size": 13, "font": "pt" }
+    }
+  },
+    {
+    "id": "E-Basic-PR Counter",
+    "name": "Eldrazi Clássico com Poder e Resistência",
+    "src": "assets/frames/E-Basic-PR Counter.png",
+    "zones": {
+      "art":    { "x": 6.25, "y": 14.3, "w": 87.5, "h": 37.8 },
+      "name":   { "x": 6,    "y": 4.2,  "w": 60,   "h": 8,  "align": "left",  "color": "#1c160c", "size": 26, "font": "title" },
+      "mana":   { "x": 64,   "y": 4.2,  "w": 30,   "h": 8,  "align": "right" },
+      "type":   { "x": 6.5,  "y": 53.5, "w": 80,   "h": 7,  "align": "left",  "color": "#1c160c", "size": 18, "font": "title" },
+      "text":   { "x": 6.5,  "y": 64,   "w": 87,   "h": 26, "align": "left",  "color": "#1a150d", "size": 19, "font": "body" },
+      "pt":     { "x": 78.5, "y": 92.5, "w": 16,   "h": 6,  "align": "center","color": "#1c160c", "size": 24, "font": "pt" },
+      "credit": { "x": 6,    "y": 94,   "w": 55,   "h": 4,  "align": "left",  "color": "#efe3cf", "size": 13, "font": "pt" }
+    }
+  },
+      {
+    "id": "E-Legendary",
+    "name": "Eldrazi Lendária",
+    "src": "assets/frames/E-Legendary.png",
+    "zones": {
+      "art":    { "x": 6.25, "y": 14.3, "w": 87.5, "h": 37.8 },
+      "name":   { "x": 6,    "y": 4.2,  "w": 60,   "h": 8,  "align": "left",  "color": "#1c160c", "size": 26, "font": "title" },
+      "mana":   { "x": 64,   "y": 4.2,  "w": 30,   "h": 8,  "align": "right" },
+      "type":   { "x": 6.5,  "y": 53.5, "w": 80,   "h": 7,  "align": "left",  "color": "#1c160c", "size": 18, "font": "title" },
+      "text":   { "x": 6.5,  "y": 64,   "w": 87,   "h": 26, "align": "left",  "color": "#1a150d", "size": 19, "font": "body" },
+      "pt":     { "x": 78.5, "y": 92.5, "w": 16,   "h": 6,  "align": "center","color": "#1c160c", "size": 24, "font": "pt" },
+      "credit": { "x": 6,    "y": 94,   "w": 55,   "h": 4,  "align": "left",  "color": "#efe3cf", "size": 13, "font": "pt" }
+    }
+  },
+    {
+    "id": "E-Legendary-PR",
+    "name": "Eldrazi Lendária com Poder e Resistência",
+    "src": "assets/frames/E-Legendary-PR.png",
+    "zones": {
+      "art":    { "x": 6.25, "y": 14.3, "w": 87.5, "h": 37.8 },
+      "name":   { "x": 6,    "y": 4.2,  "w": 60,   "h": 8,  "align": "left",  "color": "#1c160c", "size": 26, "font": "title" },
+      "mana":   { "x": 64,   "y": 4.2,  "w": 30,   "h": 8,  "align": "right" },
+      "type":   { "x": 6.5,  "y": 53.5, "w": 80,   "h": 7,  "align": "left",  "color": "#1c160c", "size": 18, "font": "title" },
+      "text":   { "x": 6.5,  "y": 64,   "w": 87,   "h": 26, "align": "left",  "color": "#1a150d", "size": 19, "font": "body" },
+      "pt":     { "x": 78.5, "y": 92.5, "w": 16,   "h": 6,  "align": "center","color": "#1c160c", "size": 24, "font": "pt" },
+      "credit": { "x": 6,    "y": 94,   "w": 55,   "h": 4,  "align": "left",  "color": "#efe3cf", "size": 13, "font": "pt" }
+    }
+  },
+
+  //Multicoloridas
+
+    {
+    "id": "Golden-Basic",
+    "name": "Multicolorida Clássico",
+    "src": "assets/frames/Golden-Basic.png",
+    "zones": {
+      "art":    { "x": 6.25, "y": 14.3, "w": 87.5, "h": 37.8 },
+      "name":   { "x": 6,    "y": 4.2,  "w": 60,   "h": 8,  "align": "left",  "color": "#1c160c", "size": 26, "font": "title" },
+      "mana":   { "x": 64,   "y": 4.2,  "w": 30,   "h": 8,  "align": "right" },
+      "type":   { "x": 6.5,  "y": 53.5, "w": 80,   "h": 7,  "align": "left",  "color": "#1c160c", "size": 18, "font": "title" },
+      "text":   { "x": 6.5,  "y": 64,   "w": 87,   "h": 26, "align": "left",  "color": "#1a150d", "size": 19, "font": "body" },
+      "pt":     { "x": 78.5, "y": 92.5, "w": 16,   "h": 6,  "align": "center","color": "#1c160c", "size": 24, "font": "pt" },
+      "credit": { "x": 6,    "y": 94,   "w": 55,   "h": 4,  "align": "left",  "color": "#efe3cf", "size": 13, "font": "pt" }
+    }
+  },
+    {
+    "id": "Golden-Basic-PR Counter",
+    "name": "Multicolorida Clássico com Poder e Resistência",
+    "src": "assets/frames/Golden-Basic-PR Counter.png",
+    "zones": {
+      "art":    { "x": 6.25, "y": 14.3, "w": 87.5, "h": 37.8 },
+      "name":   { "x": 6,    "y": 4.2,  "w": 60,   "h": 8,  "align": "left",  "color": "#1c160c", "size": 26, "font": "title" },
+      "mana":   { "x": 64,   "y": 4.2,  "w": 30,   "h": 8,  "align": "right" },
+      "type":   { "x": 6.5,  "y": 53.5, "w": 80,   "h": 7,  "align": "left",  "color": "#1c160c", "size": 18, "font": "title" },
+      "text":   { "x": 6.5,  "y": 64,   "w": 87,   "h": 26, "align": "left",  "color": "#1a150d", "size": 19, "font": "body" },
+      "pt":     { "x": 78.5, "y": 92.5, "w": 16,   "h": 6,  "align": "center","color": "#1c160c", "size": 24, "font": "pt" },
+      "credit": { "x": 6,    "y": 94,   "w": 55,   "h": 4,  "align": "left",  "color": "#efe3cf", "size": 13, "font": "pt" }
+    }
+  },
+      {
+    "id": "Golden-Legendary",
+    "name": "Multicolorida Lendária",
+    "src": "assets/frames/Golden-Legendary.png",
+    "zones": {
+      "art":    { "x": 6.25, "y": 14.3, "w": 87.5, "h": 37.8 },
+      "name":   { "x": 6,    "y": 4.2,  "w": 60,   "h": 8,  "align": "left",  "color": "#1c160c", "size": 26, "font": "title" },
+      "mana":   { "x": 64,   "y": 4.2,  "w": 30,   "h": 8,  "align": "right" },
+      "type":   { "x": 6.5,  "y": 53.5, "w": 80,   "h": 7,  "align": "left",  "color": "#1c160c", "size": 18, "font": "title" },
+      "text":   { "x": 6.5,  "y": 64,   "w": 87,   "h": 26, "align": "left",  "color": "#1a150d", "size": 19, "font": "body" },
+      "pt":     { "x": 78.5, "y": 92.5, "w": 16,   "h": 6,  "align": "center","color": "#1c160c", "size": 24, "font": "pt" },
+      "credit": { "x": 6,    "y": 94,   "w": 55,   "h": 4,  "align": "left",  "color": "#efe3cf", "size": 13, "font": "pt" }
+    }
+  },
+    {
+    "id": "Golden-Legendary-PR",
+    "name": "Multicolorida Lendária com Poder e Resistência",
+    "src": "assets/frames/Golden-Legendary-PR.png",
+    "zones": {
+      "art":    { "x": 6.25, "y": 14.3, "w": 87.5, "h": 37.8 },
+      "name":   { "x": 6,    "y": 4.2,  "w": 60,   "h": 8,  "align": "left",  "color": "#1c160c", "size": 26, "font": "title" },
+      "mana":   { "x": 64,   "y": 4.2,  "w": 30,   "h": 8,  "align": "right" },
+      "type":   { "x": 6.5,  "y": 53.5, "w": 80,   "h": 7,  "align": "left",  "color": "#1c160c", "size": 18, "font": "title" },
+      "text":   { "x": 6.5,  "y": 64,   "w": 87,   "h": 26, "align": "left",  "color": "#1a150d", "size": 19, "font": "body" },
+      "pt":     { "x": 78.5, "y": 92.5, "w": 16,   "h": 6,  "align": "center","color": "#1c160c", "size": 24, "font": "pt" },
+      "credit": { "x": 6,    "y": 94,   "w": 55,   "h": 4,  "align": "left",  "color": "#efe3cf", "size": 13, "font": "pt" }
+    }
+  },
+
+  //Veículos
+    {
+    "id": "V-Basic",
+    "name": "Veículo Clássico",
+    "src": "assets/frames/V-Basic.png",
+    "zones": {
+      "art":    { "x": 6.25, "y": 14.3, "w": 87.5, "h": 37.8 },
+      "name":   { "x": 6,    "y": 4.2,  "w": 60,   "h": 8,  "align": "left",  "color": "#1c160c", "size": 26, "font": "title" },
+      "mana":   { "x": 64,   "y": 4.2,  "w": 30,   "h": 8,  "align": "right" },
+      "type":   { "x": 6.5,  "y": 53.5, "w": 80,   "h": 7,  "align": "left",  "color": "#1c160c", "size": 18, "font": "title" },
+      "text":   { "x": 6.5,  "y": 64,   "w": 87,   "h": 26, "align": "left",  "color": "#1a150d", "size": 19, "font": "body" },
+      "pt":     { "x": 78.5, "y": 92.5, "w": 16,   "h": 6,  "align": "center","color": "#1c160c", "size": 24, "font": "pt" },
+      "credit": { "x": 6,    "y": 94,   "w": 55,   "h": 4,  "align": "left",  "color": "#efe3cf", "size": 13, "font": "pt" }
+    }
+  },
+    {
+    "id": "V-Basic-PR Counter",
+    "name": "Veículo Clássico com Poder e Resistência",
+    "src": "assets/frames/V-Basic-PR Counter.png",
+    "zones": {
+      "art":    { "x": 6.25, "y": 14.3, "w": 87.5, "h": 37.8 },
+      "name":   { "x": 6,    "y": 4.2,  "w": 60,   "h": 8,  "align": "left",  "color": "#1c160c", "size": 26, "font": "title" },
+      "mana":   { "x": 64,   "y": 4.2,  "w": 30,   "h": 8,  "align": "right" },
+      "type":   { "x": 6.5,  "y": 53.5, "w": 80,   "h": 7,  "align": "left",  "color": "#1c160c", "size": 18, "font": "title" },
+      "text":   { "x": 6.5,  "y": 64,   "w": 87,   "h": 26, "align": "left",  "color": "#1a150d", "size": 19, "font": "body" },
+      "pt":     { "x": 78.5, "y": 92.5, "w": 16,   "h": 6,  "align": "center","color": "#1c160c", "size": 24, "font": "pt" },
+      "credit": { "x": 6,    "y": 94,   "w": 55,   "h": 4,  "align": "left",  "color": "#efe3cf", "size": 13, "font": "pt" }
+    }
+  },
+      {
+    "id": "V-Legendary",
+    "name": "Veículo Lendária",
+    "src": "assets/frames/V-Legendary.png",
+    "zones": {
+      "art":    { "x": 6.25, "y": 14.3, "w": 87.5, "h": 37.8 },
+      "name":   { "x": 6,    "y": 4.2,  "w": 60,   "h": 8,  "align": "left",  "color": "#1c160c", "size": 26, "font": "title" },
+      "mana":   { "x": 64,   "y": 4.2,  "w": 30,   "h": 8,  "align": "right" },
+      "type":   { "x": 6.5,  "y": 53.5, "w": 80,   "h": 7,  "align": "left",  "color": "#1c160c", "size": 18, "font": "title" },
+      "text":   { "x": 6.5,  "y": 64,   "w": 87,   "h": 26, "align": "left",  "color": "#1a150d", "size": 19, "font": "body" },
+      "pt":     { "x": 78.5, "y": 92.5, "w": 16,   "h": 6,  "align": "center","color": "#1c160c", "size": 24, "font": "pt" },
+      "credit": { "x": 6,    "y": 94,   "w": 55,   "h": 4,  "align": "left",  "color": "#efe3cf", "size": 13, "font": "pt" }
+    }
+  },
+    {
+    "id": "V-Legendary-PR",
+    "name": "Veículo Lendária com Poder e Resistência",
+    "src": "assets/frames/V-Legendary-PR.png",
     "zones": {
       "art":    { "x": 6.25, "y": 14.3, "w": 87.5, "h": 37.8 },
       "name":   { "x": 6,    "y": 4.2,  "w": 60,   "h": 8,  "align": "left",  "color": "#1c160c", "size": 26, "font": "title" },
