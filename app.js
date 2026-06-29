@@ -72,14 +72,23 @@ function autoColor(mana){
   const c=[...new Set((mana.toUpperCase().match(/[WUBRG]/g))||[])];
   if(c.length===0) return "C"; if(c.length===1) return c[0]; return "multi";
 }
-/* prefixo de frame por identidade de cor (ajuste aqui se quiser mapear diferente) */
+/* prefixo de frame por identidade de cor (usado quando nenhuma regra de tipo casa) */
 const FRAME_PREFIX={W:"W",U:"U",B:"B",R:"R",G:"G",multi:"Golden",C:"E"};
-/* escolhe o id do frame custom automaticamente pela cor do custo + tipo/PT */
+/* regras por TIPO da carta (têm prioridade sobre a cor). Ordem importa.
+   Para adicionar um frame ligado a um tipo, é só incluir aqui: {test:/regex/i, prefix:"X"} */
+const FRAME_TYPE_RULES=[
+  {test:/ve[íi]culo|vehicle/i, prefix:"V"},   // Veículo -> frame V (mesmo se colorido)
+  {test:/eldrazi/i,            prefix:"E"},   // Eldrazi -> frame E
+];
+/* escolhe o id do frame custom automaticamente: tipo primeiro, depois cor; + variante por PT/lendário */
 function autoFrame(){
   if(!Object.keys(FRAMES).length) return "";   // frames não carregados (file://)
   const mana=(state.layout==="dfc"&&state.showBack)?state.back.mana:state.mana;
-  const prefix=FRAME_PREFIX[autoColor(mana||"")]||"Golden";
-  const type=state.type||"", legendary=/lend|legend/i.test(type), hasPT=(state.pt||"").trim()!=="";
+  const type=state.type||"";
+  let prefix=null;
+  for(const r of FRAME_TYPE_RULES){ if(r.test.test(type)){ prefix=r.prefix; break; } }   // 1) por tipo
+  if(!prefix) prefix=FRAME_PREFIX[autoColor(mana||"")]||"Golden";                          // 2) por cor
+  const legendary=/lend|legend/i.test(type), hasPT=(state.pt||"").trim()!=="";
   const variants=[];
   if(legendary&&hasPT) variants.push("Legendary-PR");
   if(legendary)        variants.push("Legendary");
