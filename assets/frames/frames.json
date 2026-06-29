@@ -13,12 +13,13 @@
       "name": {
         "x": 6,
         "y": 4.2,
-        "w": 60,
+        "w": 56,
         "h": 8,
         "align": "left",
         "color": "#1c160c",
         "size": 26,
-        "font": "title"
+        "font": "title",
+        "min": 13
       },
       "mana": {
         "x": 64,
@@ -35,7 +36,8 @@
         "align": "left",
         "color": "#1c160c",
         "size": 18,
-        "font": "title"
+        "font": "title",
+        "min": 11
       },
       "text": {
         "x": 6.5,
@@ -45,7 +47,8 @@
         "align": "left",
         "color": "#1a150d",
         "size": 19,
-        "font": "body"
+        "font": "body",
+        "min": 9
       },
       "pt": {
         "x": 78.5,
@@ -55,7 +58,8 @@
         "align": "center",
         "color": "#1c160c",
         "size": 24,
-        "font": "pt"
+        "font": "pt",
+        "min": 12
       },
       "credit": {
         "x": 6,
@@ -83,12 +87,13 @@
       "name": {
         "x": 6,
         "y": 4.2,
-        "w": 60,
+        "w": 56,
         "h": 8,
         "align": "left",
         "color": "#1c160c",
         "size": 26,
-        "font": "title"
+        "font": "title",
+        "min": 13
       },
       "mana": {
         "x": 64,
@@ -105,7 +110,8 @@
         "align": "left",
         "color": "#1c160c",
         "size": 18,
-        "font": "title"
+        "font": "title",
+        "min": 11
       },
       "text": {
         "x": 6.5,
@@ -115,7 +121,8 @@
         "align": "left",
         "color": "#1a150d",
         "size": 19,
-        "font": "body"
+        "font": "body",
+        "min": 9
       },
       "pt": {
         "x": 78.5,
@@ -125,7 +132,8 @@
         "align": "center",
         "color": "#1c160c",
         "size": 24,
-        "font": "pt"
+        "font": "pt",
+        "min": 12
       },
       "credit": {
         "x": 6,
@@ -153,12 +161,13 @@
       "name": {
         "x": 6,
         "y": 4.2,
-        "w": 60,
+        "w": 56,
         "h": 8,
         "align": "left",
         "color": "#1c160c",
         "size": 26,
-        "font": "title"
+        "font": "title",
+        "min": 13
       },
       "mana": {
         "x": 64,
@@ -175,7 +184,8 @@
         "align": "left",
         "color": "#1c160c",
         "size": 18,
-        "font": "title"
+        "font": "title",
+        "min": 11
       },
       "text": {
         "x": 6.5,
@@ -185,7 +195,8 @@
         "align": "left",
         "color": "#1a150d",
         "size": 19,
-        "font": "body"
+        "font": "body",
+        "min": 9
       },
       "pt": {
         "x": 78.5,
@@ -195,7 +206,8 @@
         "align": "center",
         "color": "#1c160c",
         "size": 24,
-        "font": "pt"
+        "font": "pt",
+        "min": 12
       },
       "credit": {
         "x": 6,
@@ -223,12 +235,13 @@
       "name": {
         "x": 6,
         "y": 4.2,
-        "w": 60,
+        "w": 56,
         "h": 8,
         "align": "left",
         "color": "#1c160c",
         "size": 26,
-        "font": "title"
+        "font": "title",
+        "min": 13
       },
       "mana": {
         "x": 64,
@@ -245,7 +258,8 @@
         "align": "left",
         "color": "#1c160c",
         "size": 18,
-        "font": "title"
+        "font": "title",
+        "min": 11
       },
       "text": {
         "x": 6.5,
@@ -255,7 +269,8 @@
         "align": "left",
         "color": "#1a150d",
         "size": 19,
-        "font": "body"
+        "font": "body",
+        "min": 9
       },
       "pt": {
         "x": 78.5,
@@ -265,7 +280,8 @@
         "align": "center",
         "color": "#1c160c",
         "size": 24,
-        "font": "pt"
+        "font": "pt",
+        "min": 12
       },
       "credit": {
         "x": 6,
@@ -293,12 +309,13 @@
       "name": {
         "x": 6,
         "y": 4.2,
-        "w": 60,
+        "w": 56,
         "h": 8,
         "align": "left",
         "color": "#1c160c",
         "size": 26,
-        "font": "title"
+        "font": "title",
+        "min": 13
       },
       "mana": {
         "x": 64,
@@ -315,7 +332,8 @@
         "align": "left",
         "color": "#1c160c",
         "size": 18,
-        "font": "title"
+        "font": "title",
+        "min": 11
       },
       "text": {
         "x": 6.5,
@@ -325,7 +343,8 @@
         "align": "left",
         "color": "#1a150d",
         "size": 19,
-        "font": "body"
+        "font": "body",
+        "min": 9
       },
       "pt": {
         "x": 78.5,
@@ -335,7 +354,8 @@
         "align": "center",
         "color": "#1c160c",
         "size": 24,
-        "font": "pt"
+        "font": "pt",
+        "min": 12
       },
       "credit": {
         "x": 6,
@@ -363,12 +383,13 @@
       "name": {
         "x": 6,
         "y": 4.2,
-        "w": 60,
+        "w": 56,
         "h": 8,
         "align": "left",
         "color": "#1c160c",
         "size": 26,
-        "font": "title"
+        "font": "title",
+        "min": 13
       },
       "mana": {
         "x": 64,
@@ -385,7 +406,8 @@
         "align": "left",
         "color": "#1c160c",
         "size": 18,
-        "font": "title"
+        "font": "title",
+        "min": 11
       },
       "text": {
         "x": 6.5,
@@ -395,7 +417,8 @@
         "align": "left",
         "color": "#1a150d",
         "size": 19,
-        "font": "body"
+        "font": "body",
+        "min": 9
       },
       "pt": {
         "x": 78.5,
@@ -405,7 +428,8 @@
         "align": "center",
         "color": "#1c160c",
         "size": 24,
-        "font": "pt"
+        "font": "pt",
+        "min": 12
       },
       "credit": {
         "x": 6,
@@ -433,12 +457,13 @@
       "name": {
         "x": 6,
         "y": 4.2,
-        "w": 60,
+        "w": 56,
         "h": 8,
         "align": "left",
         "color": "#1c160c",
         "size": 26,
-        "font": "title"
+        "font": "title",
+        "min": 13
       },
       "mana": {
         "x": 64,
@@ -455,7 +480,8 @@
         "align": "left",
         "color": "#1c160c",
         "size": 18,
-        "font": "title"
+        "font": "title",
+        "min": 11
       },
       "text": {
         "x": 6.5,
@@ -465,7 +491,8 @@
         "align": "left",
         "color": "#1a150d",
         "size": 19,
-        "font": "body"
+        "font": "body",
+        "min": 9
       },
       "pt": {
         "x": 78.5,
@@ -475,7 +502,8 @@
         "align": "center",
         "color": "#1c160c",
         "size": 24,
-        "font": "pt"
+        "font": "pt",
+        "min": 12
       },
       "credit": {
         "x": 6,
@@ -503,12 +531,13 @@
       "name": {
         "x": 6,
         "y": 4.2,
-        "w": 60,
+        "w": 56,
         "h": 8,
         "align": "left",
         "color": "#1c160c",
         "size": 26,
-        "font": "title"
+        "font": "title",
+        "min": 13
       },
       "mana": {
         "x": 64,
@@ -525,7 +554,8 @@
         "align": "left",
         "color": "#1c160c",
         "size": 18,
-        "font": "title"
+        "font": "title",
+        "min": 11
       },
       "text": {
         "x": 6.5,
@@ -535,7 +565,8 @@
         "align": "left",
         "color": "#1a150d",
         "size": 19,
-        "font": "body"
+        "font": "body",
+        "min": 9
       },
       "pt": {
         "x": 78.5,
@@ -545,7 +576,8 @@
         "align": "center",
         "color": "#1c160c",
         "size": 24,
-        "font": "pt"
+        "font": "pt",
+        "min": 12
       },
       "credit": {
         "x": 6,
@@ -573,12 +605,13 @@
       "name": {
         "x": 6,
         "y": 4.2,
-        "w": 60,
+        "w": 56,
         "h": 8,
         "align": "left",
         "color": "#1c160c",
         "size": 26,
-        "font": "title"
+        "font": "title",
+        "min": 13
       },
       "mana": {
         "x": 64,
@@ -595,7 +628,8 @@
         "align": "left",
         "color": "#1c160c",
         "size": 18,
-        "font": "title"
+        "font": "title",
+        "min": 11
       },
       "text": {
         "x": 6.5,
@@ -605,7 +639,8 @@
         "align": "left",
         "color": "#1a150d",
         "size": 19,
-        "font": "body"
+        "font": "body",
+        "min": 9
       },
       "pt": {
         "x": 78.5,
@@ -615,7 +650,8 @@
         "align": "center",
         "color": "#1c160c",
         "size": 24,
-        "font": "pt"
+        "font": "pt",
+        "min": 12
       },
       "credit": {
         "x": 6,
@@ -643,12 +679,13 @@
       "name": {
         "x": 6,
         "y": 4.2,
-        "w": 60,
+        "w": 56,
         "h": 8,
         "align": "left",
         "color": "#1c160c",
         "size": 26,
-        "font": "title"
+        "font": "title",
+        "min": 13
       },
       "mana": {
         "x": 64,
@@ -665,7 +702,8 @@
         "align": "left",
         "color": "#1c160c",
         "size": 18,
-        "font": "title"
+        "font": "title",
+        "min": 11
       },
       "text": {
         "x": 6.5,
@@ -675,7 +713,8 @@
         "align": "left",
         "color": "#1a150d",
         "size": 19,
-        "font": "body"
+        "font": "body",
+        "min": 9
       },
       "pt": {
         "x": 78.5,
@@ -685,7 +724,8 @@
         "align": "center",
         "color": "#1c160c",
         "size": 24,
-        "font": "pt"
+        "font": "pt",
+        "min": 12
       },
       "credit": {
         "x": 6,
@@ -713,12 +753,13 @@
       "name": {
         "x": 6,
         "y": 4.2,
-        "w": 60,
+        "w": 56,
         "h": 8,
         "align": "left",
         "color": "#1c160c",
         "size": 26,
-        "font": "title"
+        "font": "title",
+        "min": 13
       },
       "mana": {
         "x": 64,
@@ -735,7 +776,8 @@
         "align": "left",
         "color": "#1c160c",
         "size": 18,
-        "font": "title"
+        "font": "title",
+        "min": 11
       },
       "text": {
         "x": 6.5,
@@ -745,7 +787,8 @@
         "align": "left",
         "color": "#1a150d",
         "size": 19,
-        "font": "body"
+        "font": "body",
+        "min": 9
       },
       "pt": {
         "x": 78.5,
@@ -755,7 +798,8 @@
         "align": "center",
         "color": "#1c160c",
         "size": 24,
-        "font": "pt"
+        "font": "pt",
+        "min": 12
       },
       "credit": {
         "x": 6,
@@ -783,12 +827,13 @@
       "name": {
         "x": 6,
         "y": 4.2,
-        "w": 60,
+        "w": 56,
         "h": 8,
         "align": "left",
         "color": "#1c160c",
         "size": 26,
-        "font": "title"
+        "font": "title",
+        "min": 13
       },
       "mana": {
         "x": 64,
@@ -805,7 +850,8 @@
         "align": "left",
         "color": "#1c160c",
         "size": 18,
-        "font": "title"
+        "font": "title",
+        "min": 11
       },
       "text": {
         "x": 6.5,
@@ -815,7 +861,8 @@
         "align": "left",
         "color": "#1a150d",
         "size": 19,
-        "font": "body"
+        "font": "body",
+        "min": 9
       },
       "pt": {
         "x": 78.5,
@@ -825,7 +872,8 @@
         "align": "center",
         "color": "#1c160c",
         "size": 24,
-        "font": "pt"
+        "font": "pt",
+        "min": 12
       },
       "credit": {
         "x": 6,
@@ -853,12 +901,13 @@
       "name": {
         "x": 6,
         "y": 4.2,
-        "w": 60,
+        "w": 56,
         "h": 8,
         "align": "left",
         "color": "#1c160c",
         "size": 26,
-        "font": "title"
+        "font": "title",
+        "min": 13
       },
       "mana": {
         "x": 64,
@@ -875,7 +924,8 @@
         "align": "left",
         "color": "#1c160c",
         "size": 18,
-        "font": "title"
+        "font": "title",
+        "min": 11
       },
       "text": {
         "x": 6.5,
@@ -885,7 +935,8 @@
         "align": "left",
         "color": "#1a150d",
         "size": 19,
-        "font": "body"
+        "font": "body",
+        "min": 9
       },
       "pt": {
         "x": 78.5,
@@ -895,7 +946,8 @@
         "align": "center",
         "color": "#1c160c",
         "size": 24,
-        "font": "pt"
+        "font": "pt",
+        "min": 12
       },
       "credit": {
         "x": 6,
@@ -923,12 +975,13 @@
       "name": {
         "x": 6,
         "y": 4.2,
-        "w": 60,
+        "w": 56,
         "h": 8,
         "align": "left",
         "color": "#1c160c",
         "size": 26,
-        "font": "title"
+        "font": "title",
+        "min": 13
       },
       "mana": {
         "x": 64,
@@ -945,7 +998,8 @@
         "align": "left",
         "color": "#1c160c",
         "size": 18,
-        "font": "title"
+        "font": "title",
+        "min": 11
       },
       "text": {
         "x": 6.5,
@@ -955,7 +1009,8 @@
         "align": "left",
         "color": "#1a150d",
         "size": 19,
-        "font": "body"
+        "font": "body",
+        "min": 9
       },
       "pt": {
         "x": 78.5,
@@ -965,7 +1020,8 @@
         "align": "center",
         "color": "#1c160c",
         "size": 24,
-        "font": "pt"
+        "font": "pt",
+        "min": 12
       },
       "credit": {
         "x": 6,
@@ -993,12 +1049,13 @@
       "name": {
         "x": 6,
         "y": 4.2,
-        "w": 60,
+        "w": 56,
         "h": 8,
         "align": "left",
         "color": "#1c160c",
         "size": 26,
-        "font": "title"
+        "font": "title",
+        "min": 13
       },
       "mana": {
         "x": 64,
@@ -1015,7 +1072,8 @@
         "align": "left",
         "color": "#1c160c",
         "size": 18,
-        "font": "title"
+        "font": "title",
+        "min": 11
       },
       "text": {
         "x": 6.5,
@@ -1025,7 +1083,8 @@
         "align": "left",
         "color": "#1a150d",
         "size": 19,
-        "font": "body"
+        "font": "body",
+        "min": 9
       },
       "pt": {
         "x": 78.5,
@@ -1035,7 +1094,8 @@
         "align": "center",
         "color": "#1c160c",
         "size": 24,
-        "font": "pt"
+        "font": "pt",
+        "min": 12
       },
       "credit": {
         "x": 6,
@@ -1063,12 +1123,13 @@
       "name": {
         "x": 6,
         "y": 4.2,
-        "w": 60,
+        "w": 56,
         "h": 8,
         "align": "left",
         "color": "#1c160c",
         "size": 26,
-        "font": "title"
+        "font": "title",
+        "min": 13
       },
       "mana": {
         "x": 64,
@@ -1085,7 +1146,8 @@
         "align": "left",
         "color": "#1c160c",
         "size": 18,
-        "font": "title"
+        "font": "title",
+        "min": 11
       },
       "text": {
         "x": 6.5,
@@ -1095,7 +1157,8 @@
         "align": "left",
         "color": "#1a150d",
         "size": 19,
-        "font": "body"
+        "font": "body",
+        "min": 9
       },
       "pt": {
         "x": 78.5,
@@ -1105,7 +1168,8 @@
         "align": "center",
         "color": "#1c160c",
         "size": 24,
-        "font": "pt"
+        "font": "pt",
+        "min": 12
       },
       "credit": {
         "x": 6,
@@ -1133,12 +1197,13 @@
       "name": {
         "x": 6,
         "y": 4.2,
-        "w": 60,
+        "w": 56,
         "h": 8,
         "align": "left",
         "color": "#1c160c",
         "size": 26,
-        "font": "title"
+        "font": "title",
+        "min": 13
       },
       "mana": {
         "x": 64,
@@ -1155,7 +1220,8 @@
         "align": "left",
         "color": "#1c160c",
         "size": 18,
-        "font": "title"
+        "font": "title",
+        "min": 11
       },
       "text": {
         "x": 6.5,
@@ -1165,7 +1231,8 @@
         "align": "left",
         "color": "#1a150d",
         "size": 19,
-        "font": "body"
+        "font": "body",
+        "min": 9
       },
       "pt": {
         "x": 78.5,
@@ -1175,7 +1242,8 @@
         "align": "center",
         "color": "#1c160c",
         "size": 24,
-        "font": "pt"
+        "font": "pt",
+        "min": 12
       },
       "credit": {
         "x": 6,
@@ -1203,12 +1271,13 @@
       "name": {
         "x": 6,
         "y": 4.2,
-        "w": 60,
+        "w": 56,
         "h": 8,
         "align": "left",
         "color": "#1c160c",
         "size": 26,
-        "font": "title"
+        "font": "title",
+        "min": 13
       },
       "mana": {
         "x": 64,
@@ -1225,7 +1294,8 @@
         "align": "left",
         "color": "#1c160c",
         "size": 18,
-        "font": "title"
+        "font": "title",
+        "min": 11
       },
       "text": {
         "x": 6.5,
@@ -1235,7 +1305,8 @@
         "align": "left",
         "color": "#1a150d",
         "size": 19,
-        "font": "body"
+        "font": "body",
+        "min": 9
       },
       "pt": {
         "x": 78.5,
@@ -1245,7 +1316,8 @@
         "align": "center",
         "color": "#1c160c",
         "size": 24,
-        "font": "pt"
+        "font": "pt",
+        "min": 12
       },
       "credit": {
         "x": 6,
