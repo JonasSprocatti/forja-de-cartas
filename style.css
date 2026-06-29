@@ -1121,7 +1121,8 @@ body {
 }
 
 /* ===================== SÍMBOLOS DE MANA POR IMAGEM ===================== */
-.pip.pip-img { background: none; padding: 0; overflow: hidden; }
+.pip.pip-img { background: none; padding: 0; overflow: visible; box-shadow: none; border-radius: 0; }
+.pip.pip-img::after { display: none; }   /* sem brilho/bevel sobre os SVGs próprios */
 .pip.pip-img img { width: 100%; height: 100%; object-fit: contain; display: block; }
 
 /* ===================== FONTES DA CARTA (customizáveis) ===================== */

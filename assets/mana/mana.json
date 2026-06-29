@@ -1,0 +1,542 @@
+[
+  {
+    "code": "0",
+    "src": "assets/mana/0.svg"
+  },
+  {
+    "code": "1",
+    "src": "assets/mana/1.svg"
+  },
+  {
+    "code": "2",
+    "src": "assets/mana/2.svg"
+  },
+  {
+    "code": "3",
+    "src": "assets/mana/3.svg"
+  },
+  {
+    "code": "4",
+    "src": "assets/mana/4.svg"
+  },
+  {
+    "code": "5",
+    "src": "assets/mana/5.svg"
+  },
+  {
+    "code": "6",
+    "src": "assets/mana/6.svg"
+  },
+  {
+    "code": "7",
+    "src": "assets/mana/7.svg"
+  },
+  {
+    "code": "8",
+    "src": "assets/mana/8.svg"
+  },
+  {
+    "code": "9",
+    "src": "assets/mana/9.svg"
+  },
+  {
+    "code": "10",
+    "src": "assets/mana/10.svg"
+  },
+  {
+    "code": "11",
+    "src": "assets/mana/11.svg"
+  },
+  {
+    "code": "12",
+    "src": "assets/mana/12.svg"
+  },
+  {
+    "code": "13",
+    "src": "assets/mana/13.svg"
+  },
+  {
+    "code": "14",
+    "src": "assets/mana/14.svg"
+  },
+  {
+    "code": "15",
+    "src": "assets/mana/15.svg"
+  },
+  {
+    "code": "16",
+    "src": "assets/mana/16.svg"
+  },
+  {
+    "code": "17",
+    "src": "assets/mana/17.svg"
+  },
+  {
+    "code": "18",
+    "src": "assets/mana/18.svg"
+  },
+  {
+    "code": "19",
+    "src": "assets/mana/19.svg"
+  },
+  {
+    "code": "20",
+    "src": "assets/mana/20.svg"
+  },
+  {
+    "code": "W",
+    "src": "assets/mana/W.svg"
+  },
+  {
+    "code": "U",
+    "src": "assets/mana/U.svg"
+  },
+  {
+    "code": "B",
+    "src": "assets/mana/B.svg"
+  },
+  {
+    "code": "R",
+    "src": "assets/mana/R.svg"
+  },
+  {
+    "code": "G",
+    "src": "assets/mana/G.svg"
+  },
+  {
+    "code": "C",
+    "src": "assets/mana/C.svg"
+  },
+  {
+    "code": "S",
+    "src": "assets/mana/S.svg"
+  },
+  {
+    "code": "X",
+    "src": "assets/mana/X.svg"
+  },
+  {
+    "code": "W/U",
+    "src": "assets/mana/WU.svg"
+  },
+  {
+    "code": "U/W",
+    "src": "assets/mana/WU.svg"
+  },
+  {
+    "code": "WU",
+    "src": "assets/mana/WU.svg"
+  },
+  {
+    "code": "UW",
+    "src": "assets/mana/WU.svg"
+  },
+  {
+    "code": "W/B",
+    "src": "assets/mana/WB.svg"
+  },
+  {
+    "code": "B/W",
+    "src": "assets/mana/WB.svg"
+  },
+  {
+    "code": "WB",
+    "src": "assets/mana/WB.svg"
+  },
+  {
+    "code": "BW",
+    "src": "assets/mana/WB.svg"
+  },
+  {
+    "code": "B/G",
+    "src": "assets/mana/BG.svg"
+  },
+  {
+    "code": "G/B",
+    "src": "assets/mana/BG.svg"
+  },
+  {
+    "code": "BG",
+    "src": "assets/mana/BG.svg"
+  },
+  {
+    "code": "GB",
+    "src": "assets/mana/BG.svg"
+  },
+  {
+    "code": "B/R",
+    "src": "assets/mana/BR.svg"
+  },
+  {
+    "code": "R/B",
+    "src": "assets/mana/BR.svg"
+  },
+  {
+    "code": "BR",
+    "src": "assets/mana/BR.svg"
+  },
+  {
+    "code": "RB",
+    "src": "assets/mana/BR.svg"
+  },
+  {
+    "code": "R/G",
+    "src": "assets/mana/RG.svg"
+  },
+  {
+    "code": "G/R",
+    "src": "assets/mana/RG.svg"
+  },
+  {
+    "code": "RG",
+    "src": "assets/mana/RG.svg"
+  },
+  {
+    "code": "GR",
+    "src": "assets/mana/RG.svg"
+  },
+  {
+    "code": "R/W",
+    "src": "assets/mana/RW.svg"
+  },
+  {
+    "code": "W/R",
+    "src": "assets/mana/RW.svg"
+  },
+  {
+    "code": "RW",
+    "src": "assets/mana/RW.svg"
+  },
+  {
+    "code": "WR",
+    "src": "assets/mana/RW.svg"
+  },
+  {
+    "code": "G/W",
+    "src": "assets/mana/GW.svg"
+  },
+  {
+    "code": "W/G",
+    "src": "assets/mana/GW.svg"
+  },
+  {
+    "code": "GW",
+    "src": "assets/mana/GW.svg"
+  },
+  {
+    "code": "WG",
+    "src": "assets/mana/GW.svg"
+  },
+  {
+    "code": "G/U",
+    "src": "assets/mana/GU.svg"
+  },
+  {
+    "code": "U/G",
+    "src": "assets/mana/GU.svg"
+  },
+  {
+    "code": "GU",
+    "src": "assets/mana/GU.svg"
+  },
+  {
+    "code": "UG",
+    "src": "assets/mana/GU.svg"
+  },
+  {
+    "code": "2/W",
+    "src": "assets/mana/2W.svg"
+  },
+  {
+    "code": "2W",
+    "src": "assets/mana/2W.svg"
+  },
+  {
+    "code": "2/U",
+    "src": "assets/mana/2U.svg"
+  },
+  {
+    "code": "2U",
+    "src": "assets/mana/2U.svg"
+  },
+  {
+    "code": "2/B",
+    "src": "assets/mana/2B.svg"
+  },
+  {
+    "code": "2B",
+    "src": "assets/mana/2B.svg"
+  },
+  {
+    "code": "2/R",
+    "src": "assets/mana/2R.svg"
+  },
+  {
+    "code": "2R",
+    "src": "assets/mana/2R.svg"
+  },
+  {
+    "code": "2/G",
+    "src": "assets/mana/2G.svg"
+  },
+  {
+    "code": "2G",
+    "src": "assets/mana/2G.svg"
+  },
+  {
+    "code": "W/P",
+    "src": "assets/mana/WP.svg"
+  },
+  {
+    "code": "WP",
+    "src": "assets/mana/WP.svg"
+  },
+  {
+    "code": "B/P",
+    "src": "assets/mana/BP.svg"
+  },
+  {
+    "code": "BP",
+    "src": "assets/mana/BP.svg"
+  },
+  {
+    "code": "R/P",
+    "src": "assets/mana/RP.svg"
+  },
+  {
+    "code": "RP",
+    "src": "assets/mana/RP.svg"
+  },
+  {
+    "code": "G/P",
+    "src": "assets/mana/GP.svg"
+  },
+  {
+    "code": "GP",
+    "src": "assets/mana/GP.svg"
+  },
+  {
+    "code": "C/W",
+    "src": "assets/mana/CW.svg"
+  },
+  {
+    "code": "W/C",
+    "src": "assets/mana/CW.svg"
+  },
+  {
+    "code": "CW",
+    "src": "assets/mana/CW.svg"
+  },
+  {
+    "code": "WC",
+    "src": "assets/mana/CW.svg"
+  },
+  {
+    "code": "C/U",
+    "src": "assets/mana/CU.svg"
+  },
+  {
+    "code": "U/C",
+    "src": "assets/mana/CU.svg"
+  },
+  {
+    "code": "CU",
+    "src": "assets/mana/CU.svg"
+  },
+  {
+    "code": "UC",
+    "src": "assets/mana/CU.svg"
+  },
+  {
+    "code": "C/B",
+    "src": "assets/mana/CB.svg"
+  },
+  {
+    "code": "B/C",
+    "src": "assets/mana/CB.svg"
+  },
+  {
+    "code": "CB",
+    "src": "assets/mana/CB.svg"
+  },
+  {
+    "code": "BC",
+    "src": "assets/mana/CB.svg"
+  },
+  {
+    "code": "C/R",
+    "src": "assets/mana/CR.svg"
+  },
+  {
+    "code": "R/C",
+    "src": "assets/mana/CR.svg"
+  },
+  {
+    "code": "CR",
+    "src": "assets/mana/CR.svg"
+  },
+  {
+    "code": "RC",
+    "src": "assets/mana/CR.svg"
+  },
+  {
+    "code": "C/G",
+    "src": "assets/mana/CG.svg"
+  },
+  {
+    "code": "G/C",
+    "src": "assets/mana/CG.svg"
+  },
+  {
+    "code": "CG",
+    "src": "assets/mana/CG.svg"
+  },
+  {
+    "code": "GC",
+    "src": "assets/mana/CG.svg"
+  },
+  {
+    "code": "W/U/P",
+    "src": "assets/mana/WUP.svg"
+  },
+  {
+    "code": "U/W/P",
+    "src": "assets/mana/WUP.svg"
+  },
+  {
+    "code": "WUP",
+    "src": "assets/mana/WUP.svg"
+  },
+  {
+    "code": "UWP",
+    "src": "assets/mana/WUP.svg"
+  },
+  {
+    "code": "W/B/P",
+    "src": "assets/mana/WBP.svg"
+  },
+  {
+    "code": "B/W/P",
+    "src": "assets/mana/WBP.svg"
+  },
+  {
+    "code": "WBP",
+    "src": "assets/mana/WBP.svg"
+  },
+  {
+    "code": "BWP",
+    "src": "assets/mana/WBP.svg"
+  },
+  {
+    "code": "U/R/P",
+    "src": "assets/mana/URP.svg"
+  },
+  {
+    "code": "R/U/P",
+    "src": "assets/mana/URP.svg"
+  },
+  {
+    "code": "URP",
+    "src": "assets/mana/URP.svg"
+  },
+  {
+    "code": "RUP",
+    "src": "assets/mana/URP.svg"
+  },
+  {
+    "code": "B/G/P",
+    "src": "assets/mana/BGP.svg"
+  },
+  {
+    "code": "G/B/P",
+    "src": "assets/mana/BGP.svg"
+  },
+  {
+    "code": "BGP",
+    "src": "assets/mana/BGP.svg"
+  },
+  {
+    "code": "GBP",
+    "src": "assets/mana/BGP.svg"
+  },
+  {
+    "code": "B/R/P",
+    "src": "assets/mana/BRP.svg"
+  },
+  {
+    "code": "R/B/P",
+    "src": "assets/mana/BRP.svg"
+  },
+  {
+    "code": "BRP",
+    "src": "assets/mana/BRP.svg"
+  },
+  {
+    "code": "RBP",
+    "src": "assets/mana/BRP.svg"
+  },
+  {
+    "code": "G/U/P",
+    "src": "assets/mana/GUP.svg"
+  },
+  {
+    "code": "U/G/P",
+    "src": "assets/mana/GUP.svg"
+  },
+  {
+    "code": "GUP",
+    "src": "assets/mana/GUP.svg"
+  },
+  {
+    "code": "UGP",
+    "src": "assets/mana/GUP.svg"
+  },
+  {
+    "code": "G/W/P",
+    "src": "assets/mana/GWP.svg"
+  },
+  {
+    "code": "W/G/P",
+    "src": "assets/mana/GWP.svg"
+  },
+  {
+    "code": "GWP",
+    "src": "assets/mana/GWP.svg"
+  },
+  {
+    "code": "WGP",
+    "src": "assets/mana/GWP.svg"
+  },
+  {
+    "code": "R/G/P",
+    "src": "assets/mana/RGP.svg"
+  },
+  {
+    "code": "G/R/P",
+    "src": "assets/mana/RGP.svg"
+  },
+  {
+    "code": "RGP",
+    "src": "assets/mana/RGP.svg"
+  },
+  {
+    "code": "GRP",
+    "src": "assets/mana/RGP.svg"
+  },
+  {
+    "code": "R/W/P",
+    "src": "assets/mana/RWP.svg"
+  },
+  {
+    "code": "W/R/P",
+    "src": "assets/mana/RWP.svg"
+  },
+  {
+    "code": "RWP",
+    "src": "assets/mana/RWP.svg"
+  },
+  {
+    "code": "WRP",
+    "src": "assets/mana/RWP.svg"
+  }
+]
