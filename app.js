@@ -259,7 +259,10 @@ function cfTextContent(){
   if(state.layout==="class")
     return state.cls.map((l,i)=>`<div class="cf-lvl"><b>${escapeHTML(l.label||"")}</b>${l.cost?" "+pips(l.cost):""}<div>${rulesHTML(l.text)}</div></div>`).join("");
   let t=`<div class="cf-rules">${rulesHTML(state.rules)}</div>`;
-  if(state.flavor.trim()) t+=`<div class="cf-flavor">${escapeHTML(state.flavor)}</div>`;
+  if(state.flavor.trim()){
+    if(state.rules.trim()) t+=`<div class="cf-flavor-sep"></div>`;   // linha separadora rules ↔ flavor
+    t+=`<div class="cf-flavor">${escapeHTML(state.flavor)}</div>`;
+  }
   return t;
 }
 function renderCustomFrame(def,zonesArg){
@@ -774,16 +777,24 @@ function buildZoneEditor(){
   const z=state.frameEdit.zones; const box=$("zoneControls"); box.innerHTML="";
   Object.keys(z).forEach(key=>{
     const Z=z[key]; const wrap=document.createElement("div"); wrap.className="zrow";
-    wrap.innerHTML=`<div class="zhead">${ZONE_LABELS[key]||key}</div>`+
+    let html=`<div class="zhead">${ZONE_LABELS[key]||key}</div>`+
       ["x","y","w","h"].map(dim=>`<label class="zsl"><span>${dim.toUpperCase()}</span>
         <input type="range" min="0" max="100" step="0.5" value="${Z[dim]!=null?Z[dim]:0}" data-k="${key}" data-d="${dim}">
         <output>${Z[dim]!=null?Z[dim]:0}</output></label>`).join("");
-    box.appendChild(wrap);
+    // controle de tamanho de fonte (só zonas com texto; a mana são pips)
+    if(Z.size!=null){
+      html+=`<label class="zsl zsl-font"><span>Aa</span>
+        <input type="range" min="6" max="64" step="0.5" value="${Z.size}" data-k="${key}" data-d="size">
+        <output>${Z.size}px</output></label>`;
+    }
+    wrap.innerHTML=html; box.appendChild(wrap);
   });
   box.querySelectorAll('input[type="range"]').forEach(inp=>{
     inp.addEventListener("input",e=>{
       const k=e.target.dataset.k,d=e.target.dataset.d,v=parseFloat(e.target.value);
-      state.frameEdit.zones[k][d]=v; e.target.nextElementSibling.textContent=v; render();
+      state.frameEdit.zones[k][d]=v;
+      e.target.nextElementSibling.textContent = d==="size" ? v+"px" : v;
+      render();
     });
   });
 }
