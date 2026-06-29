@@ -1175,7 +1175,7 @@ const MANA_PALETTE=[
   {label:"Híbrido de cor",   codes:["W/U","W/B","U/B","U/R","B/R","B/G","R/G","R/W","G/W","G/U"]},
   {label:"Híbrido genérico", codes:["2/W","2/U","2/B","2/R","2/G"]},
   {label:"Phyrexian",        codes:["W/P","U/P","B/P","R/P","G/P"]},
-  {label:"Híbrido Phyrexian",codes:["W/U/P","W/B/P","U/R/P","B/G/P","B/R/P","G/U/P","G/W/P","R/G/P","R/W/P"]},
+  {label:"Híbrido Phyrexian",codes:["W/U/P","W/B/P","U/B/P","U/R/P","B/G/P","B/R/P","G/U/P","G/W/P","R/G/P","R/W/P"]},
   {label:"Híbrido incolor",  codes:["C/W","C/U","C/B","C/R","C/G"]},
 ];
 /* incrementa a mana genérica (bare "2…" ou "{2}…"), senão insere 1 no início */
