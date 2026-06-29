@@ -211,6 +211,52 @@
     "code": "WR",
     "src": "assets/mana/RW.svg"
   },
+
+
+    {
+    "code": "UR",
+    "src": "assets/mana/UR.svg"
+  },
+  {
+    "code": "U/R",
+    "src": "assets/mana/UR.svg"
+  },
+  {
+    "code": "R/U",
+    "src": "assets/mana/UR.svg"
+  },
+  {
+    "code": "RU",
+    "src": "assets/mana/UR.svg"
+  },
+  {
+    "code": "WR",
+    "src": "assets/mana/RW.svg"
+  },
+
+
+      {
+    "code": "UB",
+    "src": "assets/mana/UB.svg"
+  },
+  {
+    "code": "U/B",
+    "src": "assets/mana/UB.svg"
+  },
+  {
+    "code": "B/U",
+    "src": "assets/mana/UB.svg"
+  },
+  {
+    "code": "BU",
+    "src": "assets/mana/UB.svg"
+  },
+  {
+    "code": "WR",
+    "src": "assets/mana/RW.svg"
+  },
+
+  
   {
     "code": "G/W",
     "src": "assets/mana/GW.svg"
