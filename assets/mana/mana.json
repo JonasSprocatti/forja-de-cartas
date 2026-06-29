@@ -299,6 +299,14 @@
     "code": "BP",
     "src": "assets/mana/BP.svg"
   },
+    {
+    "code": "U/P",
+    "src": "assets/mana/UP.svg"
+  },
+  {
+    "code": "UP",
+    "src": "assets/mana/UP.svg"
+  },
   {
     "code": "R/P",
     "src": "assets/mana/RP.svg"
