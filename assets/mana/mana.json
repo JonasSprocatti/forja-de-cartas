@@ -477,6 +477,26 @@
     "code": "BWP",
     "src": "assets/mana/WBP.svg"
   },
+
+
+   {
+    "code": "U/B/P",
+    "src": "assets/mana/UBP.svg"
+  },
+  {
+    "code": "B/U/P",
+    "src": "assets/mana/UBP.svg"
+  },
+  {
+    "code": "UBP",
+    "src": "assets/mana/UBP.svg"
+  },
+  {
+    "code": "BUP",
+    "src": "assets/mana/UBP.svg"
+  },
+
+  
   {
     "code": "U/R/P",
     "src": "assets/mana/URP.svg"
