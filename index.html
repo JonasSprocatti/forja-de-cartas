@@ -135,7 +135,10 @@
 
         <label class="field">
           <span class="field-label">Frame (visual)</span>
-          <select id="fFrame"><option value="">Padrão (embutido)</option></select>
+          <select id="fFrame">
+            <option value="auto">Automático (pela cor do custo)</option>
+            <option value="">Padrão (embutido)</option>
+          </select>
           <span class="hint" id="frameHint" style="display:none">Frames da pasta só carregam com o site servido (Vercel ou servidor local), não por file://.</span>
         </label>
 
@@ -178,28 +181,8 @@
         <div class="field-row" data-show="normal land planeswalker saga class battle adventure token dfc split">
           <label class="field grow" data-show="normal planeswalker saga class battle adventure token dfc split">
             <span class="field-label">Custo de mana</span>
-            <input type="text" id="fMana" value="2WU" placeholder="ex.: 3, 1G, 2WU, XR" />
-            <div class="mana-pips" id="manaPips">
-              <button type="button" data-m="1">＋1</button>
-              <button type="button" data-m="W" class="mp-w">W</button>
-              <button type="button" data-m="U" class="mp-u">U</button>
-              <button type="button" data-m="B" class="mp-b">B</button>
-              <button type="button" data-m="R" class="mp-r">R</button>
-              <button type="button" data-m="G" class="mp-g">G</button>
-              <button type="button" data-m="C" class="mp-c">C</button>
-              <button type="button" data-m="X">X</button>
-              <button type="button" data-m="clear" class="mp-clear">limpar</button>
-            </div>
-          </label>
-          <label class="field">
-            <span class="field-label">Cor do frame</span>
-            <select id="fColor">
-              <option value="auto">automático</option>
-              <option value="W">Branco</option><option value="U">Azul</option>
-              <option value="B">Preto</option><option value="R">Vermelho</option>
-              <option value="G">Verde</option><option value="multi">Multicolor</option>
-              <option value="C">Incolor</option>
-            </select>
+            <input type="text" id="fMana" value="2WU" placeholder="ex.: 3, 1G, 2WU, {R/G}" />
+            <div class="mana-pips" id="manaPips"></div>
           </label>
         </div>
         <p class="hint hint-mana" data-show="normal planeswalker saga class battle adventure token dfc split">

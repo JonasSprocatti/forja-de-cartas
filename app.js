@@ -15,7 +15,7 @@ const state = {
   adv: { name:"", mana:"", type:"", rules:"" },
   split: { name:"", mana:"", type:"", rules:"" },
   back: { name:"", mana:"", type:"", rules:"", flavor:"", pt:"" },
-  showBack: false, frame: "", style: "modern", foil: false, frameEdit: null, overlays: [],
+  showBack: false, frame: "auto", style: "modern", foil: false, frameEdit: null, overlays: [],
 };
 const FRAMES={};
 const MANA={};  /* símbolos de mana customizados, carregados de assets/mana/mana.json */
@@ -50,20 +50,47 @@ function pipSpan(raw){
   }
   return `<span class="pip pip-N">${escapeHTML(code)}</span>`;
 }
-/* custo de mana: aceita "2WU" OU "{2}{W}{U}" */
+/* custo de mana: aceita "2WU", "{2}{W}{U}" e MISTURA "2{R/G}{R/G}" */
 function pips(str){
   const raw=(str||"").trim(); if(!raw) return "";
-  if(raw.includes("{")){
-    const toks=raw.match(/\{([^}]+)\}/g)||[];
-    return toks.map(t=>pipSpan(t.slice(1,-1))).join("");
+  const out=[]; let i=0;
+  while(i<raw.length){
+    const ch=raw[i];
+    if(ch==="{"){
+      const j=raw.indexOf("}",i);
+      if(j<0){ break; }                 // chave não fechada: para
+      out.push(pipSpan(raw.slice(i+1,j))); i=j+1;
+    } else if(/\s/.test(ch)){ i++; }
+    else if(/\d/.test(ch)){                // número de 1+ dígitos = mana genérica
+      let n=ch; i++; while(i<raw.length&&/\d/.test(raw[i])){ n+=raw[i]; i++; }
+      out.push(pipSpan(n));
+    } else { out.push(pipSpan(ch.toUpperCase())); i++; }
   }
-  const toks=raw.toUpperCase().match(/\d+|[WUBRGCXST]/g)||[];
-  return toks.map(t=>pipSpan(t)).join("");
+  return out.join("");
 }
 function autoColor(mana){
   const c=[...new Set((mana.toUpperCase().match(/[WUBRG]/g))||[])];
   if(c.length===0) return "C"; if(c.length===1) return c[0]; return "multi";
 }
+/* prefixo de frame por identidade de cor (ajuste aqui se quiser mapear diferente) */
+const FRAME_PREFIX={W:"W",U:"U",B:"B",R:"R",G:"G",multi:"Golden",C:"E"};
+/* escolhe o id do frame custom automaticamente pela cor do custo + tipo/PT */
+function autoFrame(){
+  if(!Object.keys(FRAMES).length) return "";   // frames não carregados (file://)
+  const mana=(state.layout==="dfc"&&state.showBack)?state.back.mana:state.mana;
+  const prefix=FRAME_PREFIX[autoColor(mana||"")]||"Golden";
+  const type=state.type||"", legendary=/lend|legend/i.test(type), hasPT=(state.pt||"").trim()!=="";
+  const variants=[];
+  if(legendary&&hasPT) variants.push("Legendary-PR");
+  if(legendary)        variants.push("Legendary");
+  if(hasPT)            variants.push("Basic-PR Counter");
+  variants.push("Basic");
+  for(const v of variants){ const id=`${prefix}-${v}`; if(FRAMES[id]) return id; }
+  const any=Object.keys(FRAMES).find(id=>id.startsWith(prefix+"-"));
+  return any || (FRAMES["Golden-Basic"]?"Golden-Basic":Object.keys(FRAMES)[0]||"");
+}
+/* resolve o frame efetivo: "auto" -> id calculado; senão o id escolhido */
+function resolveFrame(){ return state.frame==="auto" ? autoFrame() : state.frame; }
 /* texto de regras: parênteses viram lembrete (primeiro!), depois {…} viram pips */
 function rulesHTML(text){
   let h=escapeHTML(text);
@@ -299,9 +326,10 @@ function render(){
   card.dataset.color=col; card.dataset.layout=state.layout;
   card.dataset.style=state.style; card.dataset.foil=state.foil?"true":"false";
   let inner;
-  if(state.frame && FRAMES[state.frame]){
-    const def=FRAMES[state.frame];
-    const zones=(state.frameEdit&&state.frameEdit.id===state.frame)?state.frameEdit.zones:def.zones;
+  const frameId=resolveFrame();
+  if(frameId && FRAMES[frameId]){
+    const def=FRAMES[frameId];
+    const zones=(state.frameEdit&&state.frameEdit.id===frameId)?state.frameEdit.zones:def.zones;
     card.dataset.frame="custom"; inner=renderCustomFrame(def,zones);
     $("btnFlip").hidden=true;
   } else {
@@ -449,7 +477,7 @@ document.querySelectorAll(".mini-add").forEach(b=>b.onclick=()=>{
    ============================================================ */
 function collect(){
   state.layout=$("fLayout").value;
-  state.color=$("fColor").value;
+  state.color="auto";
   state.rarity=$("fRarity").value;
   state.artist=$("fArtist").value;
   state.collector=$("fCollector").value;
@@ -466,7 +494,7 @@ function collect(){
   state.rules=$("fRules").value; state.flavor=$("fFlavor").value; state.pt=$("fPT").value;
 }
 function populate(){
-  $("fLayout").value=state.layout; $("fColor").value=state.color; $("fRarity").value=state.rarity;
+  $("fLayout").value=state.layout; $("fRarity").value=state.rarity;
   $("fArtist").value=state.artist; $("fCollector").value=state.collector;
   $("fLoyalty").value=state.loyalty; $("fDefense").value=state.defense;
   $("fName").value=state.name; $("fMana").value=state.mana; $("fType").value=state.type;
@@ -502,7 +530,7 @@ function seedLayout(L){
 /* ============================================================
    BINDINGS
    ============================================================ */
-const mainInputs=["fName","fMana","fType","fRules","fFlavor","fPT","fColor","fRarity","fArtist","fCollector",
+const mainInputs=["fName","fMana","fType","fRules","fFlavor","fPT","fRarity","fArtist","fCollector",
   "fLoyalty","fDefense","fAdvName","fAdvMana","fAdvType","fAdvRules","fSplitName","fSplitMana","fSplitType","fSplitRules",
   "fBackName","fBackMana","fBackType","fBackRules","fBackFlavor","fBackPT"];
 mainInputs.forEach(id=>{const el=$(id); if(el){el.addEventListener("input",()=>{collect();render();});el.addEventListener("change",()=>{collect();render();});}});
@@ -763,11 +791,12 @@ $("fFoil").addEventListener("click",()=>{ state.foil=!state.foil;
 /* seletor de frame personalizado */
 $("fFrame").addEventListener("change",()=>{
   state.frame=$("fFrame").value;
-  const custom=!!(state.frame&&FRAMES[state.frame]);
-  state.frameEdit = custom ? {id:state.frame,zones:clone(FRAMES[state.frame].zones||{})} : null;
-  $("styleField").style.display = custom ? "none" : "";
-  $("zoneEditor").hidden = !custom;
-  if(custom) buildZoneEditor();
+  const specific=!!(state.frame && state.frame!=="auto" && FRAMES[state.frame]);
+  const usingCustom = specific || state.frame==="auto";
+  state.frameEdit = specific ? {id:state.frame,zones:clone(FRAMES[state.frame].zones||{})} : null;
+  $("styleField").style.display = usingCustom ? "none" : "";
+  $("zoneEditor").hidden = !specific;   // editor de zonas só no modo de frame fixo
+  if(specific) buildZoneEditor();
   render();
 });
 
@@ -816,6 +845,7 @@ async function loadManaSymbols(){
     if(!r.ok) throw new Error("manifest "+r.status);
     const list=await r.json();
     (list||[]).forEach(m=>{ if(m && m.code) MANA[String(m.code).toUpperCase()]=m; });
+    if(typeof buildManaPalette==="function") buildManaPalette();  // agora os botões mostram os SVGs reais
     render();
   }catch(e){ /* pasta ausente ou file:// : usa só os símbolos embutidos */ }
 }
@@ -826,6 +856,8 @@ async function loadFrames(){
     const list=await r.json(); const sel=$("fFrame");
     list.forEach(def=>{ if(!def.id||!def.src) return; FRAMES[def.id]=def;
       const o=document.createElement("option"); o.value=def.id; o.textContent=def.name||def.id; sel.appendChild(o); });
+    sel.value=state.frame||"auto";   // reflete a seleção atual agora que as opções existem
+    render();                         // re-renderiza com o frame automático já resolvido
   }catch(e){
     // file:// ou pasta ausente: mantém só "Padrão" e mostra a dica
     $("frameHint").style.display="block";
@@ -910,7 +942,7 @@ window.Forge = {
      "artist","collector","art","backArt","loyalty","defense","pw","saga","cls","adv","split","back","overlays"]
       .forEach(k=>{ if(o[k]!==undefined) state[k]=o[k]; });
     state.showBack=false; state.frameEdit=null;
-    $("fLayout").value=state.layout; $("fStyle").value=state.style||"modern"; $("fFrame").value=state.frame||"";
+    $("fLayout").value=state.layout; $("fStyle").value=state.style||"modern"; $("fFrame").value=state.frame||"auto";
     $("fFoil").setAttribute("aria-pressed",state.foil?"true":"false"); $("fFoil").classList.toggle("on",!!state.foil);
     const custom=!!(state.frame&&FRAMES[state.frame]); $("styleField").style.display=custom?"none":""; $("zoneEditor").hidden=!custom;
     populate(); applyLayoutVisibility(); renderRows(); renderOvList(); render();
@@ -1112,7 +1144,7 @@ function newCard(){
     loyalty:"4", defense:"5", pw:[], saga:[], cls:[],
     adv:{name:"",mana:"",type:"",rules:""}, split:{name:"",mana:"",type:"",rules:""},
     back:{name:"",mana:"",type:"",rules:"",flavor:"",pt:""},
-    showBack:false, frame:"", style:"modern", foil:false, frameEdit:null, overlays:[]
+    showBack:false, frame:"auto", style:"modern", foil:false, frameEdit:null, overlays:[]
   });
   $("fLayout").value="normal";
   populate(); applyLayoutVisibility(); renderRows(); renderOvList(); render();
@@ -1122,16 +1154,47 @@ function newCard(){
   newCard(); toast("Carta nova.");
 }); })();
 
-/* pips de mana clicáveis */
+/* ===== PALETA DE MANA: cobre todos os tipos de pip e insere a sintaxe certa ===== */
+/* cada grupo: {label, codes:[...]}. Cores/X/S/C inseridos "soltos"; compostos entre {chaves}. */
+const MANA_PALETTE=[
+  {label:"Cores",            codes:["W","U","B","R","G","C"]},
+  {label:"Genérico/Especial",codes:["X","S"]},
+  {label:"Híbrido de cor",   codes:["W/U","W/B","U/B","U/R","B/R","B/G","R/G","R/W","G/W","G/U"]},
+  {label:"Híbrido genérico", codes:["2/W","2/U","2/B","2/R","2/G"]},
+  {label:"Phyrexian",        codes:["W/P","U/P","B/P","R/P","G/P"]},
+  {label:"Híbrido Phyrexian",codes:["W/U/P","W/B/P","U/R/P","B/G/P","B/R/P","G/U/P","G/W/P","R/G/P","R/W/P"]},
+  {label:"Híbrido incolor",  codes:["C/W","C/U","C/B","C/R","C/G"]},
+];
+/* incrementa a mana genérica (bare "2…" ou "{2}…"), senão insere 1 no início */
+function manaAddGeneric(v){
+  v=v.trim();
+  let m=v.match(/^\{(\d+)\}/);  if(m) return "{"+(+m[1]+1)+"}"+v.slice(m[0].length);
+  m=v.match(/^(\d+)/);          if(m) return (+m[1]+1)+v.slice(m[1].length);
+  return (v.includes("{")?"{1}":"1")+v;
+}
+function buildManaPalette(){
+  const box=$("manaPips"); if(!box) return;
+  const isSingle=c=>/^[WUBRGCXST]$/.test(c);
+  let html=`<div class="mp-row mp-actions">
+      <button type="button" class="mp-btn mp-gen" data-act="gen" title="+1 genérico">＋1</button>
+      <button type="button" class="mp-btn mp-clear" data-act="clear">limpar</button>
+    </div>`;
+  html+=MANA_PALETTE.map(g=>`<div class="mp-group"><span class="mp-glabel">${g.label}</span><div class="mp-row">`+
+    g.codes.map(c=>{
+      const ins=isSingle(c)?c:`{${c}}`;
+      return `<button type="button" class="mp-btn mp-sym" data-ins="${ins}" title="${c}">${pipSpan(c)}</button>`;
+    }).join("")+`</div></div>`).join("");
+  box.innerHTML=html;
+}
 (function(){
-  const pips=$("manaPips"), fm=$("fMana"); if(!pips||!fm) return;
-  pips.addEventListener("click",(e)=>{
+  const box=$("manaPips"), fm=$("fMana"); if(!box||!fm) return;
+  buildManaPalette();
+  box.addEventListener("click",(e)=>{
     const b=e.target.closest("button"); if(!b) return;
-    const m=b.dataset.m; let v=fm.value;
-    if(m==="clear") v="";
-    else if(m==="1"){ const g=v.match(/^(\d+)/); v=g?((parseInt(g[1],10)+1)+v.slice(g[1].length)):("1"+v); }
-    else v=v+m;
-    fm.value=v; collect(); render();
+    if(b.dataset.act==="clear"){ fm.value=""; }
+    else if(b.dataset.act==="gen"){ fm.value=manaAddGeneric(fm.value); }
+    else if(b.dataset.ins!=null){ fm.value=fm.value+b.dataset.ins; }
+    collect(); render();
   });
 })();
 

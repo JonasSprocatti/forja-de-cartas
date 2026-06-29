@@ -1078,20 +1078,22 @@ body {
 .stage-controls { border-top: 1px solid rgba(201,161,74,.14); padding-top: 14px; }
 
 /* pips de mana clicáveis */
-.mana-pips { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 8px; }
-.mana-pips button {
-  min-width: 30px; height: 28px; padding: 0 8px; cursor: pointer;
+.mana-pips { display: flex; flex-direction: column; gap: 7px; margin-top: 8px; }
+.mana-pips .mp-row { display: flex; flex-wrap: wrap; gap: 5px; }
+.mana-pips .mp-group { display: flex; flex-direction: column; gap: 3px; }
+.mana-pips .mp-glabel { font-size: 10px; letter-spacing: .04em; text-transform: uppercase; color: var(--parch-dim); }
+.mana-pips .mp-btn {
+  min-width: 30px; height: 30px; padding: 0 6px; cursor: pointer;
+  display: inline-flex; align-items: center; justify-content: center;
   font-family: "Cinzel", serif; font-weight: 600; font-size: 12px;
   border: 1px solid var(--line); border-radius: 7px; background: var(--ink); color: var(--parch);
 }
-.mana-pips button:hover { border-color: var(--brass); }
+.mana-pips .mp-btn:hover { border-color: var(--brass); background: rgba(255,255,255,.04); }
+.mana-pips .mp-sym { width: 32px; min-width: 32px; padding: 0; }
+.mana-pips .mp-sym .pip { width: 20px; height: 20px; font-size: 11px; pointer-events: none; }
+.mana-pips .mp-actions { align-items: center; }
 .mana-pips .mp-clear { color: var(--parch-dim); margin-left: auto; }
-.mana-pips .mp-w { background: #f5f1e0; color: #2b2410; }
-.mana-pips .mp-u { background: #1c5b8c; color: #eaf3fb; }
-.mana-pips .mp-b { background: #2a2730; color: #d9d4df; }
-.mana-pips .mp-r { background: #8a2b22; color: #fbe6e0; }
-.mana-pips .mp-g { background: #2b6b3f; color: #e6f4ea; }
-.mana-pips .mp-c { background: #cdc7ba; color: #2b2410; }
+.mana-pips .mp-gen { font-weight: 700; }
 
 /* skeletons de carregamento (galeria / Minhas cartas) */
 @keyframes skel { 0% { background-position: -200px 0; } 100% { background-position: calc(200px + 100%) 0; } }
@@ -1123,7 +1125,11 @@ body {
 /* ===================== SÍMBOLOS DE MANA POR IMAGEM ===================== */
 .pip.pip-img { background: none; padding: 0; overflow: visible; box-shadow: none; border-radius: 0; }
 .pip.pip-img::after { display: none; }   /* sem brilho/bevel sobre os SVGs próprios */
-.pip.pip-img img { width: 100%; height: 100%; object-fit: contain; display: block; }
+.pip.pip-img img {
+  width: 100%; height: 100%; object-fit: contain; display: block;
+  /* sombra angulada (baixo-direita) seguindo o formato do símbolo, igual aos oficiais */
+  filter: drop-shadow(0.5px 1.2px 0.8px rgba(0,0,0,.5));
+}
 
 /* ===================== FONTES DA CARTA (customizáveis) ===================== */
 :root {
