@@ -240,11 +240,15 @@ const RENDERERS={normal:()=>renderNormal({name:state.name,mana:state.mana,type:s
 /* ---------- FRAME PERSONALIZADO (pasta /assets/frames) ---------- */
 function cfFont(f){return f==="body"?'"Spectral",Georgia,serif':f==="pt"?'"Bitter",serif':'"Cinzel",serif';}
 function zoneBox(z){return `left:${z.x}%;top:${z.y}%;width:${z.w}%;height:${z.h}%;`;}
-function zone(z,inner,top){
+function zone(z,inner,top,key){
   const al=z.align||"left";
   const items=al==="center"?"center":al==="right"?"flex-end":"flex-start";
   const just=top?"flex-start":"center";
-  return `<div class="cf-zone" style="${zoneBox(z)}align-items:${items};justify-content:${just};text-align:${al};color:${z.color||"#1c160c"};font-family:${cfFont(z.font)};font-size:${z.size||18}px;">${inner}</div>`;
+  // piso mínimo de fonte por zona (pode ser sobrescrito com "min" no frames.json)
+  const floor = z.min!=null ? z.min : (key==="text"?9 : key==="name"?13 : key==="type"?11 : key==="pt"?12 : 8);
+  // marca a zona para o auto-ajuste de fonte (exceto a zona de mana, que são pips)
+  const fit = (key && key!=="mana") ? ` data-fit="1" data-zone="${key}" data-maxsize="${z.size||18}" data-minsize="${floor}"` : "";
+  return `<div class="cf-zone"${fit} style="${zoneBox(z)}align-items:${items};justify-content:${just};text-align:${al};color:${z.color||"#1c160c"};font-family:${cfFont(z.font)};font-size:${z.size||18}px;">${inner}</div>`;
 }
 /* conteúdo da zona de texto conforme o layout */
 function cfTextContent(){
@@ -262,14 +266,14 @@ function renderCustomFrame(def,zonesArg){
   const Z=zonesArg||def.zones||{}; let h=`<div class="cf-root">`;
   if(Z.art) h+=`<div class="cf-art" style="${zoneBox(Z.art)}">${state.art?`<img src="${state.art}" alt="">`:`<div class="art-ph"><span>⛰</span></div>`}</div>`;
   h+=`<img class="cf-frame" src="${def.src}" alt="">`;
-  if(Z.name) h+=zone(Z.name,escapeHTML(state.name||""));
-  if(Z.mana) h+=zone(Z.mana,`<div class="c-mana">${pips(state.mana)}</div>`);
-  if(Z.type) h+=zone(Z.type,escapeHTML(state.type||""));
-  if(Z.text) h+=zone(Z.text,cfTextContent(),true);
-  if(Z.pt && state.pt.trim()) h+=zone(Z.pt,escapeHTML(state.pt));
-  if(Z.loyalty && state.layout==="planeswalker") h+=zone(Z.loyalty,escapeHTML(state.loyalty));
-  if(Z.defense && state.layout==="battle") h+=zone(Z.defense,escapeHTML(state.defense));
-  if(Z.credit) h+=zone(Z.credit,credit());
+  if(Z.name) h+=zone(Z.name,escapeHTML(state.name||""),false,"name");
+  if(Z.mana) h+=zone(Z.mana,`<div class="c-mana">${pips(state.mana)}</div>`,false,"mana");
+  if(Z.type) h+=zone(Z.type,escapeHTML(state.type||""),false,"type");
+  if(Z.text) h+=zone(Z.text,cfTextContent(),true,"text");
+  if(Z.pt && state.pt.trim()) h+=zone(Z.pt,escapeHTML(state.pt),false,"pt");
+  if(Z.loyalty && state.layout==="planeswalker") h+=zone(Z.loyalty,escapeHTML(state.loyalty),false,"loyalty");
+  if(Z.defense && state.layout==="battle") h+=zone(Z.defense,escapeHTML(state.defense),false,"defense");
+  if(Z.credit) h+=zone(Z.credit,credit(),false,"credit");
   return h+`</div>`;
 }
 
@@ -306,6 +310,7 @@ function render(){
   applyOverlays(card);
   fitCard();
   fitFullArt();
+  fitCustomFrame();
   saveDraft();
 }
 /* auto-save do rascunho. So grava DEPOIS do boot (window.__autosaveReady);
@@ -356,8 +361,39 @@ function fitFullArt(){
 
 /* refit ao redimensionar / dar zoom no navegador (zoom dispara resize) */
 let __fitT=null;
-function scheduleFit(){ clearTimeout(__fitT); __fitT=setTimeout(()=>{ fitCard(); fitFullArt(); },80); }
+function scheduleFit(){ clearTimeout(__fitT); __fitT=setTimeout(()=>{ fitCard(); fitFullArt(); fitCustomFrame(); },80); }
 window.addEventListener("resize", scheduleFit, {passive:true});
+
+/* ===== AUTO-AJUSTE DE FONTE (frames personalizados) =====
+   Encolhe a fonte de cada zona até o conteúdo caber dentro dos limites
+   da zona — nunca ultrapassa. Funciona em qualquer layout (criatura,
+   encantamento, saga, batalha, classe, planeswalker, etc.) porque mede
+   o overflow real da zona, seja qual for o conteúdo dentro dela. */
+function fitZoneFont(el){
+  const maxFs = parseFloat(el.dataset.maxsize) || parseFloat(getComputedStyle(el).fontSize) || 18;
+  const minFs = parseFloat(el.dataset.minsize) || 8;
+  let fs = maxFs;
+  el.style.fontSize = fs + "px";          // sempre parte do tamanho máximo (sem efeito catraca entre renders)
+  let guard = 0;
+  // overflow de altura (texto multilinha) E de largura (linha única tipo nome/PT)
+  while(guard < 160 && (el.scrollHeight > el.clientHeight + 0.5 || el.scrollWidth > el.clientWidth + 0.5)){
+    fs -= 0.5;
+    if(fs <= minFs){ el.style.fontSize = minFs + "px"; break; }
+    el.style.fontSize = fs + "px";
+    guard++;
+  }
+}
+function fitCustomFrame(){
+  if(!card) return;
+  const root = card.querySelector(".cf-root");
+  if(!root) return;
+  root.querySelectorAll('.cf-zone[data-fit="1"]').forEach(fitZoneFont);
+}
+/* as fontes (Cinzel/Spectral/Bitter) carregam async; ao terminar, reajusta
+   para a medição sair correta */
+if(document.fonts && document.fonts.ready){
+  document.fonts.ready.then(()=>{ fitFullArt(); fitCustomFrame(); });
+}
 if("ResizeObserver" in window){
   const si=document.querySelector(".stage-inner");
   if(si) new ResizeObserver(scheduleFit).observe(si.parentElement||si);
