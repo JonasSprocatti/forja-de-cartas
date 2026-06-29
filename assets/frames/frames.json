@@ -5,71 +5,72 @@
     "src": "assets/frames/W-Basic.png",
     "zones": {
       "art": {
-        "x": 6.25,
-        "y": 14.3,
-        "w": 87.5,
-        "h": 37.8
+        "x": 7.8,
+        "y": 11.4,
+        "w": 84.4,
+        "h": 44.0
       },
       "name": {
-        "x": 6,
-        "y": 4.2,
-        "w": 56,
-        "h": 8,
+        "x": 8,
+        "y": 5.2,
+        "w": 50,
+        "h": 4.6,
         "align": "left",
         "color": "#1c160c",
-        "size": 26,
+        "size": 30,
         "font": "title",
-        "min": 13
+        "min": 14
       },
       "mana": {
-        "x": 64,
-        "y": 4.2,
-        "w": 30,
-        "h": 8,
+        "x": 58,
+        "y": 5.0,
+        "w": 34,
+        "h": 4.8,
         "align": "right"
       },
       "type": {
-        "x": 6.5,
-        "y": 53.5,
+        "x": 8,
+        "y": 56.7,
         "w": 80,
-        "h": 7,
+        "h": 4.4,
         "align": "left",
         "color": "#1c160c",
-        "size": 18,
+        "size": 21,
         "font": "title",
-        "min": 11
+        "min": 12
       },
       "text": {
-        "x": 6.5,
-        "y": 64,
-        "w": 87,
-        "h": 26,
+        "x": 8,
+        "y": 63.0,
+        "w": 84,
+        "h": 27.0,
         "align": "left",
         "color": "#1a150d",
-        "size": 19,
+        "size": 21,
         "font": "body",
         "min": 9
       },
       "pt": {
-        "x": 78.5,
-        "y": 92.5,
+        "x": 74,
+        "y": 86.5,
         "w": 16,
-        "h": 6,
+        "h": 6.0,
         "align": "center",
         "color": "#1c160c",
-        "size": 24,
+        "size": 26,
         "font": "pt",
-        "min": 12
+        "min": 14
       },
       "credit": {
-        "x": 6,
-        "y": 94,
-        "w": 55,
-        "h": 4,
+        "x": 7,
+        "y": 95.2,
+        "w": 54,
+        "h": 3.0,
         "align": "left",
         "color": "#efe3cf",
         "size": 13,
-        "font": "pt"
+        "font": "pt",
+        "min": 8
       }
     }
   },
@@ -79,71 +80,72 @@
     "src": "assets/frames/W-Basic-PR Counter.png",
     "zones": {
       "art": {
-        "x": 6.25,
-        "y": 14.3,
-        "w": 87.5,
-        "h": 37.8
+        "x": 7.8,
+        "y": 11.4,
+        "w": 84.4,
+        "h": 44.0
       },
       "name": {
-        "x": 6,
-        "y": 4.2,
-        "w": 56,
-        "h": 8,
+        "x": 8,
+        "y": 5.2,
+        "w": 50,
+        "h": 4.6,
         "align": "left",
         "color": "#1c160c",
-        "size": 26,
+        "size": 30,
         "font": "title",
-        "min": 13
+        "min": 14
       },
       "mana": {
-        "x": 64,
-        "y": 4.2,
-        "w": 30,
-        "h": 8,
+        "x": 58,
+        "y": 5.0,
+        "w": 34,
+        "h": 4.8,
         "align": "right"
       },
       "type": {
-        "x": 6.5,
-        "y": 53.5,
+        "x": 8,
+        "y": 56.7,
         "w": 80,
-        "h": 7,
+        "h": 4.4,
         "align": "left",
         "color": "#1c160c",
-        "size": 18,
+        "size": 21,
         "font": "title",
-        "min": 11
+        "min": 12
       },
       "text": {
-        "x": 6.5,
-        "y": 64,
-        "w": 87,
-        "h": 26,
+        "x": 8,
+        "y": 63.0,
+        "w": 84,
+        "h": 27.0,
         "align": "left",
         "color": "#1a150d",
-        "size": 19,
+        "size": 21,
         "font": "body",
         "min": 9
       },
       "pt": {
-        "x": 78.5,
-        "y": 92.5,
+        "x": 74,
+        "y": 86.5,
         "w": 16,
-        "h": 6,
+        "h": 6.0,
         "align": "center",
         "color": "#1c160c",
-        "size": 24,
+        "size": 26,
         "font": "pt",
-        "min": 12
+        "min": 14
       },
       "credit": {
-        "x": 6,
-        "y": 94,
-        "w": 55,
-        "h": 4,
+        "x": 7,
+        "y": 95.2,
+        "w": 54,
+        "h": 3.0,
         "align": "left",
         "color": "#efe3cf",
         "size": 13,
-        "font": "pt"
+        "font": "pt",
+        "min": 8
       }
     }
   },
@@ -153,71 +155,72 @@
     "src": "assets/frames/W-Legendary.png",
     "zones": {
       "art": {
-        "x": 6.25,
-        "y": 14.3,
-        "w": 87.5,
-        "h": 37.8
+        "x": 7.8,
+        "y": 11.4,
+        "w": 84.4,
+        "h": 44.0
       },
       "name": {
-        "x": 6,
-        "y": 4.2,
-        "w": 56,
-        "h": 8,
+        "x": 8,
+        "y": 5.2,
+        "w": 50,
+        "h": 4.6,
         "align": "left",
         "color": "#1c160c",
-        "size": 26,
+        "size": 30,
         "font": "title",
-        "min": 13
+        "min": 14
       },
       "mana": {
-        "x": 64,
-        "y": 4.2,
-        "w": 30,
-        "h": 8,
+        "x": 58,
+        "y": 5.0,
+        "w": 34,
+        "h": 4.8,
         "align": "right"
       },
       "type": {
-        "x": 6.5,
-        "y": 53.5,
+        "x": 8,
+        "y": 56.7,
         "w": 80,
-        "h": 7,
+        "h": 4.4,
         "align": "left",
         "color": "#1c160c",
-        "size": 18,
+        "size": 21,
         "font": "title",
-        "min": 11
+        "min": 12
       },
       "text": {
-        "x": 6.5,
-        "y": 64,
-        "w": 87,
-        "h": 26,
+        "x": 8,
+        "y": 63.0,
+        "w": 84,
+        "h": 27.0,
         "align": "left",
         "color": "#1a150d",
-        "size": 19,
+        "size": 21,
         "font": "body",
         "min": 9
       },
       "pt": {
-        "x": 78.5,
-        "y": 92.5,
+        "x": 74,
+        "y": 86.5,
         "w": 16,
-        "h": 6,
+        "h": 6.0,
         "align": "center",
         "color": "#1c160c",
-        "size": 24,
+        "size": 26,
         "font": "pt",
-        "min": 12
+        "min": 14
       },
       "credit": {
-        "x": 6,
-        "y": 94,
-        "w": 55,
-        "h": 4,
+        "x": 7,
+        "y": 95.2,
+        "w": 54,
+        "h": 3.0,
         "align": "left",
         "color": "#efe3cf",
         "size": 13,
-        "font": "pt"
+        "font": "pt",
+        "min": 8
       }
     }
   },
@@ -227,71 +230,72 @@
     "src": "assets/frames/W-Legendary-PR.png",
     "zones": {
       "art": {
-        "x": 6.25,
-        "y": 14.3,
-        "w": 87.5,
-        "h": 37.8
+        "x": 7.8,
+        "y": 11.4,
+        "w": 84.4,
+        "h": 44.0
       },
       "name": {
-        "x": 6,
-        "y": 4.2,
-        "w": 56,
-        "h": 8,
+        "x": 8,
+        "y": 5.2,
+        "w": 50,
+        "h": 4.6,
         "align": "left",
         "color": "#1c160c",
-        "size": 26,
+        "size": 30,
         "font": "title",
-        "min": 13
+        "min": 14
       },
       "mana": {
-        "x": 64,
-        "y": 4.2,
-        "w": 30,
-        "h": 8,
+        "x": 58,
+        "y": 5.0,
+        "w": 34,
+        "h": 4.8,
         "align": "right"
       },
       "type": {
-        "x": 6.5,
-        "y": 53.5,
+        "x": 8,
+        "y": 56.7,
         "w": 80,
-        "h": 7,
+        "h": 4.4,
         "align": "left",
         "color": "#1c160c",
-        "size": 18,
+        "size": 21,
         "font": "title",
-        "min": 11
+        "min": 12
       },
       "text": {
-        "x": 6.5,
-        "y": 64,
-        "w": 87,
-        "h": 26,
+        "x": 8,
+        "y": 63.0,
+        "w": 84,
+        "h": 27.0,
         "align": "left",
         "color": "#1a150d",
-        "size": 19,
+        "size": 21,
         "font": "body",
         "min": 9
       },
       "pt": {
-        "x": 78.5,
-        "y": 92.5,
+        "x": 74,
+        "y": 86.5,
         "w": 16,
-        "h": 6,
+        "h": 6.0,
         "align": "center",
         "color": "#1c160c",
-        "size": 24,
+        "size": 26,
         "font": "pt",
-        "min": 12
+        "min": 14
       },
       "credit": {
-        "x": 6,
-        "y": 94,
-        "w": 55,
-        "h": 4,
+        "x": 7,
+        "y": 95.2,
+        "w": 54,
+        "h": 3.0,
         "align": "left",
         "color": "#efe3cf",
         "size": 13,
-        "font": "pt"
+        "font": "pt",
+        "min": 8
       }
     }
   },
@@ -301,71 +305,72 @@
     "src": "assets/frames/B-Basic.png",
     "zones": {
       "art": {
-        "x": 6.25,
-        "y": 14.3,
-        "w": 87.5,
-        "h": 37.8
+        "x": 7.8,
+        "y": 11.4,
+        "w": 84.4,
+        "h": 44.0
       },
       "name": {
-        "x": 6,
-        "y": 4.2,
-        "w": 56,
-        "h": 8,
+        "x": 8,
+        "y": 5.2,
+        "w": 50,
+        "h": 4.6,
         "align": "left",
         "color": "#1c160c",
-        "size": 26,
+        "size": 30,
         "font": "title",
-        "min": 13
+        "min": 14
       },
       "mana": {
-        "x": 64,
-        "y": 4.2,
-        "w": 30,
-        "h": 8,
+        "x": 58,
+        "y": 5.0,
+        "w": 34,
+        "h": 4.8,
         "align": "right"
       },
       "type": {
-        "x": 6.5,
-        "y": 53.5,
+        "x": 8,
+        "y": 56.7,
         "w": 80,
-        "h": 7,
+        "h": 4.4,
         "align": "left",
         "color": "#1c160c",
-        "size": 18,
+        "size": 21,
         "font": "title",
-        "min": 11
+        "min": 12
       },
       "text": {
-        "x": 6.5,
-        "y": 64,
-        "w": 87,
-        "h": 26,
+        "x": 8,
+        "y": 63.0,
+        "w": 84,
+        "h": 27.0,
         "align": "left",
         "color": "#1a150d",
-        "size": 19,
+        "size": 21,
         "font": "body",
         "min": 9
       },
       "pt": {
-        "x": 78.5,
-        "y": 92.5,
+        "x": 74,
+        "y": 86.5,
         "w": 16,
-        "h": 6,
+        "h": 6.0,
         "align": "center",
         "color": "#1c160c",
-        "size": 24,
+        "size": 26,
         "font": "pt",
-        "min": 12
+        "min": 14
       },
       "credit": {
-        "x": 6,
-        "y": 94,
-        "w": 55,
-        "h": 4,
+        "x": 7,
+        "y": 95.2,
+        "w": 54,
+        "h": 3.0,
         "align": "left",
         "color": "#efe3cf",
         "size": 13,
-        "font": "pt"
+        "font": "pt",
+        "min": 8
       }
     }
   },
@@ -375,71 +380,72 @@
     "src": "assets/frames/B-Basic-PR Counter.png",
     "zones": {
       "art": {
-        "x": 6.25,
-        "y": 14.3,
-        "w": 87.5,
-        "h": 37.8
+        "x": 7.8,
+        "y": 11.4,
+        "w": 84.4,
+        "h": 44.0
       },
       "name": {
-        "x": 6,
-        "y": 4.2,
-        "w": 56,
-        "h": 8,
+        "x": 8,
+        "y": 5.2,
+        "w": 50,
+        "h": 4.6,
         "align": "left",
         "color": "#1c160c",
-        "size": 26,
+        "size": 30,
         "font": "title",
-        "min": 13
+        "min": 14
       },
       "mana": {
-        "x": 64,
-        "y": 4.2,
-        "w": 30,
-        "h": 8,
+        "x": 58,
+        "y": 5.0,
+        "w": 34,
+        "h": 4.8,
         "align": "right"
       },
       "type": {
-        "x": 6.5,
-        "y": 53.5,
+        "x": 8,
+        "y": 56.7,
         "w": 80,
-        "h": 7,
+        "h": 4.4,
         "align": "left",
         "color": "#1c160c",
-        "size": 18,
+        "size": 21,
         "font": "title",
-        "min": 11
+        "min": 12
       },
       "text": {
-        "x": 6.5,
-        "y": 64,
-        "w": 87,
-        "h": 26,
+        "x": 8,
+        "y": 63.0,
+        "w": 84,
+        "h": 27.0,
         "align": "left",
         "color": "#1a150d",
-        "size": 19,
+        "size": 21,
         "font": "body",
         "min": 9
       },
       "pt": {
-        "x": 78.5,
-        "y": 92.5,
+        "x": 74,
+        "y": 86.5,
         "w": 16,
-        "h": 6,
+        "h": 6.0,
         "align": "center",
         "color": "#1c160c",
-        "size": 24,
+        "size": 26,
         "font": "pt",
-        "min": 12
+        "min": 14
       },
       "credit": {
-        "x": 6,
-        "y": 94,
-        "w": 55,
-        "h": 4,
+        "x": 7,
+        "y": 95.2,
+        "w": 54,
+        "h": 3.0,
         "align": "left",
         "color": "#efe3cf",
         "size": 13,
-        "font": "pt"
+        "font": "pt",
+        "min": 8
       }
     }
   },
@@ -449,71 +455,72 @@
     "src": "assets/frames/U-Basic.png",
     "zones": {
       "art": {
-        "x": 6.25,
-        "y": 14.3,
-        "w": 87.5,
-        "h": 37.8
+        "x": 7.8,
+        "y": 11.4,
+        "w": 84.4,
+        "h": 44.0
       },
       "name": {
-        "x": 6,
-        "y": 4.2,
-        "w": 56,
-        "h": 8,
+        "x": 8,
+        "y": 5.2,
+        "w": 50,
+        "h": 4.6,
         "align": "left",
         "color": "#1c160c",
-        "size": 26,
+        "size": 30,
         "font": "title",
-        "min": 13
+        "min": 14
       },
       "mana": {
-        "x": 64,
-        "y": 4.2,
-        "w": 30,
-        "h": 8,
+        "x": 58,
+        "y": 5.0,
+        "w": 34,
+        "h": 4.8,
         "align": "right"
       },
       "type": {
-        "x": 6.5,
-        "y": 53.5,
+        "x": 8,
+        "y": 56.7,
         "w": 80,
-        "h": 7,
+        "h": 4.4,
         "align": "left",
         "color": "#1c160c",
-        "size": 18,
+        "size": 21,
         "font": "title",
-        "min": 11
+        "min": 12
       },
       "text": {
-        "x": 6.5,
-        "y": 64,
-        "w": 87,
-        "h": 26,
+        "x": 8,
+        "y": 63.0,
+        "w": 84,
+        "h": 27.0,
         "align": "left",
         "color": "#1a150d",
-        "size": 19,
+        "size": 21,
         "font": "body",
         "min": 9
       },
       "pt": {
-        "x": 78.5,
-        "y": 92.5,
+        "x": 74,
+        "y": 86.5,
         "w": 16,
-        "h": 6,
+        "h": 6.0,
         "align": "center",
         "color": "#1c160c",
-        "size": 24,
+        "size": 26,
         "font": "pt",
-        "min": 12
+        "min": 14
       },
       "credit": {
-        "x": 6,
-        "y": 94,
-        "w": 55,
-        "h": 4,
+        "x": 7,
+        "y": 95.2,
+        "w": 54,
+        "h": 3.0,
         "align": "left",
         "color": "#efe3cf",
         "size": 13,
-        "font": "pt"
+        "font": "pt",
+        "min": 8
       }
     }
   },
@@ -523,71 +530,72 @@
     "src": "assets/frames/U-Basic-PR Counter.png",
     "zones": {
       "art": {
-        "x": 6.25,
-        "y": 14.3,
-        "w": 87.5,
-        "h": 37.8
+        "x": 7.8,
+        "y": 11.4,
+        "w": 84.4,
+        "h": 44.0
       },
       "name": {
-        "x": 6,
-        "y": 4.2,
-        "w": 56,
-        "h": 8,
+        "x": 8,
+        "y": 5.2,
+        "w": 50,
+        "h": 4.6,
         "align": "left",
         "color": "#1c160c",
-        "size": 26,
+        "size": 30,
         "font": "title",
-        "min": 13
+        "min": 14
       },
       "mana": {
-        "x": 64,
-        "y": 4.2,
-        "w": 30,
-        "h": 8,
+        "x": 58,
+        "y": 5.0,
+        "w": 34,
+        "h": 4.8,
         "align": "right"
       },
       "type": {
-        "x": 6.5,
-        "y": 53.5,
+        "x": 8,
+        "y": 56.7,
         "w": 80,
-        "h": 7,
+        "h": 4.4,
         "align": "left",
         "color": "#1c160c",
-        "size": 18,
+        "size": 21,
         "font": "title",
-        "min": 11
+        "min": 12
       },
       "text": {
-        "x": 6.5,
-        "y": 64,
-        "w": 87,
-        "h": 26,
+        "x": 8,
+        "y": 63.0,
+        "w": 84,
+        "h": 27.0,
         "align": "left",
         "color": "#1a150d",
-        "size": 19,
+        "size": 21,
         "font": "body",
         "min": 9
       },
       "pt": {
-        "x": 78.5,
-        "y": 92.5,
+        "x": 74,
+        "y": 86.5,
         "w": 16,
-        "h": 6,
+        "h": 6.0,
         "align": "center",
         "color": "#1c160c",
-        "size": 24,
+        "size": 26,
         "font": "pt",
-        "min": 12
+        "min": 14
       },
       "credit": {
-        "x": 6,
-        "y": 94,
-        "w": 55,
-        "h": 4,
+        "x": 7,
+        "y": 95.2,
+        "w": 54,
+        "h": 3.0,
         "align": "left",
         "color": "#efe3cf",
         "size": 13,
-        "font": "pt"
+        "font": "pt",
+        "min": 8
       }
     }
   },
@@ -597,71 +605,72 @@
     "src": "assets/frames/G-Basic.png",
     "zones": {
       "art": {
-        "x": 6.25,
-        "y": 14.3,
-        "w": 87.5,
-        "h": 37.8
+        "x": 7.8,
+        "y": 11.4,
+        "w": 84.4,
+        "h": 44.0
       },
       "name": {
-        "x": 6,
-        "y": 4.2,
-        "w": 56,
-        "h": 8,
+        "x": 8,
+        "y": 5.2,
+        "w": 50,
+        "h": 4.6,
         "align": "left",
         "color": "#1c160c",
-        "size": 26,
+        "size": 30,
         "font": "title",
-        "min": 13
+        "min": 14
       },
       "mana": {
-        "x": 64,
-        "y": 4.2,
-        "w": 30,
-        "h": 8,
+        "x": 58,
+        "y": 5.0,
+        "w": 34,
+        "h": 4.8,
         "align": "right"
       },
       "type": {
-        "x": 6.5,
-        "y": 53.5,
+        "x": 8,
+        "y": 56.7,
         "w": 80,
-        "h": 7,
+        "h": 4.4,
         "align": "left",
         "color": "#1c160c",
-        "size": 18,
+        "size": 21,
         "font": "title",
-        "min": 11
+        "min": 12
       },
       "text": {
-        "x": 6.5,
-        "y": 64,
-        "w": 87,
-        "h": 26,
+        "x": 8,
+        "y": 63.0,
+        "w": 84,
+        "h": 27.0,
         "align": "left",
         "color": "#1a150d",
-        "size": 19,
+        "size": 21,
         "font": "body",
         "min": 9
       },
       "pt": {
-        "x": 78.5,
-        "y": 92.5,
+        "x": 74,
+        "y": 86.5,
         "w": 16,
-        "h": 6,
+        "h": 6.0,
         "align": "center",
         "color": "#1c160c",
-        "size": 24,
+        "size": 26,
         "font": "pt",
-        "min": 12
+        "min": 14
       },
       "credit": {
-        "x": 6,
-        "y": 94,
-        "w": 55,
-        "h": 4,
+        "x": 7,
+        "y": 95.2,
+        "w": 54,
+        "h": 3.0,
         "align": "left",
         "color": "#efe3cf",
         "size": 13,
-        "font": "pt"
+        "font": "pt",
+        "min": 8
       }
     }
   },
@@ -671,71 +680,72 @@
     "src": "assets/frames/G-Basic-PR Counter.png",
     "zones": {
       "art": {
-        "x": 6.25,
-        "y": 14.3,
-        "w": 87.5,
-        "h": 37.8
+        "x": 7.8,
+        "y": 11.4,
+        "w": 84.4,
+        "h": 44.0
       },
       "name": {
-        "x": 6,
-        "y": 4.2,
-        "w": 56,
-        "h": 8,
+        "x": 8,
+        "y": 5.2,
+        "w": 50,
+        "h": 4.6,
         "align": "left",
         "color": "#1c160c",
-        "size": 26,
+        "size": 30,
         "font": "title",
-        "min": 13
+        "min": 14
       },
       "mana": {
-        "x": 64,
-        "y": 4.2,
-        "w": 30,
-        "h": 8,
+        "x": 58,
+        "y": 5.0,
+        "w": 34,
+        "h": 4.8,
         "align": "right"
       },
       "type": {
-        "x": 6.5,
-        "y": 53.5,
+        "x": 8,
+        "y": 56.7,
         "w": 80,
-        "h": 7,
+        "h": 4.4,
         "align": "left",
         "color": "#1c160c",
-        "size": 18,
+        "size": 21,
         "font": "title",
-        "min": 11
+        "min": 12
       },
       "text": {
-        "x": 6.5,
-        "y": 64,
-        "w": 87,
-        "h": 26,
+        "x": 8,
+        "y": 63.0,
+        "w": 84,
+        "h": 27.0,
         "align": "left",
         "color": "#1a150d",
-        "size": 19,
+        "size": 21,
         "font": "body",
         "min": 9
       },
       "pt": {
-        "x": 78.5,
-        "y": 92.5,
+        "x": 74,
+        "y": 86.5,
         "w": 16,
-        "h": 6,
+        "h": 6.0,
         "align": "center",
         "color": "#1c160c",
-        "size": 24,
+        "size": 26,
         "font": "pt",
-        "min": 12
+        "min": 14
       },
       "credit": {
-        "x": 6,
-        "y": 94,
-        "w": 55,
-        "h": 4,
+        "x": 7,
+        "y": 95.2,
+        "w": 54,
+        "h": 3.0,
         "align": "left",
         "color": "#efe3cf",
         "size": 13,
-        "font": "pt"
+        "font": "pt",
+        "min": 8
       }
     }
   },
@@ -745,71 +755,72 @@
     "src": "assets/frames/R-Basic.png",
     "zones": {
       "art": {
-        "x": 6.25,
-        "y": 14.3,
-        "w": 87.5,
-        "h": 37.8
+        "x": 7.8,
+        "y": 11.4,
+        "w": 84.4,
+        "h": 44.0
       },
       "name": {
-        "x": 6,
-        "y": 4.2,
-        "w": 56,
-        "h": 8,
+        "x": 8,
+        "y": 5.2,
+        "w": 50,
+        "h": 4.6,
         "align": "left",
         "color": "#1c160c",
-        "size": 26,
+        "size": 30,
         "font": "title",
-        "min": 13
+        "min": 14
       },
       "mana": {
-        "x": 64,
-        "y": 4.2,
-        "w": 30,
-        "h": 8,
+        "x": 58,
+        "y": 5.0,
+        "w": 34,
+        "h": 4.8,
         "align": "right"
       },
       "type": {
-        "x": 6.5,
-        "y": 53.5,
+        "x": 8,
+        "y": 56.7,
         "w": 80,
-        "h": 7,
+        "h": 4.4,
         "align": "left",
         "color": "#1c160c",
-        "size": 18,
+        "size": 21,
         "font": "title",
-        "min": 11
+        "min": 12
       },
       "text": {
-        "x": 6.5,
-        "y": 64,
-        "w": 87,
-        "h": 26,
+        "x": 8,
+        "y": 63.0,
+        "w": 84,
+        "h": 27.0,
         "align": "left",
         "color": "#1a150d",
-        "size": 19,
+        "size": 21,
         "font": "body",
         "min": 9
       },
       "pt": {
-        "x": 78.5,
-        "y": 92.5,
+        "x": 74,
+        "y": 86.5,
         "w": 16,
-        "h": 6,
+        "h": 6.0,
         "align": "center",
         "color": "#1c160c",
-        "size": 24,
+        "size": 26,
         "font": "pt",
-        "min": 12
+        "min": 14
       },
       "credit": {
-        "x": 6,
-        "y": 94,
-        "w": 55,
-        "h": 4,
+        "x": 7,
+        "y": 95.2,
+        "w": 54,
+        "h": 3.0,
         "align": "left",
         "color": "#efe3cf",
         "size": 13,
-        "font": "pt"
+        "font": "pt",
+        "min": 8
       }
     }
   },
@@ -819,71 +830,72 @@
     "src": "assets/frames/R-Basic-PR Counter.png",
     "zones": {
       "art": {
-        "x": 6.25,
-        "y": 14.3,
-        "w": 87.5,
-        "h": 37.8
+        "x": 7.8,
+        "y": 11.4,
+        "w": 84.4,
+        "h": 44.0
       },
       "name": {
-        "x": 6,
-        "y": 4.2,
-        "w": 56,
-        "h": 8,
+        "x": 8,
+        "y": 5.2,
+        "w": 50,
+        "h": 4.6,
         "align": "left",
         "color": "#1c160c",
-        "size": 26,
+        "size": 30,
         "font": "title",
-        "min": 13
+        "min": 14
       },
       "mana": {
-        "x": 64,
-        "y": 4.2,
-        "w": 30,
-        "h": 8,
+        "x": 58,
+        "y": 5.0,
+        "w": 34,
+        "h": 4.8,
         "align": "right"
       },
       "type": {
-        "x": 6.5,
-        "y": 53.5,
+        "x": 8,
+        "y": 56.7,
         "w": 80,
-        "h": 7,
+        "h": 4.4,
         "align": "left",
         "color": "#1c160c",
-        "size": 18,
+        "size": 21,
         "font": "title",
-        "min": 11
+        "min": 12
       },
       "text": {
-        "x": 6.5,
-        "y": 64,
-        "w": 87,
-        "h": 26,
+        "x": 8,
+        "y": 63.0,
+        "w": 84,
+        "h": 27.0,
         "align": "left",
         "color": "#1a150d",
-        "size": 19,
+        "size": 21,
         "font": "body",
         "min": 9
       },
       "pt": {
-        "x": 78.5,
-        "y": 92.5,
+        "x": 74,
+        "y": 86.5,
         "w": 16,
-        "h": 6,
+        "h": 6.0,
         "align": "center",
         "color": "#1c160c",
-        "size": 24,
+        "size": 26,
         "font": "pt",
-        "min": 12
+        "min": 14
       },
       "credit": {
-        "x": 6,
-        "y": 94,
-        "w": 55,
-        "h": 4,
+        "x": 7,
+        "y": 95.2,
+        "w": 54,
+        "h": 3.0,
         "align": "left",
         "color": "#efe3cf",
         "size": 13,
-        "font": "pt"
+        "font": "pt",
+        "min": 8
       }
     }
   },
@@ -893,71 +905,72 @@
     "src": "assets/frames/E-Basic.png",
     "zones": {
       "art": {
-        "x": 6.25,
-        "y": 14.3,
-        "w": 87.5,
-        "h": 37.8
+        "x": 7.8,
+        "y": 11.4,
+        "w": 84.4,
+        "h": 44.0
       },
       "name": {
-        "x": 6,
-        "y": 4.2,
-        "w": 56,
-        "h": 8,
+        "x": 8,
+        "y": 5.2,
+        "w": 50,
+        "h": 4.6,
         "align": "left",
         "color": "#1c160c",
-        "size": 26,
+        "size": 30,
         "font": "title",
-        "min": 13
+        "min": 14
       },
       "mana": {
-        "x": 64,
-        "y": 4.2,
-        "w": 30,
-        "h": 8,
+        "x": 58,
+        "y": 5.0,
+        "w": 34,
+        "h": 4.8,
         "align": "right"
       },
       "type": {
-        "x": 6.5,
-        "y": 53.5,
+        "x": 8,
+        "y": 56.7,
         "w": 80,
-        "h": 7,
+        "h": 4.4,
         "align": "left",
         "color": "#1c160c",
-        "size": 18,
+        "size": 21,
         "font": "title",
-        "min": 11
+        "min": 12
       },
       "text": {
-        "x": 6.5,
-        "y": 64,
-        "w": 87,
-        "h": 26,
+        "x": 8,
+        "y": 63.0,
+        "w": 84,
+        "h": 27.0,
         "align": "left",
         "color": "#1a150d",
-        "size": 19,
+        "size": 21,
         "font": "body",
         "min": 9
       },
       "pt": {
-        "x": 78.5,
-        "y": 92.5,
+        "x": 74,
+        "y": 86.5,
         "w": 16,
-        "h": 6,
+        "h": 6.0,
         "align": "center",
         "color": "#1c160c",
-        "size": 24,
+        "size": 26,
         "font": "pt",
-        "min": 12
+        "min": 14
       },
       "credit": {
-        "x": 6,
-        "y": 94,
-        "w": 55,
-        "h": 4,
+        "x": 7,
+        "y": 95.2,
+        "w": 54,
+        "h": 3.0,
         "align": "left",
         "color": "#efe3cf",
         "size": 13,
-        "font": "pt"
+        "font": "pt",
+        "min": 8
       }
     }
   },
@@ -967,71 +980,72 @@
     "src": "assets/frames/E-Basic-PR Counter.png",
     "zones": {
       "art": {
-        "x": 6.25,
-        "y": 14.3,
-        "w": 87.5,
-        "h": 37.8
+        "x": 7.8,
+        "y": 11.4,
+        "w": 84.4,
+        "h": 44.0
       },
       "name": {
-        "x": 6,
-        "y": 4.2,
-        "w": 56,
-        "h": 8,
+        "x": 8,
+        "y": 5.2,
+        "w": 50,
+        "h": 4.6,
         "align": "left",
         "color": "#1c160c",
-        "size": 26,
+        "size": 30,
         "font": "title",
-        "min": 13
+        "min": 14
       },
       "mana": {
-        "x": 64,
-        "y": 4.2,
-        "w": 30,
-        "h": 8,
+        "x": 58,
+        "y": 5.0,
+        "w": 34,
+        "h": 4.8,
         "align": "right"
       },
       "type": {
-        "x": 6.5,
-        "y": 53.5,
+        "x": 8,
+        "y": 56.7,
         "w": 80,
-        "h": 7,
+        "h": 4.4,
         "align": "left",
         "color": "#1c160c",
-        "size": 18,
+        "size": 21,
         "font": "title",
-        "min": 11
+        "min": 12
       },
       "text": {
-        "x": 6.5,
-        "y": 64,
-        "w": 87,
-        "h": 26,
+        "x": 8,
+        "y": 63.0,
+        "w": 84,
+        "h": 27.0,
         "align": "left",
         "color": "#1a150d",
-        "size": 19,
+        "size": 21,
         "font": "body",
         "min": 9
       },
       "pt": {
-        "x": 78.5,
-        "y": 92.5,
+        "x": 74,
+        "y": 86.5,
         "w": 16,
-        "h": 6,
+        "h": 6.0,
         "align": "center",
         "color": "#1c160c",
-        "size": 24,
+        "size": 26,
         "font": "pt",
-        "min": 12
+        "min": 14
       },
       "credit": {
-        "x": 6,
-        "y": 94,
-        "w": 55,
-        "h": 4,
+        "x": 7,
+        "y": 95.2,
+        "w": 54,
+        "h": 3.0,
         "align": "left",
         "color": "#efe3cf",
         "size": 13,
-        "font": "pt"
+        "font": "pt",
+        "min": 8
       }
     }
   },
@@ -1041,71 +1055,72 @@
     "src": "assets/frames/Golden-Basic.png",
     "zones": {
       "art": {
-        "x": 6.25,
-        "y": 14.3,
-        "w": 87.5,
-        "h": 37.8
+        "x": 7.8,
+        "y": 11.4,
+        "w": 84.4,
+        "h": 44.0
       },
       "name": {
-        "x": 6,
-        "y": 4.2,
-        "w": 56,
-        "h": 8,
+        "x": 8,
+        "y": 5.2,
+        "w": 50,
+        "h": 4.6,
         "align": "left",
         "color": "#1c160c",
-        "size": 26,
+        "size": 30,
         "font": "title",
-        "min": 13
+        "min": 14
       },
       "mana": {
-        "x": 64,
-        "y": 4.2,
-        "w": 30,
-        "h": 8,
+        "x": 58,
+        "y": 5.0,
+        "w": 34,
+        "h": 4.8,
         "align": "right"
       },
       "type": {
-        "x": 6.5,
-        "y": 53.5,
+        "x": 8,
+        "y": 56.7,
         "w": 80,
-        "h": 7,
+        "h": 4.4,
         "align": "left",
         "color": "#1c160c",
-        "size": 18,
+        "size": 21,
         "font": "title",
-        "min": 11
+        "min": 12
       },
       "text": {
-        "x": 6.5,
-        "y": 64,
-        "w": 87,
-        "h": 26,
+        "x": 8,
+        "y": 63.0,
+        "w": 84,
+        "h": 27.0,
         "align": "left",
         "color": "#1a150d",
-        "size": 19,
+        "size": 21,
         "font": "body",
         "min": 9
       },
       "pt": {
-        "x": 78.5,
-        "y": 92.5,
+        "x": 74,
+        "y": 86.5,
         "w": 16,
-        "h": 6,
+        "h": 6.0,
         "align": "center",
         "color": "#1c160c",
-        "size": 24,
+        "size": 26,
         "font": "pt",
-        "min": 12
+        "min": 14
       },
       "credit": {
-        "x": 6,
-        "y": 94,
-        "w": 55,
-        "h": 4,
+        "x": 7,
+        "y": 95.2,
+        "w": 54,
+        "h": 3.0,
         "align": "left",
         "color": "#efe3cf",
         "size": 13,
-        "font": "pt"
+        "font": "pt",
+        "min": 8
       }
     }
   },
@@ -1115,71 +1130,72 @@
     "src": "assets/frames/Golden-Basic-PR Counter.png",
     "zones": {
       "art": {
-        "x": 6.25,
-        "y": 14.3,
-        "w": 87.5,
-        "h": 37.8
+        "x": 7.8,
+        "y": 11.4,
+        "w": 84.4,
+        "h": 44.0
       },
       "name": {
-        "x": 6,
-        "y": 4.2,
-        "w": 56,
-        "h": 8,
+        "x": 8,
+        "y": 5.2,
+        "w": 50,
+        "h": 4.6,
         "align": "left",
         "color": "#1c160c",
-        "size": 26,
+        "size": 30,
         "font": "title",
-        "min": 13
+        "min": 14
       },
       "mana": {
-        "x": 64,
-        "y": 4.2,
-        "w": 30,
-        "h": 8,
+        "x": 58,
+        "y": 5.0,
+        "w": 34,
+        "h": 4.8,
         "align": "right"
       },
       "type": {
-        "x": 6.5,
-        "y": 53.5,
+        "x": 8,
+        "y": 56.7,
         "w": 80,
-        "h": 7,
+        "h": 4.4,
         "align": "left",
         "color": "#1c160c",
-        "size": 18,
+        "size": 21,
         "font": "title",
-        "min": 11
+        "min": 12
       },
       "text": {
-        "x": 6.5,
-        "y": 64,
-        "w": 87,
-        "h": 26,
+        "x": 8,
+        "y": 63.0,
+        "w": 84,
+        "h": 27.0,
         "align": "left",
         "color": "#1a150d",
-        "size": 19,
+        "size": 21,
         "font": "body",
         "min": 9
       },
       "pt": {
-        "x": 78.5,
-        "y": 92.5,
+        "x": 74,
+        "y": 86.5,
         "w": 16,
-        "h": 6,
+        "h": 6.0,
         "align": "center",
         "color": "#1c160c",
-        "size": 24,
+        "size": 26,
         "font": "pt",
-        "min": 12
+        "min": 14
       },
       "credit": {
-        "x": 6,
-        "y": 94,
-        "w": 55,
-        "h": 4,
+        "x": 7,
+        "y": 95.2,
+        "w": 54,
+        "h": 3.0,
         "align": "left",
         "color": "#efe3cf",
         "size": 13,
-        "font": "pt"
+        "font": "pt",
+        "min": 8
       }
     }
   },
@@ -1189,71 +1205,72 @@
     "src": "assets/frames/V-Basic.png",
     "zones": {
       "art": {
-        "x": 6.25,
-        "y": 14.3,
-        "w": 87.5,
-        "h": 37.8
+        "x": 7.8,
+        "y": 11.4,
+        "w": 84.4,
+        "h": 44.0
       },
       "name": {
-        "x": 6,
-        "y": 4.2,
-        "w": 56,
-        "h": 8,
+        "x": 8,
+        "y": 5.2,
+        "w": 50,
+        "h": 4.6,
         "align": "left",
         "color": "#1c160c",
-        "size": 26,
+        "size": 30,
         "font": "title",
-        "min": 13
+        "min": 14
       },
       "mana": {
-        "x": 64,
-        "y": 4.2,
-        "w": 30,
-        "h": 8,
+        "x": 58,
+        "y": 5.0,
+        "w": 34,
+        "h": 4.8,
         "align": "right"
       },
       "type": {
-        "x": 6.5,
-        "y": 53.5,
+        "x": 8,
+        "y": 56.7,
         "w": 80,
-        "h": 7,
+        "h": 4.4,
         "align": "left",
         "color": "#1c160c",
-        "size": 18,
+        "size": 21,
         "font": "title",
-        "min": 11
+        "min": 12
       },
       "text": {
-        "x": 6.5,
-        "y": 64,
-        "w": 87,
-        "h": 26,
+        "x": 8,
+        "y": 63.0,
+        "w": 84,
+        "h": 27.0,
         "align": "left",
         "color": "#1a150d",
-        "size": 19,
+        "size": 21,
         "font": "body",
         "min": 9
       },
       "pt": {
-        "x": 78.5,
-        "y": 92.5,
+        "x": 74,
+        "y": 86.5,
         "w": 16,
-        "h": 6,
+        "h": 6.0,
         "align": "center",
         "color": "#1c160c",
-        "size": 24,
+        "size": 26,
         "font": "pt",
-        "min": 12
+        "min": 14
       },
       "credit": {
-        "x": 6,
-        "y": 94,
-        "w": 55,
-        "h": 4,
+        "x": 7,
+        "y": 95.2,
+        "w": 54,
+        "h": 3.0,
         "align": "left",
         "color": "#efe3cf",
         "size": 13,
-        "font": "pt"
+        "font": "pt",
+        "min": 8
       }
     }
   },
@@ -1263,71 +1280,72 @@
     "src": "assets/frames/V-Basic-PR Counter.png",
     "zones": {
       "art": {
-        "x": 6.25,
-        "y": 14.3,
-        "w": 87.5,
-        "h": 37.8
+        "x": 7.8,
+        "y": 11.4,
+        "w": 84.4,
+        "h": 44.0
       },
       "name": {
-        "x": 6,
-        "y": 4.2,
-        "w": 56,
-        "h": 8,
+        "x": 8,
+        "y": 5.2,
+        "w": 50,
+        "h": 4.6,
         "align": "left",
         "color": "#1c160c",
-        "size": 26,
+        "size": 30,
         "font": "title",
-        "min": 13
+        "min": 14
       },
       "mana": {
-        "x": 64,
-        "y": 4.2,
-        "w": 30,
-        "h": 8,
+        "x": 58,
+        "y": 5.0,
+        "w": 34,
+        "h": 4.8,
         "align": "right"
       },
       "type": {
-        "x": 6.5,
-        "y": 53.5,
+        "x": 8,
+        "y": 56.7,
         "w": 80,
-        "h": 7,
+        "h": 4.4,
         "align": "left",
         "color": "#1c160c",
-        "size": 18,
+        "size": 21,
         "font": "title",
-        "min": 11
+        "min": 12
       },
       "text": {
-        "x": 6.5,
-        "y": 64,
-        "w": 87,
-        "h": 26,
+        "x": 8,
+        "y": 63.0,
+        "w": 84,
+        "h": 27.0,
         "align": "left",
         "color": "#1a150d",
-        "size": 19,
+        "size": 21,
         "font": "body",
         "min": 9
       },
       "pt": {
-        "x": 78.5,
-        "y": 92.5,
+        "x": 74,
+        "y": 86.5,
         "w": 16,
-        "h": 6,
+        "h": 6.0,
         "align": "center",
         "color": "#1c160c",
-        "size": 24,
+        "size": 26,
         "font": "pt",
-        "min": 12
+        "min": 14
       },
       "credit": {
-        "x": 6,
-        "y": 94,
-        "w": 55,
-        "h": 4,
+        "x": 7,
+        "y": 95.2,
+        "w": 54,
+        "h": 3.0,
         "align": "left",
         "color": "#efe3cf",
         "size": 13,
-        "font": "pt"
+        "font": "pt",
+        "min": 8
       }
     }
   }
