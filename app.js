@@ -274,7 +274,11 @@ const RENDERERS={normal:()=>renderNormal({name:state.name,mana:state.mana,type:s
   class:renderClass,battle:renderBattle,adventure:renderAdventure,emblem:renderEmblem,dfc:renderDFC,split:renderSplit};
 
 /* ---------- FRAME PERSONALIZADO (pasta /assets/frames) ---------- */
-function cfFont(f){return f==="body"?'"Spectral",Georgia,serif':f==="pt"?'"Bitter",serif':'"Cinzel",serif';}
+function cfFont(f){
+  /* Beleren em toda a carta; mantém a fonte antiga como fallback se a Beleren não carregar */
+  const fb = f==="body" ? '"Spectral",Georgia,serif' : f==="pt" ? '"Bitter",serif' : '"Cinzel",serif';
+  return '"Beleren Bold",'+fb;
+}
 function zoneBox(z){return `left:${z.x}%;top:${z.y}%;width:${z.w}%;height:${z.h}%;`;}
 function zone(z,inner,top,key){
   const al=z.align||"left";
