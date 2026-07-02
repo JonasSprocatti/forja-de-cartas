@@ -1348,5 +1348,155 @@
         "min": 8
       }
     }
+  },
+  {
+    "id": "C-Basic",
+    "name": "Incolor Clássico",
+    "src": "assets/frames/C-Basic.png",
+    "zones": {
+      "art": {
+        "x": 7.8,
+        "y": 11.4,
+        "w": 84.4,
+        "h": 44.0
+      },
+      "name": {
+        "x": 8,
+        "y": 5.2,
+        "w": 50,
+        "h": 4.6,
+        "align": "left",
+        "color": "#1c160c",
+        "size": 30,
+        "font": "title",
+        "min": 14
+      },
+      "mana": {
+        "x": 58,
+        "y": 5.0,
+        "w": 34,
+        "h": 4.8,
+        "align": "right"
+      },
+      "type": {
+        "x": 8,
+        "y": 56.7,
+        "w": 80,
+        "h": 4.4,
+        "align": "left",
+        "color": "#1c160c",
+        "size": 21,
+        "font": "title",
+        "min": 12
+      },
+      "text": {
+        "x": 8,
+        "y": 63.0,
+        "w": 84,
+        "h": 27.0,
+        "align": "left",
+        "color": "#1a150d",
+        "size": 21,
+        "font": "body",
+        "min": 9
+      },
+      "pt": {
+        "x": 78.5,
+        "y": 89.0,
+        "w": 15,
+        "h": 5.6,
+        "align": "center",
+        "color": "#1c160c",
+        "size": 26,
+        "font": "pt",
+        "min": 14
+      },
+      "credit": {
+        "x": 7,
+        "y": 95.2,
+        "w": 54,
+        "h": 3.0,
+        "align": "left",
+        "color": "#efe3cf",
+        "size": 13,
+        "font": "pt",
+        "min": 8
+      }
+    }
+  },
+  {
+    "id": "C-Basic-PR Counter",
+    "name": "Incolor Clássico com Poder e Resistência",
+    "src": "assets/frames/C-Basic-PR Counter.png",
+    "zones": {
+      "art": {
+        "x": 7.8,
+        "y": 11.4,
+        "w": 84.4,
+        "h": 44.0
+      },
+      "name": {
+        "x": 8,
+        "y": 5.2,
+        "w": 50,
+        "h": 4.6,
+        "align": "left",
+        "color": "#1c160c",
+        "size": 30,
+        "font": "title",
+        "min": 14
+      },
+      "mana": {
+        "x": 58,
+        "y": 5.0,
+        "w": 34,
+        "h": 4.8,
+        "align": "right"
+      },
+      "type": {
+        "x": 8,
+        "y": 56.7,
+        "w": 80,
+        "h": 4.4,
+        "align": "left",
+        "color": "#1c160c",
+        "size": 21,
+        "font": "title",
+        "min": 12
+      },
+      "text": {
+        "x": 8,
+        "y": 63.0,
+        "w": 84,
+        "h": 27.0,
+        "align": "left",
+        "color": "#1a150d",
+        "size": 21,
+        "font": "body",
+        "min": 9
+      },
+      "pt": {
+        "x": 78.5,
+        "y": 89.0,
+        "w": 15,
+        "h": 5.6,
+        "align": "center",
+        "color": "#1c160c",
+        "size": 26,
+        "font": "pt",
+        "min": 14
+      },
+      "credit": {
+        "x": 7,
+        "y": 95.2,
+        "w": 54,
+        "h": 3.0,
+        "align": "left",
+        "color": "#efe3cf",
+        "size": 13,
+        "font": "pt",
+        "min": 8
+      }
+    }
   }
 ]
