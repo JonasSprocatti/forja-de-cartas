@@ -72,23 +72,98 @@ function autoColor(mana){
   const c=[...new Set((mana.toUpperCase().match(/[WUBRG]/g))||[])];
   if(c.length===0) return "C"; if(c.length===1) return c[0]; return "multi";
 }
+/* ============================================================
+   DETECÇÃO AUTOMÁTICA DE FRAME — tipo, supertipo e cor
+   Os catálogos oficiais de tipos vêm da API do Scryfall
+   (/catalog/supertypes, /catalog/card-types, /catalog/artifact-types,
+   /catalog/creature-types) e ficam em cache no localStorage por 7 dias.
+   ============================================================ */
+const SCRY_TYPES={ supertypes:[], cardTypes:[], artifactTypes:[], creatureTypes:[] };
+/* dicionário PT-BR -> inglês (a linha de tipo pode ser escrita em português) */
+const TYPE_PT2EN={
+  // supertipos
+  "lendario":"legendary","lendaria":"legendary","basico":"basic","basica":"basic",
+  "neve":"snow","mundo":"world","continuo":"ongoing","continua":"ongoing",
+  // tipos de carta
+  "criatura":"creature","artefato":"artifact","encantamento":"enchantment",
+  "instantaneo":"instant","instantanea":"instant","magica":"instant",
+  "feitico":"sorcery","terreno":"land","planeswalker":"planeswalker",
+  "batalha":"battle","tribal":"kindred","conspiracao":"conspiracy",
+  "ficha":"token","emblema":"emblem","masmorra":"dungeon","aventura":"adventure",
+  // subtipos com frame próprio
+  "veiculo":"vehicle","equipamento":"equipment","saga":"saga","classe":"class",
+  "aura":"aura","eldrazi":"eldrazi",
+};
+function normTypeWord(s){
+  return (s||"").normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase();
+}
+/* quebra a linha de tipo em palavras normalizadas e traduzidas para inglês */
+function parseTypeLine(typeLine){
+  const raw=(typeLine||"");
+  const parts=raw.split(/—|–|\s-\s/);
+  const left=parts[0]||"", right=parts.slice(1).join(" ")||"";
+  const tok=side=>side.split(/[\s,/]+/).map(normTypeWord).filter(Boolean).map(w=>TYPE_PT2EN[w]||w);
+  const leftW=new Set(tok(left)), rightW=new Set(tok(right));
+  const has=(set,w)=>set.has(w);
+  const inCatalog=(list,w)=>list.some(t=>normTypeWord(t)===w);
+  const supertypes=new Set(), types=new Set();
+  leftW.forEach(w=>{
+    if(["legendary","basic","snow","world","ongoing"].includes(w) || inCatalog(SCRY_TYPES.supertypes,w)) supertypes.add(w);
+    else if(["creature","artifact","enchantment","instant","sorcery","land","planeswalker","battle","kindred","tribal","token","emblem"].includes(w) || inCatalog(SCRY_TYPES.cardTypes,w)) types.add(w);
+  });
+  return {
+    supertypes, types, subtypes:rightW,
+    legendary: has(supertypes,"legendary"),
+    vehicle: has(rightW,"vehicle") || has(leftW,"vehicle"),
+    eldrazi: has(rightW,"eldrazi") || has(leftW,"eldrazi"),
+  };
+}
+/* carrega os catálogos de tipos do Scryfall (com cache local de 7 dias) */
+async function loadScryTypes(){
+  const KEY="forja_scry_types_v1", TTL=7*24*60*60*1000;
+  try{
+    const cached=JSON.parse(localStorage.getItem(KEY)||"null");
+    if(cached && cached.at && (Date.now()-cached.at)<TTL && cached.data){
+      Object.assign(SCRY_TYPES,cached.data); return;
+    }
+  }catch(_){}
+  const endpoints={
+    supertypes:"https://api.scryfall.com/catalog/supertypes",
+    cardTypes:"https://api.scryfall.com/catalog/card-types",
+    artifactTypes:"https://api.scryfall.com/catalog/artifact-types",
+    creatureTypes:"https://api.scryfall.com/catalog/creature-types",
+  };
+  try{
+    await Promise.all(Object.entries(endpoints).map(async([k,url])=>{
+      const r=await fetch(url); if(!r.ok) return;
+      const j=await r.json(); if(Array.isArray(j.data)) SCRY_TYPES[k]=j.data;
+    }));
+    localStorage.setItem(KEY,JSON.stringify({at:Date.now(),data:SCRY_TYPES}));
+  }catch(_){ /* offline: segue com o dicionário embutido */ }
+}
 /* prefixo de frame por identidade de cor (usado quando nenhuma regra de tipo casa) */
-const FRAME_PREFIX={W:"W",U:"U",B:"B",R:"R",G:"G",multi:"Golden",C:"E"};
-/* regras por TIPO da carta (têm prioridade sobre a cor). Ordem importa.
-   Para adicionar um frame ligado a um tipo, é só incluir aqui: {test:/regex/i, prefix:"X"} */
-const FRAME_TYPE_RULES=[
-  {test:/ve[íi]culo|vehicle/i, prefix:"V"},   // Veículo -> frame V (mesmo se colorido)
-  {test:/eldrazi/i,            prefix:"E"},   // Eldrazi -> frame E
-];
-/* escolhe o id do frame custom automaticamente: tipo primeiro, depois cor; + variante por PT/lendário */
+const FRAME_PREFIX={W:"W",U:"U",B:"B",R:"R",G:"G",multi:"Golden",C:"C"};
+/* escolhe o id do frame automaticamente: subtipo > tipo > cor; + variante por lendário/PT */
 function autoFrame(){
   if(!Object.keys(FRAMES).length) return "";   // frames não carregados (file://)
-  const mana=(state.layout==="dfc"&&state.showBack)?state.back.mana:state.mana;
-  const type=state.type||"";
+  const backFace = state.layout==="dfc" && state.showBack;
+  const mana = backFace ? state.back.mana : state.mana;
+  const type = (backFace ? state.back.type : state.type) || state.type || "";
+  const pt   = (backFace ? state.back.pt   : state.pt)   || "";
+  const info = parseTypeLine(type);
+  /* 1) subtipos/tipos com moldura própria */
   let prefix=null;
-  for(const r of FRAME_TYPE_RULES){ if(r.test.test(type)){ prefix=r.prefix; break; } }   // 1) por tipo
-  if(!prefix) prefix=FRAME_PREFIX[autoColor(mana||"")]||"Golden";                          // 2) por cor
-  const legendary=/lend|legend/i.test(type), hasPT=(state.pt||"").trim()!=="";
+  if(info.vehicle) prefix="V";
+  else if(info.eldrazi) prefix="E";
+  /* 2) cor: campo "Cor" manual tem prioridade; senão, a cor do custo */
+  if(!prefix){
+    const col=(state.color && state.color!=="auto") ? state.color : autoColor(mana||"");
+    prefix=FRAME_PREFIX[col]||"Golden";
+    /* incolor sem frame C disponível: cai para Eldrazi, depois Golden */
+    if(col==="C" && !Object.keys(FRAMES).some(id=>id.startsWith("C-")))
+      prefix=Object.keys(FRAMES).some(id=>id.startsWith("E-"))?"E":"Golden";
+  }
+  const legendary=info.legendary, hasPT=(pt||"").trim()!=="";
   const variants=[];
   if(legendary&&hasPT) variants.push("Legendary-PR");
   if(legendary)        variants.push("Legendary");
@@ -98,8 +173,13 @@ function autoFrame(){
   const any=Object.keys(FRAMES).find(id=>id.startsWith(prefix+"-"));
   return any || (FRAMES["Golden-Basic"]?"Golden-Basic":Object.keys(FRAMES)[0]||"");
 }
-/* resolve o frame efetivo: "auto" -> id calculado; senão o id escolhido */
-function resolveFrame(){ return state.frame==="auto" ? autoFrame() : state.frame; }
+/* resolve o frame efetivo: sempre um PNG da pasta /assets/frames.
+   "auto", vazio ou id inexistente -> detecção automática. */
+function resolveFrame(){
+  const f=state.frame;
+  if(!f || f==="auto" || !FRAMES[f]) return autoFrame();
+  return f;
+}
 /* texto de regras: parênteses viram lembrete (primeiro!), depois {…} viram pips */
 function rulesHTML(text){
   let h=escapeHTML(text);
@@ -794,8 +874,6 @@ $("btnRandom").addEventListener("click",async()=>{
    ============================================================ */
 let tt; function toast(msg,err=false){const t=$("toast");t.textContent=msg;t.classList.toggle("err",err);t.classList.add("show");clearTimeout(tt);tt=setTimeout(()=>t.classList.remove("show"),2600);}
 
-/* estilo do frame embutido */
-$("fStyle").addEventListener("change",()=>{ state.style=$("fStyle").value; render(); });
 /* foil */
 $("fFoil").addEventListener("click",()=>{ state.foil=!state.foil;
   $("fFoil").setAttribute("aria-pressed",state.foil?"true":"false");
@@ -803,11 +881,9 @@ $("fFoil").addEventListener("click",()=>{ state.foil=!state.foil;
 
 /* seletor de frame personalizado */
 $("fFrame").addEventListener("change",()=>{
-  state.frame=$("fFrame").value;
+  state.frame=$("fFrame").value||"auto";
   const specific=!!(state.frame && state.frame!=="auto" && FRAMES[state.frame]);
-  const usingCustom = specific || state.frame==="auto";
   state.frameEdit = specific ? {id:state.frame,zones:clone(FRAMES[state.frame].zones||{})} : null;
-  $("styleField").style.display = usingCustom ? "none" : "";
   $("zoneEditor").hidden = !specific;   // editor de zonas só no modo de frame fixo
   if(specific) buildZoneEditor();
   render();
@@ -918,6 +994,7 @@ $("ovInput").addEventListener("change",e=>{
 });
 
 collect(); applyLayoutVisibility(); renderRows(); renderOvList(); render(); loadFrames(); loadManaSymbols();
+loadScryTypes().then(()=>render());   // catálogos de tipos do Scryfall p/ detecção de frame
 window.addEventListener("resize", fitCard);
 window.addEventListener("orientationchange", ()=>setTimeout(fitCard, 250));
 window.addEventListener("load", fitCard);
@@ -955,9 +1032,10 @@ window.Forge = {
      "artist","collector","art","backArt","loyalty","defense","pw","saga","cls","adv","split","back","overlays"]
       .forEach(k=>{ if(o[k]!==undefined) state[k]=o[k]; });
     state.showBack=false; state.frameEdit=null;
-    $("fLayout").value=state.layout; $("fStyle").value=state.style||"modern"; $("fFrame").value=state.frame||"auto";
+    if(!state.frame || (state.frame!=="auto" && !FRAMES[state.frame])) state.frame="auto";  // cartas antigas com frame embutido -> automático
+    $("fLayout").value=state.layout; $("fFrame").value=state.frame||"auto";
     $("fFoil").setAttribute("aria-pressed",state.foil?"true":"false"); $("fFoil").classList.toggle("on",!!state.foil);
-    const custom=!!(state.frame&&FRAMES[state.frame]); $("styleField").style.display=custom?"none":""; $("zoneEditor").hidden=!custom;
+    const custom=!!(state.frame&&state.frame!=="auto"&&FRAMES[state.frame]); $("zoneEditor").hidden=!custom;
     populate(); applyLayoutVisibility(); renderRows(); renderOvList(); render();
   }
 };
@@ -974,7 +1052,8 @@ window.Forge.previewInto = function(el, data){
     let col=state.color; if(col==="auto") col=autoColor(state.mana||"");
     el.className="card"; el.dataset.color=col; el.dataset.layout=state.layout;
     el.dataset.style=state.style||"modern"; el.dataset.foil=state.foil?"true":"false";
-    if(state.frame && FRAMES[state.frame]){ el.dataset.frame="custom"; el.innerHTML=renderCustomFrame(FRAMES[state.frame]); }
+    const fid=(state.frame && state.frame!=="auto" && FRAMES[state.frame]) ? state.frame : autoFrame();
+    if(fid && FRAMES[fid]){ el.dataset.frame="custom"; el.innerHTML=renderCustomFrame(FRAMES[fid]); }
     else { el.dataset.frame=""; el.innerHTML=(RENDERERS[state.layout]||RENDERERS.normal)(); }
     applyOverlays(el);
   } finally {

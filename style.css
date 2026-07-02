@@ -55,7 +55,13 @@ body {
   border-bottom: 1px solid var(--line);
   background: linear-gradient(180deg, rgba(0,0,0,.25), transparent);
 }
-.brand { display: flex; align-items: center; gap: 14px; }
+.brand { display: flex; align-items: center; gap: 14px; text-decoration: none; }
+.brand-logo {
+  width: 46px; height: 46px; border-radius: 10px; display: block;
+  border: 1px solid rgba(201,161,74,.45);
+  box-shadow: 0 0 14px rgba(201,161,74,.35), inset 0 0 6px rgba(0,0,0,.4);
+  background: #12100c; object-fit: cover;
+}
 .sigil {
   font-size: 30px; color: var(--brass);
   text-shadow: 0 0 14px rgba(201,161,74,.5);
@@ -66,8 +72,10 @@ body {
   color: var(--parch);
 }
 .brand p { margin: 2px 0 0; font-size: 13px; color: var(--parch-dim); font-style: italic; letter-spacing: .04em; }
-.topbar-actions { display: flex; gap: 10px; }
-.topbar-primary { display: flex; align-items: center; gap: 10px; margin-left: auto; }
+.topbar-actions { display: flex; align-items: center; gap: 10px; flex: 1 1 auto; min-width: 0; }
+.topbar-nav { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; justify-content: center; margin-inline: auto; }
+.topbar-actions .acct { margin-left: auto; justify-content: flex-end; }
+.topbar-primary { display: flex; align-items: center; gap: 10px; order: 5; }
 
 /* ----------------------------- BOTÕES ----------------------------- */
 .btn {
@@ -867,6 +875,8 @@ body {
   .brand p { display: none; }                       /* esconde o subtítulo p/ caber */
   .brand h1 { font-size: 18px; letter-spacing: .04em; }
   .sigil { font-size: 23px; }
+  .brand-logo { width: 34px; height: 34px; border-radius: 8px; }
+  .topbar-primary { order: 0; }
   .topbar-actions { gap: 6px; flex-wrap: wrap; justify-content: flex-end; }
   .acct { gap: 6px; }
   .btn { font-size: 12px; padding: 9px 12px; }
@@ -1060,6 +1070,8 @@ body {
   }
   .topbar.nav-open { z-index: 90; }
   .topbar.nav-open .topbar-actions { display: flex; }
+  .topbar-actions .topbar-nav { flex-direction: column; align-items: stretch; gap: 8px; width: 100%; margin-inline: 0; }
+  .topbar-actions .acct { margin-left: 0; }
   .topbar-actions .btn { width: 100%; justify-content: center; }
   .topbar-actions #acctArea {
     display: flex; flex-direction: column; align-items: stretch; gap: 8px; width: 100%;

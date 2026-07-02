@@ -17,20 +17,22 @@
   <div class="grain"></div>
 
   <header class="topbar">
-    <div class="brand">
-      <span class="sigil">✦</span>
+    <a class="brand" href="/" aria-label="Forja de Cartas — início">
+      <img class="brand-logo" src="favicon.png" alt="" width="46" height="46" />
       <div>
         <h1>Forja de Cartas</h1>
         <p>crie qualquer tipo de carta de batalha</p>
       </div>
-    </div>
+    </a>
     <div id="topbarPrimary" class="topbar-primary"></div>
     <button id="navToggle" class="nav-toggle" aria-label="Abrir menu" aria-expanded="false" aria-controls="topbarActions">☰</button>
     <div id="topbarActions" class="topbar-actions">
-      <button id="btnSaveTop" class="btn btn-gold">💾 Salvar</button>
-      <button id="btnImport" class="btn btn-ghost">📥 Importar planilha</button>
-      <button id="btnSaved" class="btn btn-ghost">▣ Salvas</button>
-      <button id="btnPrint" class="btn btn-ghost">🖨 Criar folha de impressão</button>
+      <nav class="topbar-nav" aria-label="Ações principais">
+        <button id="btnSaveTop" class="btn btn-gold">💾 Salvar</button>
+        <button id="btnImport" class="btn btn-ghost">📥 Importar planilha</button>
+        <button id="btnSaved" class="btn btn-ghost">▣ Salvas</button>
+        <button id="btnPrint" class="btn btn-ghost">🖨 Folha de impressão</button>
+      </nav>
       <div id="acctArea" class="acct">
   <span style="color: var(--parch-dim); font-size: 13px; font-style: italic;">a carregar a conta...</span>
 </div>
@@ -136,21 +138,13 @@
         <label class="field">
           <span class="field-label">Frame (visual)</span>
           <select id="fFrame">
-            <option value="auto">Automático (pela cor do custo)</option>
-            <option value="">Padrão (embutido)</option>
+            <option value="auto">Automático (tipo, supertipo e cor)</option>
           </select>
+          <span class="hint">No modo automático, a moldura é escolhida pelo tipo/supertipo (Lendário, Veículo, Eldrazi…) e pela cor do custo.</span>
           <span class="hint" id="frameHint" style="display:none">Frames da pasta só carregam com o site servido (Vercel ou servidor local), não por file://.</span>
         </label>
 
         <div class="field-row" id="styleRow">
-          <label class="field grow" id="styleField">
-            <span class="field-label">Estilo do frame</span>
-            <select id="fStyle">
-              <option value="modern">Moderno</option>
-              <option value="fullart">Full-art (borderless)</option>
-              <option value="retro">Retrô (anos 90)</option>
-            </select>
-          </label>
           <label class="field">
             <span class="field-label">Acabamento</span>
             <button type="button" id="fFoil" class="toggle" aria-pressed="false">✦ Foil</button>
