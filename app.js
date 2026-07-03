@@ -495,7 +495,11 @@ function cfTextContent(){
     return state.saga.map(c=>`<div class="cf-pwrow"><span class="cf-num">${escapeHTML(c.num||"")}</span><span>${rulesHTML(c.text)}</span></div>`).join("");
   if(state.layout==="class")
     return state.cls.map((l,i)=>`<div class="cf-lvl"><b>${escapeHTML(l.label||"")}</b>${l.cost?" "+pips(l.cost):""}<div>${rulesHTML(l.text)}</div></div>`).join("");
-  let t=`<div class="cf-rules">${rulesHTML(state.rules)}</div>`;
+  /* cada linha do texto vira um parágrafo com respiro — como nas cartas
+     originais, que separam as habilidades com um pequeno espaço vertical */
+  const paras=(state.rules||"").split(/\n/).map(l=>l.trim())
+    .filter(l=>l!=="").map(l=>`<div class="cf-para">${rulesHTML(l)}</div>`).join("");
+  let t=`<div class="cf-rules">${paras}</div>`;
   if(state.flavor.trim()){
     if(state.rules.trim()) t+=`<div class="cf-flavor-sep"></div>`;   // linha separadora rules ↔ flavor
     t+=`<div class="cf-flavor">${escapeHTML(state.flavor)}</div>`;
