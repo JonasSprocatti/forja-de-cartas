@@ -807,6 +807,109 @@ function refreshSetIconUI(){
   $("btnSetIconClear").hidden=!has;
   $("btnSetIcon").textContent=has?"↥ Trocar ícone":"↥ Enviar ícone";
 }
+
+/* ===== SÍMBOLOS DE COLEÇÃO DO MTG (fonte Keyrune, via jsDelivr) =====
+   1) baixa o keyrune.css e extrai o mapa código-da-coleção -> glifo unicode;
+   2) carrega a fonte woff2 via FontFace;
+   3) cruza com /sets do Scryfall para mostrar o nome bonito de cada coleção;
+   4) ao escolher, desenha o glifo num canvas -> PNG com alpha -> entra no
+      pipeline de recolorização por raridade já existente (buildSetIconTints).
+   O PNG fica salvo na carta, então nada depende do CDN depois da escolha.  */
+const KEYRUNE={ css:"https://cdn.jsdelivr.net/npm/keyrune@latest/css/keyrune.css",
+                woff2:"https://cdn.jsdelivr.net/npm/keyrune@latest/fonts/keyrune.woff2",
+                map:null, names:null, fontReady:false, loading:null };
+async function loadKeyrune(){
+  if(KEYRUNE.map && KEYRUNE.fontReady) return;
+  if(KEYRUNE.loading) return KEYRUNE.loading;
+  KEYRUNE.loading=(async()=>{
+    /* mapa código -> unicode, com cache de 7 dias */
+    const KEY="forja_keyrune_v1", TTL=7*24*60*60*1000;
+    try{
+      const c=JSON.parse(localStorage.getItem(KEY)||"null");
+      if(c && (Date.now()-c.at)<TTL && c.map){ KEYRUNE.map=c.map; KEYRUNE.names=c.names||null; }
+    }catch(_){}
+    if(!KEYRUNE.map){
+      const css=await (await fetch(KEYRUNE.css)).text();
+      const map={}; const re=/\.ss-([a-z0-9][a-z0-9_-]*)(?::{1,2}before)\s*\{\s*content:\s*"\\([0-9a-f]+)"/gi;
+      let m; while((m=re.exec(css))) map[m[1].toLowerCase()]=parseInt(m[2],16);
+      KEYRUNE.map=map;
+      /* nomes das coleções via Scryfall (opcional — se falhar, mostra só o código) */
+      try{
+        const sets=await (await fetch("https://api.scryfall.com/sets")).json();
+        const names={};
+        (sets.data||[]).forEach(s=>{ names[s.code.toLowerCase()]={n:s.name,y:(s.released_at||"").slice(0,4)}; });
+        KEYRUNE.names=names;
+      }catch(_){ KEYRUNE.names=null; }
+      try{ localStorage.setItem(KEY,JSON.stringify({at:Date.now(),map:KEYRUNE.map,names:KEYRUNE.names})); }catch(_){}
+    }
+    if(!KEYRUNE.fontReady){
+      const face=new FontFace("Keyrune",`url(${KEYRUNE.woff2}) format("woff2")`);
+      await face.load(); document.fonts.add(face); KEYRUNE.fontReady=true;
+    }
+  })();
+  try{ await KEYRUNE.loading; } finally { KEYRUNE.loading=null; }
+}
+/* desenha um glifo Keyrune num canvas e devolve PNG (máscara alpha, recortada) */
+function keyruneGlyphToPng(codePoint){
+  const S=256, c=document.createElement("canvas"); c.width=S; c.height=S;
+  const x=c.getContext("2d");
+  x.font=`${Math.round(S*0.78)}px Keyrune`; x.textAlign="center"; x.textBaseline="middle";
+  x.fillStyle="#000"; x.fillText(String.fromCodePoint(codePoint), S/2, S/2);
+  /* recorta as bordas transparentes para o ícone encaixar certinho na zona */
+  const d=x.getImageData(0,0,S,S).data;
+  let minX=S,minY=S,maxX=0,maxY=0;
+  for(let py=0;py<S;py++) for(let px=0;px<S;px++){
+    if(d[(py*S+px)*4+3]>8){ if(px<minX)minX=px; if(px>maxX)maxX=px; if(py<minY)minY=py; if(py>maxY)maxY=py; }
+  }
+  if(maxX<=minX||maxY<=minY) return c.toDataURL("image/png");
+  const w=maxX-minX+1,h=maxY-minY+1,pad=Math.round(Math.max(w,h)*0.04);
+  const o=document.createElement("canvas"); o.width=w+pad*2; o.height=h+pad*2;
+  o.getContext("2d").drawImage(c,minX,minY,w,h,pad,pad,w,h);
+  return o.toDataURL("image/png");
+}
+function keyruneRenderGrid(filter){
+  const grid=$("keyruneGrid"); if(!grid||!KEYRUNE.map) return;
+  const q=(filter||"").trim().toLowerCase();
+  const items=[];
+  for(const code of Object.keys(KEYRUNE.map)){
+    const meta=(KEYRUNE.names&&KEYRUNE.names[code])||null;
+    const label=meta?meta.n:code.toUpperCase();
+    if(q && !code.includes(q) && !(label.toLowerCase().includes(q))) continue;
+    items.push({code,cp:KEYRUNE.map[code],label,year:meta?meta.y:""});
+  }
+  items.sort((a,b)=>(b.year||"0").localeCompare(a.year||"0")||a.label.localeCompare(b.label));
+  const shown=items.slice(0,90);
+  grid.innerHTML = shown.length
+    ? shown.map(it=>`<button type="button" class="ks-item" data-code="${it.code}" data-cp="${it.cp}">
+        <span class="ks-glyph">${String.fromCodePoint(it.cp)}</span>
+        <span class="ks-name">${escapeHTML(it.label)}<small>${it.code.toUpperCase()}${it.year?" · "+it.year:""}</small></span>
+      </button>`).join("") + (items.length>90?`<p class="hint" style="grid-column:1/-1;margin:4px 0 0">mostrando 90 de ${items.length} — refine a busca</p>`:"")
+    : `<p class="hint" style="margin:0">nenhuma coleção encontrada.</p>`;
+}
+$("btnSetIconLib").addEventListener("click",async()=>{
+  $("keyruneModal").hidden=false;
+  try{
+    await loadKeyrune();
+    keyruneRenderGrid($("keyruneSearch").value);
+  }catch(e){
+    $("keyruneGrid").innerHTML=`<p class="hint" style="margin:0">Não consegui carregar os símbolos agora (verifique a conexão). Você ainda pode enviar um PNG próprio.</p>`;
+  }
+});
+$("keyruneClose").addEventListener("click",()=>{ $("keyruneModal").hidden=true; });
+$("keyruneModal").addEventListener("click",e=>{ if(e.target===$("keyruneModal")) $("keyruneModal").hidden=true; });
+$("keyruneSearch").addEventListener("input",()=>keyruneRenderGrid($("keyruneSearch").value));
+$("keyruneGrid").addEventListener("click",async e=>{
+  const btn=e.target.closest(".ks-item"); if(!btn) return;
+  const cp=parseInt(btn.dataset.cp,10); if(!cp) return;
+  try{
+    const png=keyruneGlyphToPng(cp);
+    state.setIcon=png;
+    state.setIconTints=await buildSetIconTints(png);
+    refreshSetIconUI(); render();
+    $("keyruneModal").hidden=true;
+    toast(`Símbolo de ${btn.dataset.code.toUpperCase()} aplicado.`);
+  }catch(_){ toast("Não consegui aplicar esse símbolo.",true); }
+});
 $("fileInputBack").addEventListener("change",e=>readFile(e.target.files[0],true));
 const dz=$("dropzone");
 ["dragenter","dragover"].forEach(ev=>dz.addEventListener(ev,e=>{e.preventDefault();dz.classList.add("drag");}));

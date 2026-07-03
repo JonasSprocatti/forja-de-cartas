@@ -307,6 +307,7 @@ Quando a Guardiã das Brumas entrar no campo de batalha, exile uma criatura alvo
             <div class="seticon-row">
               <input type="file" id="fSetIcon" accept="image/png,image/webp,image/svg+xml" hidden />
               <button type="button" id="btnSetIcon" class="btn btn-ghost">↥ Enviar ícone</button>
+              <button type="button" id="btnSetIconLib" class="btn btn-ghost" title="escolher um símbolo de coleção do MTG">◈ Coleções do MTG</button>
               <img id="setIconPrev" class="seticon-prev" hidden alt="" />
               <button type="button" id="btnSetIconClear" class="btn btn-ghost" hidden title="remover ícone">✕</button>
             </div>
@@ -404,6 +405,17 @@ Quando a Guardiã das Brumas entrar no campo de batalha, exile uma criatura alvo
         <button class="btn btn-gold" id="printGo">🖨 Gerar folha (PDF)</button>
       </div>
       <p class="hint">Cartas a 63×88 mm, 9 por página. No diálogo, escolha <b>Salvar como PDF</b>, margens <b>Padrão</b> e escala <b>100%</b>.</p>
+    </div>
+  </div>
+
+  <!-- seletor de símbolos de coleção (fonte Keyrune via CDN) -->
+  <div class="fmodal" id="keyruneModal" hidden>
+    <div class="fmodal-box keyrune-box">
+      <button class="fmodal-x" id="keyruneClose">✕</button>
+      <h2 class="fmodal-title">Símbolos de coleção</h2>
+      <input type="text" id="keyruneSearch" placeholder="buscar coleção (ex.: Kaldheim, KHM, Innistrad…)" autocomplete="off" />
+      <div id="keyruneGrid" class="keyrune-grid"><p class="hint" style="margin:0">carregando símbolos…</p></div>
+      <p class="hint" style="margin:0">Símbolos via fonte <a href="https://keyrune.andrewgioia.com" target="_blank" rel="noopener">Keyrune</a> (Andrew Gioia, SIL OFL) · os símbolos de coleção são marcas da Wizards of the Coast — sem afiliação.</p>
     </div>
   </div>
 

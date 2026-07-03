@@ -1451,3 +1451,21 @@ img, svg, video { max-width: 100%; }
 .c-set .set-ico { height: 1.15em; width: auto; display: block; filter: drop-shadow(0 1px 1px rgba(0,0,0,.35)); }
 .cf-rarity { pointer-events: none; }
 .cf-rarity img { height: 100%; width: auto; max-width: 100%; object-fit: contain; filter: drop-shadow(0 1px 1px rgba(0,0,0,.4)); }
+
+/* ===================== SELETOR DE SÍMBOLOS DE COLEÇÃO (Keyrune) ===================== */
+.keyrune-box { width: 560px; max-height: min(640px, 88vh); }
+.keyrune-grid {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(155px, 1fr));
+  gap: 6px; overflow-y: auto; min-height: 120px; max-height: 420px;
+  padding: 4px; border: 1px solid var(--line); border-radius: 10px; background: var(--ink);
+}
+.ks-item {
+  display: flex; align-items: center; gap: 10px; text-align: left;
+  background: none; border: 1px solid transparent; border-radius: 9px;
+  padding: 7px 9px; cursor: pointer; color: var(--parch);
+}
+.ks-item:hover { border-color: var(--brass); background: rgba(201,161,74,.07); }
+.ks-glyph { font-family: "Keyrune"; font-size: 26px; line-height: 1; color: var(--parch); width: 30px; text-align: center; flex: 0 0 auto; }
+.ks-name { font-size: 12.5px; line-height: 1.25; }
+.ks-name small { display: block; color: var(--parch-dim); letter-spacing: .06em; }
+@media (max-width: 640px) { .keyrune-box { width: min(560px, 94vw); } .keyrune-grid { grid-template-columns: 1fr 1fr; } }
