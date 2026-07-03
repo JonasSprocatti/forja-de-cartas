@@ -51,3 +51,61 @@ O campo `name` aceita o nome da carta; `mana` desenha os pips; `text` junta regr
   Layouts com listas (planeswalker, saga, classe) continuam usando os frames embutidos.
 - Para os frames da pasta carregarem, o site precisa estar **servido** (no Vercel, ou um servidor local).
   Abrir o `index.html` direto por `file://` bloqueia a leitura do `frames.json` por segurança do navegador.
+
+---
+
+## Detecção automática (atualizado)
+
+O app agora escolhe o frame sozinho pelo **tipo, supertipo e cor** da carta. Para que um frame novo entre na detecção automática, basta seguir a **convenção de nomes** no `id` dentro do `frames.json`:
+
+```
+{PREFIXO}-{KIND}[-Legendary][-PR]
+```
+
+**PREFIXO (cor / identidade):** `W`, `U`, `B`, `R`, `G`, `Golden` (multicolor), `C` (incolor), `V` (Veículo), `E` (Eldrazi).
+Um id **sem prefixo** (ex.: `Planeswalker`) vale para **todas as cores** daquele layout.
+
+**KIND (layout / tipo especial):**
+
+| KIND no id           | Quando é aplicado                          |
+|----------------------|--------------------------------------------|
+| *(nenhum — `Basic`)* | Cartas padrão (criatura, mágica, artefato…) |
+| `Planeswalker`       | Layout Planeswalker                         |
+| `Saga`               | Layout Saga                                 |
+| `Class`              | Layout Classe                               |
+| `Battle`             | Layout Batalha                              |
+| `Adventure`          | Layout Aventura                             |
+| `Token`              | Layout Ficha                                |
+| `Emblem`             | Layout Emblema                              |
+| `Split`              | Layout Dividida                             |
+| `DFC-Front` / `DFC-Back` / `DFC` | Dupla face (frente / verso / ambas) |
+| `Land`               | Layout Terreno ou tipo "Terreno" na linha de tipo |
+| `Equipment`, `Aura`, `Room`, `Omen` | Subtipo correspondente na linha de tipo |
+
+**Variantes:** acrescente `-Legendary` (supertipo Lendário) e/ou `-PR` (carta com Poder/Resistência).
+Exemplos: `W-Planeswalker`, `Golden-Saga`, `R-Battle-Legendary`, `U-DFC-Back`, `B-Adventure-PR`.
+Se a variante exata não existir, o app cai para a mais próxima (ex.: sem `B-Planeswalker`, usa `B-Basic`).
+
+### Regras explícitas (opcional): campo `match`
+
+Para casos fora da convenção, adicione `match` ao item do `frames.json` — o frame com mais critérios batendo vence:
+
+```json
+{
+  "id": "dragoes-showcase",
+  "name": "Showcase de Dragões",
+  "src": "assets/frames/dragoes-showcase.png",
+  "match": { "typeIncludes": ["dragão"], "legendary": true, "colors": ["R", "multi"] },
+  "zones": { "...": "..." }
+}
+```
+
+Campos aceitos: `layout` (string ou lista), `colors` (`W U B R G multi C`), `legendary` (true/false), `pt` (true/false), `face` (`front`/`back`), `typeIncludes` (trechos da linha de tipo, sem diferenciar acento).
+
+### Zona opcional `rarity`
+
+Se a carta tiver um **ícone de raridade enviado** (PNG), ele é posicionado na ponta direita da barra de tipo. Para controlar a posição no seu frame, declare a zona:
+
+```json
+"rarity": { "x": 85, "y": 56.3, "w": 7.5, "h": 5 }
+```
