@@ -9,6 +9,7 @@ const state = {
   layout: "normal", color: "auto",
   name: "", mana: "", type: "", rules: "", flavor: "", pt: "",
   rarity: "incomum", artist: "você", collector: "001/250",
+  setIcon: "", setIconTints: null,
   art: "", backArt: "",
   loyalty: "4", defense: "5",
   pw: [], saga: [], cls: [],
@@ -143,35 +144,107 @@ async function loadScryTypes(){
 }
 /* prefixo de frame por identidade de cor (usado quando nenhuma regra de tipo casa) */
 const FRAME_PREFIX={W:"W",U:"U",B:"B",R:"R",G:"G",multi:"Golden",C:"C"};
-/* escolhe o id do frame automaticamente: subtipo > tipo > cor; + variante por lendário/PT */
+/* "KIND" do frame por layout do editor — quando você subir PNGs novos com esses
+   nomes, eles passam a ser aplicados automaticamente. Convenção de nome:
+   {PREFIXO}-{KIND}[-Legendary][-PR]  ex.: W-Planeswalker, Golden-Saga-Legendary,
+   R-Battle, U-DFC-Front, B-Adventure-PR. Um PNG sem prefixo de cor (ex.:
+   "Planeswalker.png" com id "Planeswalker") vale para todas as cores. */
+const LAYOUT_FRAME_KIND={
+  planeswalker:"Planeswalker", saga:"Saga", class:"Class", battle:"Battle",
+  adventure:"Adventure", token:"Token", emblem:"Emblem", split:"Split", land:"Land",
+};
+/* subtipos que também podem ter moldura própria, se o PNG existir */
+const SUBTYPE_FRAME_KIND=[
+  ["vehicle","V",true],      // já existe como prefixo V hoje
+  ["equipment","Equipment"], ["aura","Aura"], ["room","Room"], ["omen","Omen"],
+];
+/* escolhe o id do frame automaticamente:
+   1) regras "match" declaradas no frames.json (mais específicas vencem)
+   2) convenção de nome por layout/subtipo/cor + variantes Legendary/PR */
 function autoFrame(){
   if(!Object.keys(FRAMES).length) return "";   // frames não carregados (file://)
   const backFace = state.layout==="dfc" && state.showBack;
-  const mana = backFace ? state.back.mana : state.mana;
+  const mana = backFace ? (state.back.mana||state.mana) : state.mana;   // verso sem custo herda a cor da frente
   const type = (backFace ? state.back.type : state.type) || state.type || "";
   const pt   = (backFace ? state.back.pt   : state.pt)   || "";
   const info = parseTypeLine(type);
-  /* 1) subtipos/tipos com moldura própria */
-  let prefix=null;
-  if(info.vehicle) prefix="V";
-  else if(info.eldrazi) prefix="E";
-  /* 2) cor: campo "Cor" manual tem prioridade; senão, a cor do custo */
-  if(!prefix){
-    const col=(state.color && state.color!=="auto") ? state.color : autoColor(mana||"");
-    prefix=FRAME_PREFIX[col]||"Golden";
-    /* incolor sem frame C disponível: cai para Eldrazi, depois Golden */
-    if(col==="C" && !Object.keys(FRAMES).some(id=>id.startsWith("C-")))
-      prefix=Object.keys(FRAMES).some(id=>id.startsWith("E-"))?"E":"Golden";
-  }
+  const color=(state.color && state.color!=="auto") ? state.color : autoColor(mana||"");
   const legendary=info.legendary, hasPT=(pt||"").trim()!=="";
-  const variants=[];
-  if(legendary&&hasPT) variants.push("Legendary-PR");
-  if(legendary)        variants.push("Legendary");
-  if(hasPT)            variants.push("Basic-PR Counter");
-  variants.push("Basic");
-  for(const v of variants){ const id=`${prefix}-${v}`; if(FRAMES[id]) return id; }
-  const any=Object.keys(FRAMES).find(id=>id.startsWith(prefix+"-"));
+  const ctx={layout:state.layout,color,legendary,pt:hasPT,face:backFace?"back":"front",typeInfo:info,typeRaw:type};
+
+  /* --- 1) regras explícitas ("match") no frames.json --- */
+  const byMatch=frameByMatch(ctx);
+  if(byMatch) return byMatch;
+
+  /* --- 2) convenção de nomes --- */
+  /* KINDs candidatos, do mais específico ao mais genérico */
+  const kinds=[];
+  if(state.layout==="dfc"){ kinds.push(backFace?"DFC-Back":"DFC-Front","DFC"); }
+  else if(LAYOUT_FRAME_KIND[state.layout]) kinds.push(LAYOUT_FRAME_KIND[state.layout]);
+  if(info.types.has("land") && !kinds.includes("Land")) kinds.push("Land");
+  for(const [sub,kind,isPrefix] of SUBTYPE_FRAME_KIND){
+    if(info.subtypes.has(sub)||info.types.has(sub)){ if(!isPrefix) kinds.push(kind); }
+  }
+  kinds.push(null);   // null = molduras clássicas (Basic/Legendary)
+
+  /* prefixos candidatos: subtipo com prefixo próprio > cor > fallbacks */
+  const prefixes=[];
+  if(info.vehicle) prefixes.push("V");
+  if(info.eldrazi) prefixes.push("E");
+  prefixes.push(FRAME_PREFIX[color]||"Golden");
+  if(color==="C") prefixes.push("E");           // incolor sem frame C -> Eldrazi
+  prefixes.push("Golden");
+
+  const variantsFor=k=>{
+    const base=k?`-${k}`:"";
+    const v=[];
+    if(k){
+      if(legendary&&hasPT) v.push(`${base}-Legendary-PR`);
+      if(legendary)        v.push(`${base}-Legendary`);
+      if(hasPT)            v.push(`${base}-PR`,`${base}-PR Counter`);
+      v.push(base);
+    }else{
+      if(legendary&&hasPT) v.push("-Legendary-PR");
+      if(legendary)        v.push("-Legendary");
+      if(hasPT)            v.push("-Basic-PR Counter","-Basic-PR");
+      v.push("-Basic");
+    }
+    return v;
+  };
+  for(const k of kinds){
+    for(const p of prefixes){
+      for(const v of variantsFor(k)){ const id=`${p}${v}`; if(FRAMES[id]) return id; }
+    }
+    if(k && FRAMES[k]) return k;   // frame genérico do layout, sem cor (ex.: "Planeswalker")
+  }
+  const p0=prefixes[0];
+  const any=Object.keys(FRAMES).find(id=>id.startsWith(p0+"-"));
   return any || (FRAMES["Golden-Basic"]?"Golden-Basic":Object.keys(FRAMES)[0]||"");
+}
+/* avalia as regras "match" opcionais declaradas em frames.json. Campos aceitos:
+   layout: "planeswalker" ou ["saga","class"]      colors: ["W","U","multi","C"]
+   legendary: true/false      pt: true/false       face: "front"|"back"
+   typeIncludes: ["dragão","eldrazi"] (sem acento, qualquer parte da linha de tipo)
+   Todos os campos declarados precisam bater; vence o frame com mais campos. */
+function frameByMatch(ctx){
+  let best=null,bestScore=-1;
+  const typeNorm=normTypeWord(ctx.typeRaw);
+  for(const id of Object.keys(FRAMES)){
+    const m=FRAMES[id].match; if(!m) continue;
+    let score=0,ok=true;
+    const arr=x=>Array.isArray(x)?x:[x];
+    if(m.layout!=null){ if(!arr(m.layout).includes(ctx.layout)){ok=false;} else score++; }
+    if(ok&&m.colors!=null){ if(!arr(m.colors).includes(ctx.color)){ok=false;} else score++; }
+    if(ok&&m.legendary!=null){ if(m.legendary!==ctx.legendary){ok=false;} else score++; }
+    if(ok&&m.pt!=null){ if(m.pt!==ctx.pt){ok=false;} else score++; }
+    if(ok&&m.face!=null){ if(m.face!==ctx.face){ok=false;} else score++; }
+    if(ok&&m.typeIncludes!=null){
+      const hit=arr(m.typeIncludes).some(t=>typeNorm.includes(normTypeWord(t)));
+      if(!hit){ok=false;} else score++;
+    }
+    if(ok&&score>bestScore){ best=id; bestScore=score; }
+  }
+  return best;
 }
 /* resolve o frame efetivo: sempre um PNG da pasta /assets/frames.
    "auto", vazio ou id inexistente -> detecção automática. */
@@ -188,7 +261,43 @@ function rulesHTML(text){
   return h;
 }
 const SYM={comum:"●",incomum:"◆",rara:"★","mítica":"✦"};
-function setSym(r){return `<span class="c-set r-${r}">${SYM[r]||"◆"}</span>`;}
+/* ---- ÍCONE DE RARIDADE ENVIADO (PNG) ----
+   O PNG vira uma "máscara" (alpha) e é preenchido com a cor/gradiente
+   padrão de cada raridade — igual ao símbolo de coleção do MTG. */
+const RARITY_TINT={
+  comum:   { solid:"#16130e" },
+  incomum: { grad:["#dfe6ec","#8d99a6","#4e5761"] },   // prata
+  rara:    { grad:["#f3dd9a","#c8a44e","#8a6a1f"] },   // dourado
+  "mítica":{ grad:["#fcc667","#f07822","#c1361b"] },   // laranja-fogo
+};
+function tintIconCanvas(img,rarity){
+  const c=document.createElement("canvas");
+  c.width=img.naturalWidth||img.width; c.height=img.naturalHeight||img.height;
+  const x=c.getContext("2d");
+  x.drawImage(img,0,0);
+  x.globalCompositeOperation="source-in";     // mantém o alpha, troca a cor
+  const t=RARITY_TINT[rarity]||RARITY_TINT.incomum;
+  if(t.grad){
+    const g=x.createLinearGradient(0,0,0,c.height);
+    g.addColorStop(0,t.grad[0]); g.addColorStop(.55,t.grad[1]); g.addColorStop(1,t.grad[2]);
+    x.fillStyle=g;
+  } else x.fillStyle=t.solid;
+  x.fillRect(0,0,c.width,c.height);
+  return c.toDataURL("image/png");
+}
+/* gera as 4 versões recoloridas de uma vez (armazenadas na carta) */
+function buildSetIconTints(src){
+  return new Promise((res,rej)=>{
+    const img=new Image();
+    img.onload=()=>{ const out={}; Object.keys(RARITY_TINT).forEach(r=>out[r]=tintIconCanvas(img,r)); res(out); };
+    img.onerror=rej; img.src=src;
+  });
+}
+function setSym(r){
+  const t=state.setIconTints;
+  if(t && t[r]) return `<span class="c-set r-${r}"><img class="set-ico" src="${t[r]}" alt=""></span>`;
+  return `<span class="c-set r-${r}">${SYM[r]||"◆"}</span>`;
+}
 function credit(){const a=escapeHTML(state.artist.trim()||"—");const c=escapeHTML(state.collector.trim());return `illus. ${a}${c?" · "+c:""}`;}
 
 /* peças reutilizáveis */
@@ -392,6 +501,12 @@ function renderCustomFrame(def,zonesArg){
   if(Z.name) h+=zone(Z.name,escapeHTML(state.name||""),false,"name");
   if(Z.mana) h+=zone(Z.mana,`<div class="c-mana">${pips(state.mana)}</div>`,false,"mana");
   if(Z.type) h+=zone(Z.type,escapeHTML(state.type||""),false,"type");
+  /* ícone de raridade enviado: usa a zona "rarity" do frames.json, ou um
+     encaixe padrão na ponta direita da barra de tipo */
+  if(state.setIconTints && state.setIconTints[state.rarity]){
+    const R=Z.rarity||{x:85,y:(Z.type?Z.type.y-0.2:56.5),w:7.5,h:(Z.type?Z.type.h+0.6:5)};
+    h+=`<div class="cf-zone cf-rarity" style="${zoneBox(R)}align-items:center;justify-content:flex-end;"><img src="${state.setIconTints[state.rarity]}" alt=""></div>`;
+  }
   if(Z.text) h+=zone(Z.text,cfTextContent(),true,"text");
   if(Z.pt && state.pt.trim()) h+=zone(Z.pt,escapeHTML(state.pt),false,"pt");
   if(Z.loyalty && state.layout==="planeswalker") h+=zone(Z.loyalty,escapeHTML(state.loyalty),false,"loyalty");
@@ -447,7 +562,7 @@ function saveDraft(){
   try { localStorage.setItem("forja_autosave", json); flashSaved(); }
   catch(e){
     try {
-      const light = Object.assign({}, state, { art:null, backArt:null, overlays:[] });
+      const light = Object.assign({}, state, { art:null, backArt:null, overlays:[], setIcon:null, setIconTints:null });
       localStorage.setItem("forja_autosave", JSON.stringify(light)); flashSaved();
     } catch(_){ /* cota estourada: desiste em silencio */ }
   }
@@ -571,7 +686,7 @@ document.querySelectorAll(".mini-add").forEach(b=>b.onclick=()=>{
 function collect(){
   state.layout=$("fLayout").value;
   state.color="auto";
-  state.rarity=$("fRarity").value;
+  state.rarity=$("fRarity").value; if(state.setIcon) refreshSetIconUI();
   state.artist=$("fArtist").value;
   state.collector=$("fCollector").value;
   state.loyalty=$("fLoyalty").value;
@@ -667,6 +782,31 @@ function setArt(url,back){ if(back) state.backArt=url; else state.art=url; rende
 function readFile(file,back){ if(!file||!file.type.startsWith("image/")) return toast("Selecione uma imagem.",true);
   const r=new FileReader(); r.onload=e=>setArt(e.target.result,back); r.readAsDataURL(file); }
 $("fileInput").addEventListener("change",e=>readFile(e.target.files[0],false));
+/* ---- upload do ícone de raridade ---- */
+$("btnSetIcon").addEventListener("click",()=>$("fSetIcon").click());
+$("fSetIcon").addEventListener("change",e=>{
+  const f=e.target.files[0];
+  if(!f||!f.type.startsWith("image/")) return toast("Selecione uma imagem PNG.",true);
+  const r=new FileReader();
+  r.onload=async ev=>{
+    try{
+      state.setIcon=ev.target.result;
+      state.setIconTints=await buildSetIconTints(state.setIcon);
+      refreshSetIconUI(); render(); toast("Ícone de raridade aplicado.");
+    }catch(_){ toast("Não consegui ler esse ícone.",true); }
+  };
+  r.readAsDataURL(f); e.target.value="";
+});
+$("btnSetIconClear").addEventListener("click",()=>{
+  state.setIcon=""; state.setIconTints=null; refreshSetIconUI(); render(); toast("Ícone removido — voltei ao símbolo padrão.");
+});
+function refreshSetIconUI(){
+  const has=!!state.setIcon;
+  const prev=$("setIconPrev");
+  prev.hidden=!has; if(has) prev.src=(state.setIconTints&&state.setIconTints[state.rarity])||state.setIcon;
+  $("btnSetIconClear").hidden=!has;
+  $("btnSetIcon").textContent=has?"↥ Trocar ícone":"↥ Enviar ícone";
+}
 $("fileInputBack").addEventListener("change",e=>readFile(e.target.files[0],true));
 const dz=$("dropzone");
 ["dragenter","dragover"].forEach(ev=>dz.addEventListener(ev,e=>{e.preventDefault();dz.classList.add("drag");}));
@@ -1022,21 +1162,22 @@ window.Forge = {
     return {layout:state.layout,color:state.color,style:state.style,foil:state.foil,frame:state.frame,
       name:state.name,mana:state.mana,type:state.type,rules:state.rules,flavor:state.flavor,pt:state.pt,
       rarity:state.rarity,artist:state.artist,collector:state.collector,art:state.art,backArt:state.backArt,
+      setIcon:state.setIcon,setIconTints:state.setIconTints,
       loyalty:state.loyalty,defense:state.defense,pw:state.pw,saga:state.saga,cls:state.cls,
       adv:state.adv,split:state.split,back:state.back,overlays:state.overlays};
   },
   load(o){
     if(!o) return;
-    Object.assign(state,{pw:[],saga:[],cls:[],overlays:[]});
+    Object.assign(state,{pw:[],saga:[],cls:[],overlays:[],setIcon:"",setIconTints:null});
     ["layout","color","style","foil","frame","name","mana","type","rules","flavor","pt","rarity",
-     "artist","collector","art","backArt","loyalty","defense","pw","saga","cls","adv","split","back","overlays"]
+     "artist","collector","art","backArt","setIcon","setIconTints","loyalty","defense","pw","saga","cls","adv","split","back","overlays"]
       .forEach(k=>{ if(o[k]!==undefined) state[k]=o[k]; });
     state.showBack=false; state.frameEdit=null;
     if(!state.frame || (state.frame!=="auto" && !FRAMES[state.frame])) state.frame="auto";  // cartas antigas com frame embutido -> automático
     $("fLayout").value=state.layout; $("fFrame").value=state.frame||"auto";
     $("fFoil").setAttribute("aria-pressed",state.foil?"true":"false"); $("fFoil").classList.toggle("on",!!state.foil);
     const custom=!!(state.frame&&state.frame!=="auto"&&FRAMES[state.frame]); $("zoneEditor").hidden=!custom;
-    populate(); applyLayoutVisibility(); renderRows(); renderOvList(); render();
+    populate(); applyLayoutVisibility(); renderRows(); renderOvList(); refreshSetIconUI(); render();
   }
 };
 /* renderiza a prévia de uma carta (objeto data) dentro de um elemento, sem afetar o editor */
@@ -1044,9 +1185,9 @@ window.Forge.previewInto = function(el, data){
   if(!el || !data) return;
   const snap = JSON.parse(JSON.stringify(state));
   try{
-    Object.assign(state,{pw:[],saga:[],cls:[],overlays:[]});
+    Object.assign(state,{pw:[],saga:[],cls:[],overlays:[],setIcon:"",setIconTints:null});
     ["layout","color","style","foil","frame","name","mana","type","rules","flavor","pt","rarity",
-     "artist","collector","art","backArt","loyalty","defense","pw","saga","cls","adv","split","back","overlays"]
+     "artist","collector","art","backArt","setIcon","setIconTints","loyalty","defense","pw","saga","cls","adv","split","back","overlays"]
       .forEach(k=>{ if(data[k]!==undefined) state[k]=data[k]; });
     state.showBack=false;
     let col=state.color; if(col==="auto") col=autoColor(state.mana||"");
@@ -1131,7 +1272,9 @@ async function cardToPng(data){
   host.style.cssText="position:absolute;left:-10000px;top:0;";
   const el=document.createElement("div"); host.appendChild(el);
   document.body.appendChild(host);
-  window.Forge.previewInto(el, data);
+  /* foil é efeito de tela: não sai na folha de impressão */
+  window.Forge.previewInto(el, Object.assign({}, data, { foil:false }));
+  el.dataset.foil="false";   // foil é só efeito de tela — não vai para a folha de impressão
   await new Promise(r=>setTimeout(r,80)); // deixa fontes/imagens assentarem
   let url="";
   try{ url=await htmlToImage.toPng(el,{pixelRatio:2,cacheBust:true,backgroundColor:null}); }
@@ -1236,10 +1379,11 @@ function newCard(){
     loyalty:"4", defense:"5", pw:[], saga:[], cls:[],
     adv:{name:"",mana:"",type:"",rules:""}, split:{name:"",mana:"",type:"",rules:""},
     back:{name:"",mana:"",type:"",rules:"",flavor:"",pt:""},
-    showBack:false, frame:"auto", style:"modern", foil:false, frameEdit:null, overlays:[]
+    showBack:false, frame:"auto", style:"modern", foil:false, frameEdit:null, overlays:[],
+    setIcon:"", setIconTints:null
   });
   $("fLayout").value="normal";
-  populate(); applyLayoutVisibility(); renderRows(); renderOvList(); render();
+  populate(); applyLayoutVisibility(); renderRows(); renderOvList(); refreshSetIconUI(); render();
 }
 (function(){ const b=$("btnNew"); if(b) b.addEventListener("click",()=>{
   if(!confirm("Começar uma carta nova em branco? Isto substitui a carta atual — o que não estiver salvo será perdido.")) return;

@@ -148,6 +148,7 @@
           <label class="field">
             <span class="field-label">Acabamento</span>
             <button type="button" id="fFoil" class="toggle" aria-pressed="false">✦ Foil</button>
+            <span class="hint">Efeito visual de tela — aparece na prévia e no PNG exportado, mas é removido automaticamente na folha de impressão.</span>
           </label>
         </div>
 
@@ -297,6 +298,19 @@ Quando a Guardiã das Brumas entrar no campo de batalha, exile uma criatura alvo
               <option value="rara">★ Rara</option>
               <option value="mítica">✦ Mítica</option>
             </select>
+          </label>
+        </div>
+
+        <div class="field-row">
+          <label class="field grow" data-show="all">
+            <span class="field-label">Ícone de raridade / coleção (PNG)</span>
+            <div class="seticon-row">
+              <input type="file" id="fSetIcon" accept="image/png,image/webp,image/svg+xml" hidden />
+              <button type="button" id="btnSetIcon" class="btn btn-ghost">↥ Enviar ícone</button>
+              <img id="setIconPrev" class="seticon-prev" hidden alt="" />
+              <button type="button" id="btnSetIconClear" class="btn btn-ghost" hidden title="remover ícone">✕</button>
+            </div>
+            <span class="hint">O ícone é recolorido automaticamente no padrão de raridade: preto (comum), prata (incomum), dourado (rara) e laranja-fogo (mítica). Use um PNG com fundo transparente.</span>
           </label>
         </div>
 

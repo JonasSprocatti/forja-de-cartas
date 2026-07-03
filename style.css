@@ -1441,3 +1441,13 @@ img, svg, video { max-width: 100%; }
   .fx-grid .gthumb { width: 168px; height: 235px; }
   .fx-grid .gthumb .card { transform: scale(0.35); }
 }
+
+/* ===================== ÍCONE DE RARIDADE (PNG enviado) ===================== */
+.seticon-row { display: flex; align-items: center; gap: 8px; }
+.seticon-prev {
+  width: 36px; height: 36px; object-fit: contain; padding: 4px;
+  background: rgba(0,0,0,.35); border: 1px solid var(--line); border-radius: 8px;
+}
+.c-set .set-ico { height: 1.15em; width: auto; display: block; filter: drop-shadow(0 1px 1px rgba(0,0,0,.35)); }
+.cf-rarity { pointer-events: none; }
+.cf-rarity img { height: 100%; width: auto; max-width: 100%; object-fit: contain; filter: drop-shadow(0 1px 1px rgba(0,0,0,.4)); }
