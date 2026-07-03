@@ -1534,6 +1534,9 @@ img, svg, video { max-width: 100%; }
 }
 .cf-zone .c-mana .pip.pip-img, .title-bar .c-mana .pip.pip-img {
   box-shadow: none;                  /* nunca no wrapper quadrado */
+  /* a imagem com sombra assada tem ~19% de folga p/ o disco deslocado;
+     compensa o tamanho p/ o símbolo visual continuar com ~21px */
+  width: 25px; height: 25px; margin: -2px -1px -2px -3px;
 }
 .cf-zone .c-mana .pip.pip-img img, .title-bar .c-mana .pip.pip-img img {
   /* a sombra do custo agora vem PRÉ-COMPOSTA nos pixels (buildManaShadows):

@@ -83,14 +83,16 @@ async function buildManaShadows(){
     const im=new Image();
     im.onload=()=>{
       try{
-        const S=96, k=Math.round(S*0.90), m=(S-k)/2, off=Math.round(S*0.08);
+        /* o canvas precisa conter o SÍMBOLO + a SOMBRA deslocada, senão o
+           disco é cortado reto na borda: margem = offset + 1px de folga */
+        const k=96, off=Math.round(k*0.08), pad=off+1, S=k+pad*2;
         const c=document.createElement("canvas"); c.width=S; c.height=S;
         const x=c.getContext("2d");
-        x.drawImage(im, m-off, m+off, k, k);                 // cópia deslocada…
+        x.drawImage(im, pad-off, pad+off, k, k);             // cópia deslocada…
         x.globalCompositeOperation="source-in";
         x.fillStyle="#000"; x.fillRect(0,0,S,S);             // …tingida de preto = a sombra
         x.globalCompositeOperation="source-over";
-        x.drawImage(im, m, m, k, k);                         // símbolo por cima
+        x.drawImage(im, pad, pad, k, k);                     // símbolo por cima
         MANA_SHADOW[code]=c.toDataURL("image/png");
       }catch(_){ /* SVG problemático: segue sem sombra p/ esse código */ }
       res();
