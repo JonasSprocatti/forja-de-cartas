@@ -35,7 +35,7 @@
         "h": 4.4,
         "align": "left",
         "color": "#1c160c",
-        "size": 21,
+        "size": 24,
         "font": "title",
         "min": 12
       },
@@ -46,7 +46,7 @@
         "h": 27.0,
         "align": "left",
         "color": "#1a150d",
-        "size": 21,
+        "size": 23,
         "font": "body",
         "min": 9
       },
@@ -71,6 +71,12 @@
         "size": 13,
         "font": "pt",
         "min": 8
+      },
+      "rarity": {
+        "x": 84.0,
+        "y": 56.3,
+        "w": 8.5,
+        "h": 5.2
       }
     }
   },
@@ -110,7 +116,7 @@
         "h": 4.4,
         "align": "left",
         "color": "#1c160c",
-        "size": 21,
+        "size": 24,
         "font": "title",
         "min": 12
       },
@@ -121,7 +127,7 @@
         "h": 27.0,
         "align": "left",
         "color": "#1a150d",
-        "size": 21,
+        "size": 23,
         "font": "body",
         "min": 9
       },
@@ -146,6 +152,12 @@
         "size": 13,
         "font": "pt",
         "min": 8
+      },
+      "rarity": {
+        "x": 84.0,
+        "y": 56.3,
+        "w": 8.5,
+        "h": 5.2
       }
     }
   },
@@ -185,7 +197,7 @@
         "h": 4.4,
         "align": "left",
         "color": "#1c160c",
-        "size": 21,
+        "size": 24,
         "font": "title",
         "min": 12
       },
@@ -196,7 +208,7 @@
         "h": 27.0,
         "align": "left",
         "color": "#1a150d",
-        "size": 21,
+        "size": 23,
         "font": "body",
         "min": 9
       },
@@ -221,6 +233,12 @@
         "size": 13,
         "font": "pt",
         "min": 8
+      },
+      "rarity": {
+        "x": 84.0,
+        "y": 56.3,
+        "w": 8.5,
+        "h": 5.2
       }
     }
   },
@@ -260,7 +278,7 @@
         "h": 4.4,
         "align": "left",
         "color": "#1c160c",
-        "size": 21,
+        "size": 24,
         "font": "title",
         "min": 12
       },
@@ -271,7 +289,7 @@
         "h": 27.0,
         "align": "left",
         "color": "#1a150d",
-        "size": 21,
+        "size": 23,
         "font": "body",
         "min": 9
       },
@@ -296,6 +314,12 @@
         "size": 13,
         "font": "pt",
         "min": 8
+      },
+      "rarity": {
+        "x": 84.0,
+        "y": 56.3,
+        "w": 8.5,
+        "h": 5.2
       }
     }
   },
@@ -335,7 +359,7 @@
         "h": 4.4,
         "align": "left",
         "color": "#1c160c",
-        "size": 21,
+        "size": 24,
         "font": "title",
         "min": 12
       },
@@ -346,7 +370,7 @@
         "h": 27.0,
         "align": "left",
         "color": "#1a150d",
-        "size": 21,
+        "size": 23,
         "font": "body",
         "min": 9
       },
@@ -371,6 +395,12 @@
         "size": 13,
         "font": "pt",
         "min": 8
+      },
+      "rarity": {
+        "x": 84.0,
+        "y": 56.3,
+        "w": 8.5,
+        "h": 5.2
       }
     }
   },
@@ -410,7 +440,7 @@
         "h": 4.4,
         "align": "left",
         "color": "#1c160c",
-        "size": 21,
+        "size": 24,
         "font": "title",
         "min": 12
       },
@@ -421,7 +451,7 @@
         "h": 27.0,
         "align": "left",
         "color": "#1a150d",
-        "size": 21,
+        "size": 23,
         "font": "body",
         "min": 9
       },
@@ -446,6 +476,12 @@
         "size": 13,
         "font": "pt",
         "min": 8
+      },
+      "rarity": {
+        "x": 84.0,
+        "y": 56.3,
+        "w": 8.5,
+        "h": 5.2
       }
     }
   },
@@ -485,7 +521,7 @@
         "h": 4.4,
         "align": "left",
         "color": "#1c160c",
-        "size": 21,
+        "size": 24,
         "font": "title",
         "min": 12
       },
@@ -496,7 +532,7 @@
         "h": 27.0,
         "align": "left",
         "color": "#1a150d",
-        "size": 21,
+        "size": 23,
         "font": "body",
         "min": 9
       },
@@ -521,6 +557,12 @@
         "size": 13,
         "font": "pt",
         "min": 8
+      },
+      "rarity": {
+        "x": 84.0,
+        "y": 56.3,
+        "w": 8.5,
+        "h": 5.2
       }
     }
   },
@@ -560,7 +602,7 @@
         "h": 4.4,
         "align": "left",
         "color": "#1c160c",
-        "size": 21,
+        "size": 24,
         "font": "title",
         "min": 12
       },
@@ -571,7 +613,7 @@
         "h": 27.0,
         "align": "left",
         "color": "#1a150d",
-        "size": 21,
+        "size": 23,
         "font": "body",
         "min": 9
       },
@@ -596,6 +638,12 @@
         "size": 13,
         "font": "pt",
         "min": 8
+      },
+      "rarity": {
+        "x": 84.0,
+        "y": 56.3,
+        "w": 8.5,
+        "h": 5.2
       }
     }
   },
@@ -635,7 +683,7 @@
         "h": 4.4,
         "align": "left",
         "color": "#1c160c",
-        "size": 21,
+        "size": 24,
         "font": "title",
         "min": 12
       },
@@ -646,7 +694,7 @@
         "h": 27.0,
         "align": "left",
         "color": "#1a150d",
-        "size": 21,
+        "size": 23,
         "font": "body",
         "min": 9
       },
@@ -671,6 +719,12 @@
         "size": 13,
         "font": "pt",
         "min": 8
+      },
+      "rarity": {
+        "x": 84.0,
+        "y": 56.3,
+        "w": 8.5,
+        "h": 5.2
       }
     }
   },
@@ -710,7 +764,7 @@
         "h": 4.4,
         "align": "left",
         "color": "#1c160c",
-        "size": 21,
+        "size": 24,
         "font": "title",
         "min": 12
       },
@@ -721,7 +775,7 @@
         "h": 27.0,
         "align": "left",
         "color": "#1a150d",
-        "size": 21,
+        "size": 23,
         "font": "body",
         "min": 9
       },
@@ -746,6 +800,12 @@
         "size": 13,
         "font": "pt",
         "min": 8
+      },
+      "rarity": {
+        "x": 84.0,
+        "y": 56.3,
+        "w": 8.5,
+        "h": 5.2
       }
     }
   },
@@ -785,7 +845,7 @@
         "h": 4.4,
         "align": "left",
         "color": "#1c160c",
-        "size": 21,
+        "size": 24,
         "font": "title",
         "min": 12
       },
@@ -796,7 +856,7 @@
         "h": 27.0,
         "align": "left",
         "color": "#1a150d",
-        "size": 21,
+        "size": 23,
         "font": "body",
         "min": 9
       },
@@ -821,6 +881,12 @@
         "size": 13,
         "font": "pt",
         "min": 8
+      },
+      "rarity": {
+        "x": 84.0,
+        "y": 56.3,
+        "w": 8.5,
+        "h": 5.2
       }
     }
   },
@@ -860,7 +926,7 @@
         "h": 4.4,
         "align": "left",
         "color": "#1c160c",
-        "size": 21,
+        "size": 24,
         "font": "title",
         "min": 12
       },
@@ -871,7 +937,7 @@
         "h": 27.0,
         "align": "left",
         "color": "#1a150d",
-        "size": 21,
+        "size": 23,
         "font": "body",
         "min": 9
       },
@@ -896,6 +962,12 @@
         "size": 13,
         "font": "pt",
         "min": 8
+      },
+      "rarity": {
+        "x": 84.0,
+        "y": 56.3,
+        "w": 8.5,
+        "h": 5.2
       }
     }
   },
@@ -935,7 +1007,7 @@
         "h": 4.4,
         "align": "left",
         "color": "#1c160c",
-        "size": 21,
+        "size": 24,
         "font": "title",
         "min": 12
       },
@@ -946,7 +1018,7 @@
         "h": 27.0,
         "align": "left",
         "color": "#1a150d",
-        "size": 21,
+        "size": 23,
         "font": "body",
         "min": 9
       },
@@ -971,6 +1043,12 @@
         "size": 13,
         "font": "pt",
         "min": 8
+      },
+      "rarity": {
+        "x": 84.0,
+        "y": 56.3,
+        "w": 8.5,
+        "h": 5.2
       }
     }
   },
@@ -1010,7 +1088,7 @@
         "h": 4.4,
         "align": "left",
         "color": "#1c160c",
-        "size": 21,
+        "size": 24,
         "font": "title",
         "min": 12
       },
@@ -1021,7 +1099,7 @@
         "h": 27.0,
         "align": "left",
         "color": "#1a150d",
-        "size": 21,
+        "size": 23,
         "font": "body",
         "min": 9
       },
@@ -1046,6 +1124,12 @@
         "size": 13,
         "font": "pt",
         "min": 8
+      },
+      "rarity": {
+        "x": 84.0,
+        "y": 56.3,
+        "w": 8.5,
+        "h": 5.2
       }
     }
   },
@@ -1085,7 +1169,7 @@
         "h": 4.4,
         "align": "left",
         "color": "#1c160c",
-        "size": 21,
+        "size": 24,
         "font": "title",
         "min": 12
       },
@@ -1096,7 +1180,7 @@
         "h": 27.0,
         "align": "left",
         "color": "#1a150d",
-        "size": 21,
+        "size": 23,
         "font": "body",
         "min": 9
       },
@@ -1121,6 +1205,12 @@
         "size": 13,
         "font": "pt",
         "min": 8
+      },
+      "rarity": {
+        "x": 84.0,
+        "y": 56.3,
+        "w": 8.5,
+        "h": 5.2
       }
     }
   },
@@ -1160,7 +1250,7 @@
         "h": 4.4,
         "align": "left",
         "color": "#1c160c",
-        "size": 21,
+        "size": 24,
         "font": "title",
         "min": 12
       },
@@ -1171,7 +1261,7 @@
         "h": 27.0,
         "align": "left",
         "color": "#1a150d",
-        "size": 21,
+        "size": 23,
         "font": "body",
         "min": 9
       },
@@ -1196,6 +1286,12 @@
         "size": 13,
         "font": "pt",
         "min": 8
+      },
+      "rarity": {
+        "x": 84.0,
+        "y": 56.3,
+        "w": 8.5,
+        "h": 5.2
       }
     }
   },
@@ -1235,7 +1331,7 @@
         "h": 4.4,
         "align": "left",
         "color": "#1c160c",
-        "size": 21,
+        "size": 24,
         "font": "title",
         "min": 12
       },
@@ -1246,7 +1342,7 @@
         "h": 27.0,
         "align": "left",
         "color": "#1a150d",
-        "size": 21,
+        "size": 23,
         "font": "body",
         "min": 9
       },
@@ -1271,6 +1367,12 @@
         "size": 13,
         "font": "pt",
         "min": 8
+      },
+      "rarity": {
+        "x": 84.0,
+        "y": 56.3,
+        "w": 8.5,
+        "h": 5.2
       }
     }
   },
@@ -1310,7 +1412,7 @@
         "h": 4.4,
         "align": "left",
         "color": "#1c160c",
-        "size": 21,
+        "size": 24,
         "font": "title",
         "min": 12
       },
@@ -1321,7 +1423,7 @@
         "h": 27.0,
         "align": "left",
         "color": "#1a150d",
-        "size": 21,
+        "size": 23,
         "font": "body",
         "min": 9
       },
@@ -1346,6 +1448,12 @@
         "size": 13,
         "font": "pt",
         "min": 8
+      },
+      "rarity": {
+        "x": 84.0,
+        "y": 56.3,
+        "w": 8.5,
+        "h": 5.2
       }
     }
   },
@@ -1385,7 +1493,7 @@
         "h": 4.4,
         "align": "left",
         "color": "#1c160c",
-        "size": 21,
+        "size": 24,
         "font": "title",
         "min": 12
       },
@@ -1396,7 +1504,7 @@
         "h": 27.0,
         "align": "left",
         "color": "#1a150d",
-        "size": 21,
+        "size": 23,
         "font": "body",
         "min": 9
       },
@@ -1421,6 +1529,12 @@
         "size": 13,
         "font": "pt",
         "min": 8
+      },
+      "rarity": {
+        "x": 84.0,
+        "y": 56.3,
+        "w": 8.5,
+        "h": 5.2
       }
     }
   },
@@ -1460,7 +1574,7 @@
         "h": 4.4,
         "align": "left",
         "color": "#1c160c",
-        "size": 21,
+        "size": 24,
         "font": "title",
         "min": 12
       },
@@ -1471,7 +1585,7 @@
         "h": 27.0,
         "align": "left",
         "color": "#1a150d",
-        "size": 21,
+        "size": 23,
         "font": "body",
         "min": 9
       },
@@ -1496,6 +1610,12 @@
         "size": 13,
         "font": "pt",
         "min": 8
+      },
+      "rarity": {
+        "x": 84.0,
+        "y": 56.3,
+        "w": 8.5,
+        "h": 5.2
       }
     }
   }
