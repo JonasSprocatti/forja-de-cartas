@@ -464,9 +464,17 @@ const RENDERERS={normal:()=>renderNormal({name:state.name,mana:state.mana,type:s
 
 /* ---------- FRAME PERSONALIZADO (pasta /assets/frames) ---------- */
 function cfFont(f){
-  /* Beleren em toda a carta; mantém a fonte antiga como fallback se a Beleren não carregar */
-  const fb = f==="body" ? '"Spectral",Georgia,serif' : f==="pt" ? '"Bitter",serif' : '"Cinzel",serif';
-  return '"Beleren Bold",'+fb;
+  /* fontes por zona, no padrão das cartas originais:
+     nome / tipo / P&R -> Beleren Bold (a fonte oficial dessas áreas)
+     texto de regras   -> serifa REGULAR (as originais usam MPlantin; Spectral é
+                          o substituto livre mais próximo — Beleren Bold aqui fica errado)
+     crédito / rodapé  -> Beleren SmallCaps
+     ATENÇÃO: aspas SIMPLES nos nomes — esse valor entra num atributo style="…"
+     e aspas duplas quebrariam o HTML. */
+  if(f==="body")   return "'Spectral','EB Garamond',Georgia,serif";
+  if(f==="credit") return "'Beleren SmallCaps','Beleren Bold','Cinzel',serif";
+  if(f==="pt")     return "'Beleren Bold','Bitter',serif";
+  return "'Beleren Bold','Cinzel',serif";
 }
 function zoneBox(z){return `left:${z.x}%;top:${z.y}%;width:${z.w}%;height:${z.h}%;`;}
 function zone(z,inner,top,key){
@@ -477,7 +485,7 @@ function zone(z,inner,top,key){
   const floor = z.min!=null ? z.min : (key==="text"?9 : key==="name"?13 : key==="type"?11 : key==="pt"?12 : 8);
   // marca a zona para o auto-ajuste de fonte (exceto a zona de mana, que são pips)
   const fit = (key && key!=="mana") ? ` data-fit="1" data-zone="${key}" data-maxsize="${z.size||18}" data-minsize="${floor}"` : "";
-  return `<div class="cf-zone"${fit} style="${zoneBox(z)}align-items:${items};justify-content:${just};text-align:${al};color:${z.color||"#1c160c"};font-family:${cfFont(z.font)};font-size:${z.size||18}px;">${inner}</div>`;
+  return `<div class="cf-zone"${fit} style="${zoneBox(z)}align-items:${items};justify-content:${just};text-align:${al};color:${z.color||"#1c160c"};font-family:${cfFont(key==="credit"?"credit":z.font)};font-size:${z.size||18}px;">${inner}</div>`;
 }
 /* conteúdo da zona de texto conforme o layout */
 function cfTextContent(){
@@ -503,9 +511,16 @@ function renderCustomFrame(def,zonesArg){
   if(Z.type) h+=zone(Z.type,escapeHTML(state.type||""),false,"type");
   /* ícone de raridade enviado: usa a zona "rarity" do frames.json, ou um
      encaixe padrão na ponta direita da barra de tipo */
-  if(state.setIconTints && state.setIconTints[state.rarity]){
+  /* ícone de coleção: usa a zona "rarity" do frames.json (editável nos
+     sliders), ou um encaixe padrão na ponta direita da barra de tipo.
+     Sem ícone enviado, mostra o símbolo padrão na cor da raridade. */
+  {
     const R=Z.rarity||{x:85,y:(Z.type?Z.type.y-0.2:56.5),w:7.5,h:(Z.type?Z.type.h+0.6:5)};
-    h+=`<div class="cf-zone cf-rarity" style="${zoneBox(R)}align-items:center;justify-content:flex-end;"><img src="${state.setIconTints[state.rarity]}" alt=""></div>`;
+    const tinted=state.setIconTints && state.setIconTints[state.rarity];
+    const inner = tinted
+      ? `<img src="${tinted}" alt="">`
+      : `<span class="cf-rsym cf-r-${state.rarity}" style="font-size:${Math.round((R.h||5)*5.4)}px">${SYM[state.rarity]||"◆"}</span>`;
+    h+=`<div class="cf-zone cf-rarity" style="${zoneBox(R)}align-items:center;justify-content:flex-end;">${inner}</div>`;
   }
   if(Z.text) h+=zone(Z.text,cfTextContent(),true,"text");
   if(Z.pt && state.pt.trim()) h+=zone(Z.pt,escapeHTML(state.pt),false,"pt");
@@ -1034,6 +1049,22 @@ function mapScryfall(c){
 
   $("fLayout").value=state.layout;
   populate(); applyLayoutVisibility(); renderRows(); render();
+  applyScrySetIcon(c.set);   // ícone da coleção (Keyrune) — assíncrono, silencioso se falhar
+}
+/* aplica automaticamente o símbolo da coleção importada do Scryfall,
+   usando o mesmo pipeline do seletor Keyrune (glifo -> PNG -> tints) */
+async function applyScrySetIcon(setCode){
+  if(!setCode) return;
+  try{
+    await loadKeyrune();
+    const cp=KEYRUNE.map && KEYRUNE.map[String(setCode).toLowerCase()];
+    if(!cp) return;
+    try{ await document.fonts.load("20px Keyrune"); }catch(_){}
+    const png=keyruneGlyphToPng(cp);
+    state.setIcon=png;
+    state.setIconTints=await buildSetIconTints(png);
+    refreshSetIconUI(); render();
+  }catch(_){ /* sem conexão ou coleção sem glifo: segue sem ícone */ }
 }
 
 async function importScryfall(name){
@@ -1133,7 +1164,7 @@ $("fFrame").addEventListener("change",()=>{
 });
 
 /* ---- editor de zonas (sliders) ---- */
-const ZONE_LABELS={art:"Arte",name:"Nome",mana:"Custo",type:"Tipo",text:"Texto",pt:"P/R",loyalty:"Lealdade",defense:"Defesa",credit:"Crédito"};
+const ZONE_LABELS={art:"Arte",name:"Nome",mana:"Custo",type:"Tipo",text:"Texto",pt:"P/R",loyalty:"Lealdade",defense:"Defesa",credit:"Crédito",rarity:"Ícone de coleção"};
 function buildZoneEditor(){
   const z=state.frameEdit.zones; const box=$("zoneControls"); box.innerHTML="";
   Object.keys(z).forEach(key=>{

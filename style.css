@@ -1156,9 +1156,29 @@ body {
 
 @font-face {
   font-family: "Beleren Bold";
-  src: url("./Beleren2016-Bold.ttf") format("truetype");
+  src: url("assets/fonts/Beleren2016-Bold.woff") format("woff"),
+       url("assets/fonts/Beleren2016-Bold.ttf") format("truetype");
   font-style: normal;
   font-weight: bold;
+  font-display: swap;
+  text-rendering: optimizeLegibility;
+}
+@font-face {
+  font-family: "Beleren SmallCaps";
+  src: url("assets/fonts/Beleren2016SmallCaps-Bold.woff") format("woff"),
+       url("assets/fonts/Beleren2016SmallCaps-Bold.ttf") format("truetype");
+  font-style: normal;
+  font-weight: bold;
+  font-display: swap;
+  text-rendering: optimizeLegibility;
+}
+@font-face {
+  font-family: "Beleren SmallCaps";
+  src: url("assets/fonts/Beleren2016SmallCaps-BoldItalic.woff") format("woff"),
+       url("assets/fonts/Beleren2016SmallCaps-BoldItalic.ttf") format("truetype");
+  font-style: italic;
+  font-weight: bold;
+  font-display: swap;
   text-rendering: optimizeLegibility;
 }
 
@@ -1469,3 +1489,13 @@ img, svg, video { max-width: 100%; }
 .ks-name { font-size: 12.5px; line-height: 1.25; }
 .ks-name small { display: block; color: var(--parch-dim); letter-spacing: .06em; }
 @media (max-width: 640px) { .keyrune-box { width: min(560px, 94vw); } .keyrune-grid { grid-template-columns: 1fr 1fr; } }
+
+/* símbolo de raridade padrão (quando nenhum ícone foi enviado) */
+.cf-rsym { line-height: 1; filter: drop-shadow(0 1px 1px rgba(0,0,0,.35)); }
+.cf-r-comum   { color: #16130e; }
+.cf-r-incomum { color: #8d99a6; }
+.cf-r-rara    { color: #c8a44e; }
+.cf-r-mítica  { color: #f07822; }
+/* regras: serifa regular com entrelinha compacta, como nas cartas originais */
+.cf-zone[data-zone="text"] { line-height: 1.16; font-weight: 400; }
+.cf-zone[data-zone="text"] b, .cf-zone[data-zone="text"] strong { font-weight: 600; }
