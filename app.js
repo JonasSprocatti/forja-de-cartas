@@ -77,6 +77,11 @@ function pips(str,shadow){
    p/ baixo-esquerda, com o símbolo por cima. Fica idêntico na prévia,
    no PNG exportado e na folha de impressão. */
 const MANA_SHADOW={};   // code -> dataURL com a sombra embutida
+/* configuração da sombra do custo — calibre nos sliders do editor
+   ("Calibrar sombra do custo") e depois fixe os valores aqui.
+   dx/dy em % do símbolo (dx − = esquerda, dy + = baixo); alpha 0–1. */
+const MANA_SHADOW_CFG={ dx:-8, dy:8, alpha:1 };
+try{ Object.assign(MANA_SHADOW_CFG, JSON.parse(localStorage.getItem("forja_shadow_cfg")||"{}")); }catch(_){}
 async function buildManaShadows(){
   const entries=Object.entries(MANA).filter(([,v])=>v&&v.src);
   await Promise.all(entries.map(([code,v])=>new Promise(res=>{
@@ -84,13 +89,17 @@ async function buildManaShadows(){
     im.onload=()=>{
       try{
         /* o canvas precisa conter o SÍMBOLO + a SOMBRA deslocada, senão o
-           disco é cortado reto na borda: margem = offset + 1px de folga */
-        const k=96, off=Math.round(k*0.08), pad=off+1, S=k+pad*2;
+           disco é cortado reto na borda: margem = |offset| + 1px de folga */
+        const k=96;
+        const ox=Math.round(k*(MANA_SHADOW_CFG.dx||0)/100);
+        const oy=Math.round(k*(MANA_SHADOW_CFG.dy||0)/100);
+        const pad=Math.max(Math.abs(ox),Math.abs(oy))+1, S=k+pad*2;
         const c=document.createElement("canvas"); c.width=S; c.height=S;
         const x=c.getContext("2d");
-        x.drawImage(im, pad-off, pad+off, k, k);             // cópia deslocada…
+        x.drawImage(im, pad+ox, pad+oy, k, k);               // cópia deslocada…
         x.globalCompositeOperation="source-in";
-        x.fillStyle="#000"; x.fillRect(0,0,S,S);             // …tingida de preto = a sombra
+        x.fillStyle=`rgba(0,0,0,${MANA_SHADOW_CFG.alpha??1})`;
+        x.fillRect(0,0,S,S);                                 // …tingida de preto = a sombra
         x.globalCompositeOperation="source-over";
         x.drawImage(im, pad, pad, k, k);                     // símbolo por cima
         MANA_SHADOW[code]=c.toDataURL("image/png");
@@ -101,6 +110,23 @@ async function buildManaShadows(){
     im.src=v.src;
   })));
 }
+/* sliders de calibração: regeneram a sombra ao vivo e guardam a escolha */
+(function wireShadowCal(){
+  const dx=$("shadowDx"), dy=$("shadowDy"), al=$("shadowAlpha"), out=$("shadowVals");
+  if(!dx||!dy||!al) return;   // painel ausente nesta página
+  dx.value=MANA_SHADOW_CFG.dx; dy.value=MANA_SHADOW_CFG.dy; al.value=Math.round((MANA_SHADOW_CFG.alpha??1)*100);
+  const show=()=>{ if(out) out.textContent=`valores atuais → dx: ${MANA_SHADOW_CFG.dx} · dy: ${MANA_SHADOW_CFG.dy} · opacidade: ${Math.round((MANA_SHADOW_CFG.alpha??1)*100)}%`; };
+  show();
+  let t=null;
+  const upd=()=>{
+    MANA_SHADOW_CFG.dx=parseInt(dx.value,10); MANA_SHADOW_CFG.dy=parseInt(dy.value,10);
+    MANA_SHADOW_CFG.alpha=parseInt(al.value,10)/100;
+    try{ localStorage.setItem("forja_shadow_cfg",JSON.stringify(MANA_SHADOW_CFG)); }catch(_){}
+    show();
+    clearTimeout(t); t=setTimeout(()=>{ buildManaShadows().then(()=>render()); },160);
+  };
+  [dx,dy,al].forEach(el=>el.addEventListener("input",upd));
+})();
 function autoColor(mana){
   const c=[...new Set((mana.toUpperCase().match(/[WUBRG]/g))||[])];
   if(c.length===0) return "C"; if(c.length===1) return c[0]; return "multi";

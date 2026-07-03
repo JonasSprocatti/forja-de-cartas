@@ -42,7 +42,7 @@
   <section class="hero" id="hero">
     <div class="hero-cards" id="heroCards" aria-hidden="true"></div>
     <div class="hero-glass">
-      <h1>Forje a carta que existe na sua imaginação</h1>
+      <h1>Forje a carta que só existe na sua imaginação</h1>
       <p>Crie criaturas, mágicas, planeswalkers, sagas e muito mais no estilo dos grandes jogos de cartas colecionáveis — com molduras, símbolos de mana, raridade e a sua própria arte. Gratuito, direto no navegador, com exportação em alta resolução.</p>
       <div class="hero-cta">
         <button id="heroStart" class="btn btn-gold hero-btn">⚒ Começar a criar</button>
@@ -183,6 +183,20 @@
         <p class="hint hint-mana" data-show="normal planeswalker saga class battle adventure token dfc split">
           <b>Modo compacto</b> (sem chaves): números = mana genérica; letras <b>W U B R G C X S T</b>. Ex.: <code>2WU</code><br>
           <b>Com chaves</b> <code>{…}</code>: aceita <i>todos</i> os símbolos — <code>{E}</code> energia, <code>{P}</code> phyrexiano, <code>{Q}</code> desvirar, <code>{Y}</code>/<code>{Z}</code>, híbridos <code>{W/U}</code>, <code>{2/W}</code>, <code>{W/P}</code>… Símbolos como <code>E P Y Z Q</code> <b>só funcionam entre chaves</b>.</p>
+
+        <details class="shadow-cal" id="shadowCal">
+          <summary>⚙ Calibrar sombra do custo</summary>
+          <div class="shadow-cal-body">
+            <label class="field"><span class="field-label">Horizontal <small>(− esquerda · + direita)</small></span>
+              <input type="range" id="shadowDx" min="-20" max="20" step="1" value="-8" /></label>
+            <label class="field"><span class="field-label">Vertical <small>(− cima · + baixo)</small></span>
+              <input type="range" id="shadowDy" min="-20" max="20" step="1" value="8" /></label>
+            <label class="field"><span class="field-label">Opacidade</span>
+              <input type="range" id="shadowAlpha" min="40" max="100" step="5" value="100" /></label>
+            <p class="hint" id="shadowVals" style="margin:0"></p>
+            <p class="hint" style="margin:0">Ajuste, veja ao vivo no custo da carta, e me mande os valores acima para fixarmos no código.</p>
+          </div>
+        </details>
 
         <label class="field" data-show="normal land battle adventure token dfc">
           <span class="field-label">Linha de tipo</span>

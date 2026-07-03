@@ -1544,3 +1544,11 @@ img, svg, video { max-width: 100%; }
      html-to-image o renderiza errado na exportação */
   filter: none;
 }
+
+/* painel de calibração da sombra do custo */
+.shadow-cal { margin: 6px 0 10px; border: 1px dashed var(--line); border-radius: 10px; padding: 6px 10px; }
+.shadow-cal summary { cursor: pointer; color: var(--parch-dim); font-size: 13px; letter-spacing: .03em; }
+.shadow-cal[open] summary { color: var(--brass); margin-bottom: 6px; }
+.shadow-cal-body { display: grid; gap: 6px; }
+.shadow-cal-body .field-label small { color: var(--parch-dim); font-weight: 400; }
+.shadow-cal input[type="range"] { width: 100%; accent-color: var(--brass); }
