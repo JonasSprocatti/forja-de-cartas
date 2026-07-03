@@ -251,8 +251,6 @@
     "code": "WR",
     "src": "assets/mana/RW.svg"
   },
-
-  
   {
     "code": "G/W",
     "src": "assets/mana/GW.svg"
@@ -341,7 +339,7 @@
     "code": "BP",
     "src": "assets/mana/BP.svg"
   },
-    {
+  {
     "code": "U/P",
     "src": "assets/mana/UP.svg"
   },
@@ -477,9 +475,7 @@
     "code": "BWP",
     "src": "assets/mana/WBP.svg"
   },
-
-
-   {
+  {
     "code": "U/B/P",
     "src": "assets/mana/UBP.svg"
   },
@@ -495,8 +491,6 @@
     "code": "BUP",
     "src": "assets/mana/UBP.svg"
   },
-
-  
   {
     "code": "U/R/P",
     "src": "assets/mana/URP.svg"
@@ -608,5 +602,13 @@
   {
     "code": "WRP",
     "src": "assets/mana/RWP.svg"
+  },
+  {
+    "code": "T",
+    "src": "assets/mana/T.svg"
+  },
+  {
+    "code": "Q",
+    "src": "assets/mana/Q.svg"
   }
 ]
