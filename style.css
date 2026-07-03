@@ -1523,11 +1523,21 @@ img, svg, video { max-width: 100%; }
 /* pips no texto acompanham a altura da linha */
 .cf-zone[data-zone="text"] .pip { width: 1em; height: 1em; font-size: .78em; vertical-align: -0.12em; }
 
-/* custo de mana (topo): sombra projetada mais forte, como na original */
+/* custo de mana (topo): sombra de elevação suave e redonda, como na original.
+   Pips de texto (círculo CSS): box-shadow segue o border-radius.
+   Pips SVG (.pip-img): o wrapper é um quadrado transparente — box-shadow nele
+   fica QUADRADO; a sombra tem que ser drop-shadow na imagem, que acompanha
+   o contorno redondo do símbolo. */
 .cf-zone .c-mana .pip, .title-bar .c-mana .pip {
   box-shadow: inset 0 -2px 3px rgba(0,0,0,.35), inset 0 2px 2px rgba(255,255,255,.35),
-              1px 2.2px 2px rgba(0,0,0,.55);
+              0 1.6px 2.6px rgba(0,0,0,.5);
+}
+.cf-zone .c-mana .pip.pip-img, .title-bar .c-mana .pip.pip-img {
+  box-shadow: none;                  /* nunca no wrapper quadrado */
 }
 .cf-zone .c-mana .pip.pip-img img, .title-bar .c-mana .pip.pip-img img {
-  filter: drop-shadow(1px 2.2px 1.4px rgba(0,0,0,.6));
+  /* sombra de elevação em duas camadas: difusa (ambiente) + curta (contato) —
+     drop-shadow segue o contorno do glifo, então fica redonda como na original */
+  filter: drop-shadow(0 1.8px 2.4px rgba(0,0,0,.45))
+          drop-shadow(0 0.6px 0.7px rgba(0,0,0,.38));
 }
