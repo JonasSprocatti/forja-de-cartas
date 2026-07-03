@@ -1530,14 +1530,14 @@ img, svg, video { max-width: 100%; }
    o contorno redondo do símbolo. */
 .cf-zone .c-mana .pip, .title-bar .c-mana .pip {
   box-shadow: inset 0 -2px 3px rgba(0,0,0,.35), inset 0 2px 2px rgba(255,255,255,.35),
-              0 1.6px 2.6px rgba(0,0,0,.5);
+              -1.2px 1.3px 0 rgba(0,0,0,.85);   /* disco sólido deslocado, sem blur */
 }
 .cf-zone .c-mana .pip.pip-img, .title-bar .c-mana .pip.pip-img {
   box-shadow: none;                  /* nunca no wrapper quadrado */
 }
 .cf-zone .c-mana .pip.pip-img img, .title-bar .c-mana .pip.pip-img img {
-  /* sombra de elevação em duas camadas: difusa (ambiente) + curta (contato) —
-     drop-shadow segue o contorno do glifo, então fica redonda como na original */
-  filter: drop-shadow(0 1.8px 2.4px rgba(0,0,0,.45))
-          drop-shadow(0 0.6px 0.7px rgba(0,0,0,.38));
+  /* a sombra do custo agora vem PRÉ-COMPOSTA nos pixels (buildManaShadows):
+     nenhum filter aqui — CSS drop-shadow é sub-pixel nesse tamanho e o
+     html-to-image o renderiza errado na exportação */
+  filter: none;
 }

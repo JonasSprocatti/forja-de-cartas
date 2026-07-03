@@ -27,12 +27,12 @@ function escapeHTML(s){return (s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;")
 const PIP_COLORS={W:"#ece3c8",U:"#3f8fd0",B:"#4a443c",R:"#c8543a",G:"#3f9a55",C:"#b8b0a0",N:"#b8b0a0"};
 function halfCls(x){return /^\d+$/.test(x)?"N":(["W","U","B","R","G","C"].includes(x)?x:"N");}
 /* gera UM pip a partir de um código (W, 2, T, X, W/U, 2/W, W/P, S, E…) */
-function pipSpan(raw){
+function pipSpan(raw,shadow){
   const code=(raw||"").trim().toUpperCase();
   if(code==="") return "";
   const cm=MANA[code];
   if(cm) return cm.src
-    ? `<span class="pip pip-img"><img src="${cm.src}" alt="${escapeHTML(code)}"></span>`
+    ? `<span class="pip pip-img"><img src="${(shadow&&MANA_SHADOW[code])||cm.src}" alt="${escapeHTML(code)}"></span>`
     : `<span class="pip pip-N"${cm.color?` style="background:${cm.color};color:${cm.textColor||'#1c160c'}"`:""}>${escapeHTML(cm.text||code)}</span>`;
   if(/^\d+$/.test(code)) return `<span class="pip pip-N">${code}</span>`;
   if(["X","Y","Z"].includes(code)) return `<span class="pip pip-N">${code}</span>`;
@@ -52,7 +52,7 @@ function pipSpan(raw){
   return `<span class="pip pip-N">${escapeHTML(code)}</span>`;
 }
 /* custo de mana: aceita "2WU", "{2}{W}{U}" e MISTURA "2{R/G}{R/G}" */
-function pips(str){
+function pips(str,shadow){
   const raw=(str||"").trim(); if(!raw) return "";
   const out=[]; let i=0;
   while(i<raw.length){
@@ -60,14 +60,44 @@ function pips(str){
     if(ch==="{"){
       const j=raw.indexOf("}",i);
       if(j<0){ break; }                 // chave não fechada: para
-      out.push(pipSpan(raw.slice(i+1,j))); i=j+1;
+      out.push(pipSpan(raw.slice(i+1,j),shadow)); i=j+1;
     } else if(/\s/.test(ch)){ i++; }
     else if(/\d/.test(ch)){                // número de 1+ dígitos = mana genérica
       let n=ch; i++; while(i<raw.length&&/\d/.test(raw[i])){ n+=raw[i]; i++; }
-      out.push(pipSpan(n));
-    } else { out.push(pipSpan(ch.toUpperCase())); i++; }
+      out.push(pipSpan(n,shadow)); 
+    } else { out.push(pipSpan(ch.toUpperCase(),shadow)); i++; }
   }
   return out.join("");
+}
+/* ===== SOMBRA "ASSADA" NOS SÍMBOLOS DO CUSTO =====
+   CSS drop-shadow em pips de ~21px é sub-pixel (o contorno some no
+   anti-aliasing) e o html-to-image renderiza filter de forma inconsistente
+   na exportação. Solução definitiva: pré-compor a sombra nos PIXELS via
+   canvas — um disco preto sólido (o próprio símbolo tingido) deslocado
+   p/ baixo-esquerda, com o símbolo por cima. Fica idêntico na prévia,
+   no PNG exportado e na folha de impressão. */
+const MANA_SHADOW={};   // code -> dataURL com a sombra embutida
+async function buildManaShadows(){
+  const entries=Object.entries(MANA).filter(([,v])=>v&&v.src);
+  await Promise.all(entries.map(([code,v])=>new Promise(res=>{
+    const im=new Image();
+    im.onload=()=>{
+      try{
+        const S=96, k=Math.round(S*0.90), m=(S-k)/2, off=Math.round(S*0.08);
+        const c=document.createElement("canvas"); c.width=S; c.height=S;
+        const x=c.getContext("2d");
+        x.drawImage(im, m-off, m+off, k, k);                 // cópia deslocada…
+        x.globalCompositeOperation="source-in";
+        x.fillStyle="#000"; x.fillRect(0,0,S,S);             // …tingida de preto = a sombra
+        x.globalCompositeOperation="source-over";
+        x.drawImage(im, m, m, k, k);                         // símbolo por cima
+        MANA_SHADOW[code]=c.toDataURL("image/png");
+      }catch(_){ /* SVG problemático: segue sem sombra p/ esse código */ }
+      res();
+    };
+    im.onerror=()=>res();
+    im.src=v.src;
+  })));
 }
 function autoColor(mana){
   const c=[...new Set((mana.toUpperCase().match(/[WUBRG]/g))||[])];
@@ -306,7 +336,7 @@ function elArt(url,cls){
   return `<div class="art-window ${cls||""}"><div class="art-ph"><span class="art-ph-ico">⛰</span><span class="art-ph-txt">sua arte aqui</span></div></div>`;
 }
 function titleBar(name,mana){
-  return `<div class="title-bar"><span class="c-name">${escapeHTML(name||"Sem nome")}</span><span class="c-mana">${pips(mana)}</span></div>`;
+  return `<div class="title-bar"><span class="c-name">${escapeHTML(name||"Sem nome")}</span><span class="c-mana">${pips(mana,true)}</span></div>`;
 }
 function typeBar(type,rarity){
   return `<div class="type-bar"><span class="c-type">${escapeHTML(type||"—")}</span>${setSym(rarity)}</div>`;
@@ -328,7 +358,7 @@ function renderFullArt(d){
     <div class="fa-art${d.art?"":" fa-noart"}">${d.art?`<img src="${d.art}" alt="">`:`<div class="art-ph"><span class="art-ph-ico">⛰</span><span class="art-ph-txt">sua arte aqui</span></div>`}</div>
     <div class="fa-top">
       <span class="c-name">${escapeHTML(d.name||"Sem nome")}</span>
-      <span class="c-mana">${pips(d.mana)}</span>
+      <span class="c-mana">${pips(d.mana,true)}</span>
     </div>
     <div class="fa-bottom">
       <div class="fa-type"><span class="c-type">${escapeHTML(d.type||"—")}</span>${setSym(d.rarity)}</div>
@@ -359,7 +389,7 @@ function renderLand(){
 function renderToken(){
   if(state.style==="fullart") return renderFullArt({name:state.name,mana:state.mana,type:state.type||"Ficha",rules:state.rules,flavor:state.flavor,pt:state.pt,art:state.art,rarity:state.rarity});
   return `<div class="card-frame token">
-    <div class="title-bar"><span class="c-name">${escapeHTML(state.name||"Sem nome")}</span><span class="c-mana">${pips(state.mana)}</span></div>
+    <div class="title-bar"><span class="c-name">${escapeHTML(state.name||"Sem nome")}</span><span class="c-mana">${pips(state.mana,true)}</span></div>
     ${elArt(state.art,"art-tall")}
     ${typeBar(state.type||"Ficha",state.rarity)}
     ${state.rules.trim()?textBox(state.rules,state.flavor):`<div class="text-box mini">${state.flavor?`<div class="c-flavor">${escapeHTML(state.flavor)}</div>`:""}</div>`}
@@ -414,7 +444,7 @@ function renderBattle(){
 function renderAdventure(){
   const a=state.adv;
   const advBox=`<div class="adv-box">
-      <div class="adv-title"><span class="adv-name">${escapeHTML(a.name||"Aventura")}</span><span class="c-mana">${pips(a.mana)}</span></div>
+      <div class="adv-title"><span class="adv-name">${escapeHTML(a.name||"Aventura")}</span><span class="c-mana">${pips(a.mana,true)}</span></div>
       <div class="adv-type">${escapeHTML(a.type||"Instantâneo — Aventura")}</div>
       <div class="adv-rules">${rulesHTML(a.rules)}</div>
     </div>`;
@@ -445,13 +475,13 @@ function renderDFC(){
 }
 function renderSplit(){
   const left=`<div class="split-half">
-      <div class="title-bar"><span class="c-name">${escapeHTML(state.name||"")}</span><span class="c-mana">${pips(state.mana)}</span></div>
+      <div class="title-bar"><span class="c-name">${escapeHTML(state.name||"")}</span><span class="c-mana">${pips(state.mana,true)}</span></div>
       <div class="type-bar"><span class="c-type">${escapeHTML(state.type||"")}</span></div>
       <div class="text-box"><div class="c-rules">${rulesHTML(state.rules)}</div></div>
     </div>`;
   const s=state.split;
   const right=`<div class="split-half">
-      <div class="title-bar"><span class="c-name">${escapeHTML(s.name||"")}</span><span class="c-mana">${pips(s.mana)}</span></div>
+      <div class="title-bar"><span class="c-name">${escapeHTML(s.name||"")}</span><span class="c-mana">${pips(s.mana,true)}</span></div>
       <div class="type-bar"><span class="c-type">${escapeHTML(s.type||"")}</span></div>
       <div class="text-box"><div class="c-rules">${rulesHTML(s.rules)}</div></div>
     </div>`;
@@ -511,7 +541,7 @@ function renderCustomFrame(def,zonesArg){
   if(Z.art) h+=`<div class="cf-art" style="${zoneBox(Z.art)}">${state.art?`<img src="${state.art}" alt="">`:`<div class="art-ph"><span>⛰</span></div>`}</div>`;
   h+=`<img class="cf-frame" src="${def.src}" alt="">`;
   if(Z.name) h+=zone(Z.name,escapeHTML(state.name||""),false,"name");
-  if(Z.mana) h+=zone(Z.mana,`<div class="c-mana">${pips(state.mana)}</div>`,false,"mana");
+  if(Z.mana) h+=zone(Z.mana,`<div class="c-mana">${pips(state.mana,true)}</div>`,false,"mana");
   if(Z.type) h+=zone(Z.type,escapeHTML(state.type||""),false,"type");
   /* ícone de raridade enviado: usa a zona "rarity" do frames.json, ou um
      encaixe padrão na ponta direita da barra de tipo */
@@ -1214,6 +1244,7 @@ async function loadManaSymbols(){
     (list||[]).forEach(m=>{ if(m && m.code) MANA[String(m.code).toUpperCase()]=m; });
     if(typeof buildManaPalette==="function") buildManaPalette();  // agora os botões mostram os SVGs reais
     render();
+    buildManaShadows().then(()=>render());   // sombra pré-composta nos símbolos do custo
   }catch(e){ /* pasta ausente ou file:// : usa só os símbolos embutidos */ }
 }
 async function loadFrames(){
